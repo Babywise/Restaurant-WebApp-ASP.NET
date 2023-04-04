@@ -20,15 +20,13 @@ namespace Meal_Ordering_API.Controllers
         public IActionResult Index()
         {
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/Account/Register") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/Account/Login") as HttpWebRequest;
             request.Method = "GET";
             request.ContentType = "application/text";
-            request.UserAgent = "Hi";
+            request.UserAgent = "StubTest";
 
             //Response from api
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            string agent = response.Headers["User-Agent"]; // set user agent for easy reading
-            string ApiKey = getKeyFromResponse(response,"User-Agent"); // set ApiKey for easy reading
             Account acc = getAccountFromResponse(response); // gets account from string
         
             return View();
