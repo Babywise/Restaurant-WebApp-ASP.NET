@@ -9,7 +9,10 @@ namespace Meal_Ordering_WebApp.Entities
             : base(options)
         {
         }
-
+        DbSet<Order> order { get; set; }
+        DbSet<Account> account { get; set; }
+        DbSet<Category> category { get; set; }
+        DbSet<Product> product { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
