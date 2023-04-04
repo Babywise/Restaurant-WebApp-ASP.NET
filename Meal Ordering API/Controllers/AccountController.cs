@@ -9,6 +9,13 @@ using System.Text.Json;
 
 namespace Meal_Ordering_API.Controllers
 {
+    /// <summary>
+    /// AccountController is the API interface with all things to do with an account
+    /// v1
+    ///     - Register
+    ///     - Edit
+    ///     - Login
+    /// </summary>
     public class AccountController : Controller
     {
         /// <summary>
