@@ -16,5 +16,4 @@ namespace Meal_Ordering_API.Entities
         public string? Address { get; set; }
 
     }
-
 }
