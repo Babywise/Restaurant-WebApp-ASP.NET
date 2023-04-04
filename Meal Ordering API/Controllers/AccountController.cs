@@ -21,6 +21,7 @@ namespace Meal_Ordering_API.Controllers
         /// <summary>
         /// Register an account with the API. Takes in an account object. Must have username, password, address filled out at minimum
         /// Returns 200 OK if good, sets response.headers["Message"] to status message if success or fail for more details
+        /// Type : GET
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
@@ -39,6 +40,7 @@ namespace Meal_Ordering_API.Controllers
         /// Returns a Response.headers["ApiKey"] if success for the account logged into. 
         /// Else returns 400 
         ///     With Response.headers["Message"] with a detailed message about what went wrong
+        /// Type : POST
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
@@ -57,6 +59,7 @@ namespace Meal_Ordering_API.Controllers
         ///     Response.headers["Message"] for a message about the sucess or failure
         /// Returns 400 Bad Request on failure
         ///     Response.headers["Message"] for a message about the sucess or failure
+        /// Type : PUT
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
