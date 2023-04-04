@@ -12,7 +12,7 @@ namespace Meal_Ordering_API.Controllers
     public class AccountController : Controller
     {
         [HttpGet("/API/V1/Account/Register")]
-        public string Register()
+        public string Register(Account account)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
@@ -22,7 +22,7 @@ namespace Meal_Ordering_API.Controllers
           
         }
         [HttpPost("/API/V1/Account/Login")]
-        public string Login()
+        public string Login(Account account)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
@@ -30,7 +30,7 @@ namespace Meal_Ordering_API.Controllers
             return JsonSerializer.Serialize(acc);
         }
         [HttpPut("/API/V1/Account/Edit")]
-        public string Edit()
+        public string Edit(Account account)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
