@@ -26,7 +26,7 @@ namespace Meal_Ordering_API.Controllers
             request.UserAgent = "StubTest";
             //Response from api
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Account acc = getAccountFromResponse(response); // gets account from string
+            Accountt acc = getAccountFromResponse(response); // gets account from string
         
             return View();
         }
@@ -37,13 +37,13 @@ namespace Meal_Ordering_API.Controllers
         /// </summary>
         /// <param name="resp"></param>
         /// <returns></returns>
-        public Account getAccountFromResponse(HttpWebResponse resp)
+        public Accountt getAccountFromResponse(HttpWebResponse resp)
         {
             Stream responseStream = resp.GetResponseStream();
             StreamReader reader = new StreamReader(responseStream);
             string result = reader.ReadToEnd();
    
-            Account acc = JsonSerializer.Deserialize<Account>(result);
+            Accountt acc = JsonSerializer.Deserialize<Accountt>(result);
             return acc;
         }
         /// <summary>
