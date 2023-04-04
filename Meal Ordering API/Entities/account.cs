@@ -1,4 +1,6 @@
-﻿namespace Meal_Ordering_API.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Meal_Ordering_API.Entities
 {
     public class Account
     {
