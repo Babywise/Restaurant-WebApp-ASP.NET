@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -27,7 +28,8 @@ namespace Meal_Ordering_API.Migrations
 
                 },
                 constraints: table => {
-                    table.PrimaryKey("Username", x => x.Username);
+                    table.PrimaryKey("id", x => x.Id);
+                    
                 }
                 );
         }

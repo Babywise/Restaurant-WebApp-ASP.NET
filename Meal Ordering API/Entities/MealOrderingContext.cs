@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Meal_Ordering_API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Meal_Ordering_WebApp.Entities
 {

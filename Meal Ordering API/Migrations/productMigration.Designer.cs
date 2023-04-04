@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Meal_Ordering_API.Migrations
 {
     [DbContext(typeof(MealOrderingContext))]
-    [Migration("20230404004328_productMigration")]
+    [Migration("20230404004361_productMigration")]
     partial class productMigration
     {
         /// <inheritdoc />
