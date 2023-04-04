@@ -2,6 +2,7 @@
 using Meal_Ordering_API.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -10,16 +11,17 @@ namespace Meal_Ordering_API.Controllers
 {
     public class AccountController : Controller
     {
+        [HttpGet("/API/V1/Account/Register")]
         public string Register()
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             Response.Headers["Message"] = "Registered";
-            return null;
+            return "hi";
           
         }
-
+        [HttpPost("/API/V1/Account/Login")]
         public string Login()
         {
             Account acc = new Account();
@@ -27,7 +29,7 @@ namespace Meal_Ordering_API.Controllers
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
+        [HttpPut("/API/V1/Account/Edit")]
         public string Edit()
         {
             Account acc = new Account();
