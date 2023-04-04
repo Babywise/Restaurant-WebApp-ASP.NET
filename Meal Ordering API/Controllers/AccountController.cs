@@ -61,7 +61,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Account/Edit")]
-        public string Edit(Account account)
+        public string Edit(Account account, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";

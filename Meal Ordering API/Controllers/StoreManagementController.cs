@@ -4,70 +4,63 @@ using System.Text.Json;
 
 namespace Meal_Ordering_API.Controllers
 {
-    public class OrderingController : Controller
+    public class StoreManagementController : Controller
     {
-        [HttpPost("/API/V1/Ordering/Add")]
-        public string Add(Product product, [FromHeader] Guid ApiKey)
+        [HttpPost("/API/V1/StoreManagement/Add")]
+        public string Add(Product product,[FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpPut("/API/V1/Ordering/Remove")]
-        public string Remove(Product product,[FromHeader] Guid ApiKey)
+        [HttpPost("/API/V1/StoreManagement/Remove")]
+        public string Remove(Product product, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpPost("/API/V1/Ordering/placeOrder")]
-        public string Place([FromHeader] Guid ApiKey)
+        [HttpPost("/API/V1/StoreManagement/Edit")]
+        public string Edit(Product product, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpPut("/API/V1/Ordering/update")]
-        public string Update(Order order, [FromHeader] Guid ApiKey)
+        [HttpPost("/API/V1/StoreManagement/AddCategory")]
+        public string AddCategory(string category, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpGet("/API/V1/Ordering/getAllProducts")]
-        public string GetAllProducts()
+        [HttpPost("/API/V1/StoreManagement/RemoveCategory")]
+        public string RemoveCategory(Category category, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpGet("/API/V1/Ordering/GetAllProducts")]
-        public string GetAllProductsCategory(Category category)
+        [HttpPut("/API/V1/StoreManagement/EditCategory")]
+        public string EditCategory(Category category, [FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
-        [HttpGet("/API/V1/Ordering/getAllOrders")]
-        public string GetAllOrders([FromHeader] Guid ApiKey)
+        [HttpGet("/API/V1/StoreManagement/getAllCategories")]
+        public string GetAllCategories([FromHeader] Guid ApiKey)
         {
             Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
         }
-
     }
 }
