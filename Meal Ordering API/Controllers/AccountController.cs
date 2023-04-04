@@ -26,9 +26,9 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpGet("/API/V1/Account/Register")]
-        public string Register(Accountt account)
+        public string Register(Account account)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             Response.Headers["Message"] = "Registered";
@@ -45,9 +45,9 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/Account/Login")]
-        public string Login(Accountt account)
+        public string Login(Account account)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -64,9 +64,9 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Account/Edit")]
-        public string Edit(Accountt account, [FromHeader] Guid ApiKey)
+        public string Edit(Account account, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);

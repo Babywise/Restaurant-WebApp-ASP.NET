@@ -16,7 +16,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/Add")]
         public string Add(Product product,[FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -31,7 +31,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/Remove")]
         public string Remove(Product product, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -46,7 +46,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/Edit")]
         public string Edit(Product product, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -61,7 +61,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/AddCategory")]
         public string AddCategory(string category, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -76,7 +76,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/RemoveCategory")]
         public string RemoveCategory(Category category, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -91,7 +91,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPut("/API/V1/StoreManagement/EditCategory")]
         public string EditCategory(Category category, [FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
@@ -105,7 +105,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/StoreManagement/getAllCategories")]
         public string GetAllCategories([FromHeader] Guid ApiKey)
         {
-            Accountt acc = new Accountt();
+            Account acc = new Account();
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
