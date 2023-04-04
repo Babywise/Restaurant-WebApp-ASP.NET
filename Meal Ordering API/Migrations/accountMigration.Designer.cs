@@ -12,7 +12,7 @@ namespace Meal_Ordering_API.Migrations
 {
     [DbContext(typeof(MealOrderingContext))]
     [Migration("20230403234351_initial")]
-    partial class initial
+    partial class accountMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

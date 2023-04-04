@@ -5,7 +5,7 @@
 namespace Meal_Ordering_API.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class accountMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
