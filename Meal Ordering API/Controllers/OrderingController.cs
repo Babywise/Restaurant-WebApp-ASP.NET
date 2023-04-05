@@ -1,5 +1,6 @@
 ﻿using Meal_Ordering_API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace Meal_Ordering_API.Controllers
@@ -175,10 +176,23 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllProducts")]
         public string GetAllProducts()
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
-            Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+           List<Product> products = new List<Product>();
+            Product p1 = new Product
+            {
+                Inventory = 3,
+                Cost = (float)2.23,
+                Name = "Test"
+            };
+
+            Product p2 = new Product
+            {
+                Inventory = 1,
+                Name = "Stub",
+                Cost = (float)4.33
+            };
+            products.Add(p1);
+            products.Add(p2);
+            return JsonSerializer.Serialize(products);
         }
 
         /// <summary>
@@ -190,10 +204,49 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/GetAllProducts")]
         public string GetAllProductsCategory(Category category)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
-            Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+            List<Product> products = new List<Product>();
+            if (category.Name== "Test")
+            {
+                Product p1 = new Product
+                {
+                    Inventory = 3,
+                    Cost = (float)2.23,
+                    Name = "category1_item1",
+                    CategoryId = category.Id
+                };
+
+                Product p2 = new Product
+                {
+                    Inventory = 1,
+                    Name = "category1_item2",
+                    Cost = (float)4.33,
+                    CategoryId = category.Id
+                };
+                products.Add(p1);
+                products.Add(p2);
+            }
+            else
+            {
+                Product p1 = new Product
+                {
+                    Inventory = 3,
+                    Cost = (float)2.23,
+                    Name = "category2_item1",
+                    CategoryId = category.Id
+                };
+
+                Product p2 = new Product
+                {
+                    Inventory = 1,
+                    Name = "category2_item2",
+                    Cost = (float)4.33,
+                    CategoryId = category.Id
+                };
+                products.Add(p1);
+                products.Add(p2);
+            }
+   
+            return JsonSerializer.Serialize(products);
         }
 
         /// <summary>
@@ -205,11 +258,49 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllOrders")]
         public string GetAllOrders([FromHeader] Guid ApiKey)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
-            Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+          List<Order> orders = new List<Order>();
+            List<Product> products = new List<Product>();
+
+            Product p1 = new Product
+            {
+                Inventory = 3,
+                Cost = (float)2.23,
+                Name = "category2_item1",
+                CategoryId = 1
+            };
+
+            Product p2 = new Product
+            {
+                Inventory = 1,
+                Name = "category2_item2",
+                Cost = (float)4.33,
+                CategoryId =2
+            };
+            products.Add(p1);
+            products.Add(p2);
+
+            Order o1 = new Order()
+            {
+                Id= 1, 
+                CustomerId=1,
+                StoreId=2,
+                products=products,
+                Status = "cart",
+                Updated= false
+            };
+
+            Order o2 = new Order()
+            {
+                Id = 2,
+                CustomerId = 1,
+                StoreId = 2,
+                products = products,
+                Status = "cart",
+                Updated = false
+            };
+            return JsonSerializer.Serialize(orders);
         }
+        
 
     }
 }
