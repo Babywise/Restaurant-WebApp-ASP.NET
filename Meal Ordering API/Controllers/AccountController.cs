@@ -77,10 +77,81 @@ namespace Meal_Ordering_API.Controllers
             bool check = false;
             string message = "";
             //verify
+            if (account.Username != null && account.Password != null)
+            {
+                check = true;
+                message = "Login";
+            }
+            else
+            {
+                check = false;
+                message = "Either Username, or Password is null";
+            }
+
+
+            // Set Headers
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+
+
+            //return
+            Category cat = new Category();
+            cat.Name = "STUB";
+
+            Product prod = new Product();
+            prod.Cost = 1;
+            prod.Name = "Banana";
+            
+            Order order= new Order();
+            order.Status = "Cart";
+            order.Id = 1;
+            order.StoreId = 1;
+            order.CustomerId = 1;   
+            order.products = new List<Product>();
+            order.products.Add(prod);
+
+            LoginResponse response = new LoginResponse();
+            response.products = new List<Product>();   
+            response.products.Add(prod);
+            response.orders = new List<Order>();    
+            response.orders.Add(order); 
+            response.user = account;
+            response.categories = new List<Category>();
+            response.categories.Add(cat);
+
+            return JsonSerializer.Serialize(response);
+
+        }
+
+        /// <summary>
+        /// Edit the fields in an account. Fields left null or "" will be ignored. Only values with data will be compared and changed.
+        /// Returns 200 OK on success
+        ///     Response.headers["Message"] for a message about the sucess or failure
+        /// Returns 400 Bad Request on failure
+        ///     Response.headers["Message"] for a message about the sucess or failure
+        /// Type : PUT
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        [HttpPut("/API/V1/Account/Edit")]
+        public string Edit(Account account, [FromHeader] Guid ApiKey)
+        {
+            bool check = false;
+            string message = "";
+            //verify
             if (account.Username != null && account.Password != null && account.AccountType != null)
             {
                 check = true;
-                message = "Registered";
+                message = "Edited";
             }
             else
             {
@@ -101,30 +172,8 @@ namespace Meal_Ordering_API.Controllers
             {
                 Response.StatusCode = 400;
             }
-
-
             //return
             return "";
-
-        }
-
-        /// <summary>
-        /// Edit the fields in an account. Fields left null or "" will be ignored. Only values with data will be compared and changed.
-        /// Returns 200 OK on success
-        ///     Response.headers["Message"] for a message about the sucess or failure
-        /// Returns 400 Bad Request on failure
-        ///     Response.headers["Message"] for a message about the sucess or failure
-        /// Type : PUT
-        /// </summary>
-        /// <param name="account"></param>
-        /// <returns></returns>
-        [HttpPut("/API/V1/Account/Edit")]
-        public string Edit(Account account, [FromHeader] Guid ApiKey)
-        {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
-            Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
         }
     }
 }

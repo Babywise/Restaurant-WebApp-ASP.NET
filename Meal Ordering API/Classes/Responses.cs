@@ -33,6 +33,7 @@ namespace Meal_Ordering_API.Classes
                 Account acc = JsonSerializer.Deserialize<Account>(result);
                 return acc;
             }
+
         /// <summary>
         /// Converts a response to a loginResponseEntity
         /// </summary>
