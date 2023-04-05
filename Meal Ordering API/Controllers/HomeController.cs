@@ -20,7 +20,7 @@ namespace Meal_Ordering_API.Controllers
         public IActionResult Index()
         {
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Register?Username=Danny1&&Password=Danny12&&AccountType=Customer&&Address=1234Testing") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Register?Username=Danny&&Password=Danny12&&AccountType=Customer&&Address=1234Testing") as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/text";
             request.UserAgent = "StubTest";

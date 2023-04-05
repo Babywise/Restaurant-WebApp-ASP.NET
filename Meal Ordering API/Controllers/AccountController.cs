@@ -12,6 +12,13 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Runtime.Intrinsics.Arm;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Identity;
+using static System.Net.Mime.MediaTypeNames;
+using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Meal_Ordering_API.Controllers
 {
@@ -34,7 +41,26 @@ namespace Meal_Ordering_API.Controllers
         {
             _dbContext = dbContext;
         }
+        /// <summary>
+        /// Hashes a string using SHA256
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static String hash(String value)
+        {
+            StringBuilder Sb = new StringBuilder();
 
+            using (SHA256 hash = SHA256Managed.Create())
+            {
+                Encoding enc = Encoding.UTF8;
+                Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+                foreach (Byte b in result)
+                    Sb.Append(b.ToString("x2"));
+            }
+
+            return Sb.ToString();
+        }
         /// <summary>s
         /// Register an account with the API. Takes in an account object. Must have username, password, address filled out at minimum
         /// Returns 200 OK if good, sets response.headers["Message"] to status message if success or fail for more details
@@ -54,12 +80,10 @@ namespace Meal_Ordering_API.Controllers
             if (account != null)
             {
                 // secure password
-
-
-
-
-                Account checkUsername = _dbContext.account.Where(d => d.Username == account.Username).ToList().ElementAt(0);
-                if (checkUsername != null)
+             
+                List<Account> accounts = _dbContext.account.Where(d => d.Username == account.Username).ToList();
+         
+                if (accounts.Count>=1)
                 {
                     check= false;
                     message = "User already exists";
@@ -133,8 +157,9 @@ namespace Meal_Ordering_API.Controllers
                     {
                         Guid key = Guid.NewGuid();
                         account.ApiKey = key;
+                        account.Password = hash(account.Password);
                         List<Account> IdFromAccount = _dbContext.account.OrderByDescending(b => b.Id).ToList();
-                        if (IdFromAccount.Count<=0)
+                        if (IdFromAccount.Count>0)
                         {
                             account.Id = IdFromAccount[0].Id + 1;
                         }
@@ -156,6 +181,7 @@ namespace Meal_Ordering_API.Controllers
                         Trace.WriteLine(ex.Message);
                         Trace.Close();
                         check = false;
+                        message = "500 Internal Error";
                     }
                 }
             }

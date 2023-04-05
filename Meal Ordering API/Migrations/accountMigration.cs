@@ -20,7 +20,7 @@ namespace Meal_Ordering_API.Migrations
                     FirstName = table.Column<string>(type: "varchar(45)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(45)", nullable: true),
                     Username = table.Column<string>(type: "varchar(45)", nullable: false),
-                    Password = table.Column<string>(type: "varchar(45)", nullable: false),
+                    Password = table.Column<string>(type: "varchar(128)", nullable: false),
                     AccountType = table.Column<string>(type: "varchar(45)", nullable: false),
                     Email = table.Column<string>(type: "varchar(45)", nullable: true),
                     Phone = table.Column<string>(type: "varchar(45)", nullable: true),
