@@ -20,13 +20,13 @@ namespace Meal_Ordering_API.Controllers
         public IActionResult Index()
         {
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Login?Username='Danny'") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Login?Username='Danny'&&Password='Danny'&&AccountType='Resteraunt'") as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/text";
             request.UserAgent = "StubTest";
             //Response from api
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Account acc = Classes.Responses.getAccountFromResponse(response); // gets account from string
+            LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
         
             return View();
         }
