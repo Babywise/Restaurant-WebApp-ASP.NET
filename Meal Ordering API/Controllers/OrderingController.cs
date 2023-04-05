@@ -14,12 +14,37 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/Ordering/Add")]
-        public string Add(Product product, [FromHeader] Guid ApiKey)
+        public string Add(Product product, int Quantity, [FromHeader] Guid ApiKey)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (ApiKey!= Guid.Empty && product != null && Quantity > 0)
+            {
+                check = true;
+                message = "Add item";
+            }
+            else
+            {
+                check = false;
+                message = "Either Guid is empty or Product is null or Quantity <= 0";
+            }
+
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+            //return
+            return "";
         }
 
         /// <summary>
@@ -30,12 +55,37 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Ordering/Remove")]
-        public string Remove(Product product,[FromHeader] Guid ApiKey)
+        public string Remove(Product product, int Quantity, [FromHeader] Guid ApiKey)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (ApiKey != Guid.Empty && product != null && Quantity > 0)
+            {
+                check = true;
+                message = "Remove item";
+            }
+            else
+            {
+                check = false;
+                message = "Either Guid is empty or Product is null or Quantity <= 0";
+            }
+
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+            //return
+            return "";
         }
         /// <summary>
         /// Places an order for the current user based on the ApiKey
@@ -46,10 +96,35 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/placeOrder")]
         public string Place([FromHeader] Guid ApiKey)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (ApiKey != Guid.Empty)
+            {
+                check = true;
+                message = "Cart Checked-out";
+            }
+            else
+            {
+                check = false;
+                message = "Guid is empty";
+            }
+
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+            //return
+            return "";
         }
         /// <summary>
         /// Updates an order. Update order status of an existing order to change
@@ -61,10 +136,35 @@ namespace Meal_Ordering_API.Controllers
         [HttpPut("/API/V1/Ordering/update")]
         public string Update(Order order, [FromHeader] Guid ApiKey)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (order != null && ApiKey != Guid.Empty)
+            {
+                check = true;
+                message = "Updated Order";
+            }
+            else
+            {
+                check = false;
+                message = "Either Guid is empty or order is null";
+            }
+
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+            //return
+            return "";
         }
 
         /// <summary>
