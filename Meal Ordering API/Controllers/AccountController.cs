@@ -74,11 +74,38 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Account/Login")]
         public string Login(Account account)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (account.Username != null && account.Password != null && account.AccountType != null)
+            {
+                check = true;
+                message = "Registered";
+            }
+            else
+            {
+                check = false;
+                message = "Either Username, Password, or Account type is null";
+            }
+
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            return JsonSerializer.Serialize(acc);
-            
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+
+
+            //return
+            return "";
+
         }
 
         /// <summary>
