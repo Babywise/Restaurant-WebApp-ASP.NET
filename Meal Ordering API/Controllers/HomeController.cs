@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
-
+using Meal_Ordering_API.Classes;
 namespace Meal_Ordering_API.Controllers
 {
     public class HomeController : Controller
@@ -26,36 +26,9 @@ namespace Meal_Ordering_API.Controllers
             request.UserAgent = "StubTest";
             //Response from api
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Account acc = getAccountFromResponse(response); // gets account from string
+            Account acc = Classes.Responses.getAccountFromResponse(response); // gets account from string
         
             return View();
-        }
-
-
-        /// <summary>
-        /// Converts a string Json into a Account object
-        /// </summary>
-        /// <param name="resp"></param>
-        /// <returns></returns>
-        public Account getAccountFromResponse(HttpWebResponse resp)
-        {
-            Stream responseStream = resp.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
-            string result = reader.ReadToEnd();
-   
-            Account acc = JsonSerializer.Deserialize<Account>(result);
-            return acc;
-        }
-        /// <summary>
-        /// Pulls the specififed key from the response provided.. IE : getKeyFromResponse(Response, "User-Agent")
-        /// </summary>
-        /// <param name="response"></param>
-        /// <param name="Key"></param>
-        /// <returns></returns>
-        public string getKeyFromResponse(HttpWebResponse response,string Key)
-        {
-            string returnVal = response.Headers[Key]; // set ApiKey for easy reading
-            return returnVal;
         }
 
     }

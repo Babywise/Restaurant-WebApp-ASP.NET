@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-
+using Meal_Ordering_API.Classes;
 namespace Meal_Ordering_API.Controllers
 {
     /// <summary>
@@ -51,6 +51,7 @@ namespace Meal_Ordering_API.Controllers
             acc.FirstName = "Danny";
             Response.Headers.UserAgent = "API";
             return JsonSerializer.Serialize(acc);
+            
         }
 
         /// <summary>
