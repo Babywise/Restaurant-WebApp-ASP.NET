@@ -28,13 +28,40 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Account/Register")]
         public string Register(Account account)
         {
-            Account acc = new Account();
-            acc.FirstName = "Danny";
+            bool check = false;
+            string message = "";
+            //verify
+            if (account.Username!= null && account.Password!=null &&account.AccountType!=null) {
+                check = true;
+                message = "Registered";
+            }
+            else
+            {
+                check = false;
+                message = "Either Username, Password, or Account type is null";
+            }
+   
+
+            // Set Headers
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = "Registered";
-            return "hi";
+            Response.Headers["Message"] = message;
+
+            if (check)
+            {
+                Response.StatusCode = 200;
+            }
+            else
+            {
+                Response.StatusCode = 400;
+            }
+            
+
+            //return
+            return "";
           
         }
+
+
         /// <summary>
         /// Login to an account. Must have Username and Password at minimum.
         /// Returns a Response.headers["ApiKey"] if success for the account logged into. 
