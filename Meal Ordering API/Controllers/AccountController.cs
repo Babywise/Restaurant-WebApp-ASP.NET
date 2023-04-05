@@ -7,6 +7,12 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Meal_Ordering_API.Classes;
+using Meal_Ordering_WebApp.Entities;
+using System;
+using System.IO;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Components.Forms;
+
 namespace Meal_Ordering_API.Controllers
 {
     /// <summary>
@@ -18,29 +24,148 @@ namespace Meal_Ordering_API.Controllers
     /// </summary>
     public class AccountController : Controller
     {
+        private MealOrderingAPIContext _dbContext;
+
         /// <summary>
+        /// Home controller handles all home related functions with the home page.
+        /// </summary>
+        /// <param name="dbContext"></param>
+        public AccountController(MealOrderingAPIContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        /// <summary>s
         /// Register an account with the API. Takes in an account object. Must have username, password, address filled out at minimum
         /// Returns 200 OK if good, sets response.headers["Message"] to status message if success or fail for more details
         /// Type : GET
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        [HttpGet("/API/V1/Account/Register")]
+        [HttpPost("/API/V1/Account/Register")]
         public string Register(Account account)
         {
-            bool check = false;
+            
+            bool check = true;
             string message = "";
-            //verify
-            if (account.Username!= null && account.Password!=null &&account.AccountType!=null) {
-                check = true;
-                message = "Registered";
-            }
-            else
+
+
+            // account is not null
+            if (account != null)
             {
-                check = false;
-                message = "Either Username, Password, or Account type is null";
+                // secure password
+
+
+
+
+                Account checkUsername = _dbContext.account.Where(d => d.Username == account.Username).ToList().ElementAt(0);
+                if (checkUsername != null)
+                {
+                    check= false;
+                    message = "User already exists";
+                }
+                // validate address
+                if (account.Address.Length <= 4) // -------------------------------Not valid validation... must be changed --------------------------
+                {
+                    message += " Address is too short";
+                    check = false;
+                }
+                if (account.Address.Length > 20)
+                {
+                    message += " Address is too long";
+                    check = false;
+                }
+
+
+                // account type validation
+                switch (account.AccountType)
+                {
+                    case "Resteraunt":
+                        break;
+                    case "Customer":
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+
+                //Username validation
+                if (account.Username.Length <= 4) // username has to be larger then 4
+                {
+                    message += " Username is too short";
+                    check = false;
+                }
+                if (account.Username.Length > 20)
+                {
+                    message += " Username is too long";
+                    check = false;
+                }
+
+                //Password Validation
+                if (account.Password.Length <= 4) // username has to be larger then 4
+                {
+                    message += " Password is too short";
+                    check = false;
+                }
+                if (account.Password.Length > 20)
+                {
+                    message += " Password is too long";
+                    check = false;
+                }
+                if (account.Password.Any(char.IsUpper) && account.Password.Any(char.IsLower) && account.Password.Any(char.IsDigit)) // check to see if password has at least 1 lower, 1 upper, and 1 digit
+                {
+
+                }
+                else
+                {
+                    message += " Password must contain a lower character, upper character, and a digit";
+                    check = false;
+                }
+
+
+
+
+                //Create account
+                if (account != null && check == true)
+                {
+                    try
+                    {
+                        Guid key = Guid.NewGuid();
+                        account.ApiKey = key;
+                        List<Account> IdFromAccount = _dbContext.account.OrderByDescending(b => b.Id).ToList();
+                        if (IdFromAccount.Count<=0)
+                        {
+                            account.Id = IdFromAccount[0].Id + 1;
+                        }
+                        else
+                        {
+                            account.Id = 1;
+                        }
+                        
+                        _dbContext.Add(account);
+                        _dbContext.SaveChanges();
+                      
+
+                        message = "Account Created";
+                    }
+                    catch (Exception ex)
+                    {
+                        TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                        Trace.Listeners.Add(logListener);
+                        Trace.WriteLine(ex.Message);
+                        Trace.Close();
+                        check = false;
+                    }
+                }
             }
-   
+            else // account is null
+            {
+                message = "Account is null";
+                check = false;
+            }
+
+
 
             // Set Headers
             Response.Headers.UserAgent = "API";
@@ -52,13 +177,13 @@ namespace Meal_Ordering_API.Controllers
             }
             else
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 200;
             }
-            
+
 
             //return
             return "";
-          
+
         }
 
 
@@ -110,20 +235,20 @@ namespace Meal_Ordering_API.Controllers
             Product prod = new Product();
             prod.Cost = 1;
             prod.Name = "Banana";
-            
-            Order order= new Order();
+
+            Order order = new Order();
             order.Status = "Cart";
             order.Id = 1;
             order.StoreId = 1;
-            order.CustomerId = 1;   
+            order.CustomerId = 1;
             order.products = new List<Product>();
             order.products.Add(prod);
 
             LoginResponse response = new LoginResponse();
-            response.products = new List<Product>();   
+            response.products = new List<Product>();
             response.products.Add(prod);
-            response.orders = new List<Order>();    
-            response.orders.Add(order); 
+            response.orders = new List<Order>();
+            response.orders.Add(order);
             response.user = account;
             response.categories = new List<Category>();
             response.categories.Add(cat);

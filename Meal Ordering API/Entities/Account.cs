@@ -5,6 +5,7 @@ namespace Meal_Ordering_API.Entities
     public class Account
     {
         public int? Id { get; set; }
+        [Column(TypeName = "CHAR(36)")]
         public Guid? ApiKey { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
