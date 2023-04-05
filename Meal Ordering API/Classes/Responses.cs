@@ -33,15 +33,28 @@ namespace Meal_Ordering_API.Classes
                 Account acc = JsonSerializer.Deserialize<Account>(result);
                 return acc;
             }
+        /// <summary>
+        /// Converts a response to a loginResponseEntity
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <returns></returns>
+        public static LoginResponse getLoginResponseFromResponse(HttpWebResponse resp)
+        {
+            Stream responseStream = resp.GetResponseStream();
+            StreamReader reader = new StreamReader(responseStream);
+            string result = reader.ReadToEnd();
 
+            LoginResponse response = JsonSerializer.Deserialize<LoginResponse>(result);
+            return response;
+        }
 
-            /// <summary>
-            /// Pulls the specififed key from the response provided.. IE : getKeyFromResponse(Response, "User-Agent")
-            /// </summary>
-            /// <param name="response"></param>
-            /// <param name="Key"></param>
-            /// <returns></returns>
-            public static string getKeyFromResponse(HttpWebResponse response, string Key)
+        /// <summary>
+        /// Pulls the specififed key from the response provided.. IE : getKeyFromResponse(Response, "User-Agent")
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="Key"></param>
+        /// <returns></returns>
+        public static string getKeyFromResponse(HttpWebResponse response, string Key)
             {
                 string returnVal = response.Headers[Key]; // set ApiKey for easy reading
                 return returnVal;
