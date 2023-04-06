@@ -24,7 +24,6 @@ namespace Meal_Ordering_API.Controllers
         public IActionResult AddProduct()
         {
            
-            //if (product != null && ApiKey != Guid.Empty && product.Name != null && product.Cost > 0 && product.CategoryId != null)
             // create request to register test
             string link = "https://localhost:7062/API/V1/StoreManagement/Add?";
             HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/Add") as HttpWebRequest;
@@ -86,12 +85,16 @@ namespace Meal_Ordering_API.Controllers
         }
         public IActionResult Index()
         {
-            //if (product != null && ApiKey != Guid.Empty && product.Name != null && product.Cost > 0 && product.CategoryId != null)
+
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Edit?Username=Danny&&Password=Danny123&&AccountType=Resteraunt&&Address=123Testing&&ApiKey={1a07e8f6-825c-442d-a3d7-1315e6780697}") as HttpWebRequest;
-            request.Method = "PUT";
-            request.ContentType = "application/text";
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/AddCategory?category=TestFromCode") as HttpWebRequest;
+            request.Method = "POST";
+            request.ContentType = "application/json";
             request.UserAgent = "StubTest";
+            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+          
+
+
             HttpWebResponse response = null;
             //Response from api
             try

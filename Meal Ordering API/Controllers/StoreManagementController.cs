@@ -1,6 +1,7 @@
 ﻿using Meal_Ordering_API.Entities;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace Meal_Ordering_API.Controllers
@@ -200,37 +201,79 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/StoreManagement/AddCategory")]
-        public string AddCategory([FromBody] string category, [FromHeader] Guid ApiKey)
+        public string AddCategory([FromQuery] string category, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (ApiKey != Guid.Empty && category != null)
+            Category categorySave= new Category();
+            categorySave.Name = category;
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (ApiKey != Guid.Empty || category.Length <= 0 || category == null) // check for null items
             {
-                check = true;
-                message = "Add Category";
+                //check ApiKey
+                if (accounts.Count > 0) // ensure api key is valid
+            {
+                    //validate category
+                    List<Category> categoriesNames = _dbContext.category.Where(b => b.Name==category).ToList();
+                    if(categoriesNames.Count > 0)
+                    {
+                        check = false;
+                        message = "Category already exists";
+                    }
+                    //assign ID
+                    List<Category> categoriesIds = _dbContext.category.OrderByDescending(b => b.Id).ToList();
+                    if (categoriesIds.Count > 0)
+                    {
+                        categorySave.Id = categoriesIds[0].Id+1;
+                    }
+                    else
+                    {
+                        categorySave.Id = 0;
+                    }
+
+                    //add
+                    if(check)
+                    {
+                        try
+                        {
+                            _dbContext.category.Add(categorySave);
+                            _dbContext.SaveChanges();
+                            message = "Category added";
+                        }
+                        catch (Exception ex)
+                        {
+                            TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                            Trace.Listeners.Add(logListener);
+                            Trace.WriteLine(ex.Message);
+                            Trace.Close();
+                            check = false;
+                            message = "500 Internal Error";
+                        }
+                    }
+
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = message;
+                    return "";
             }
+            // bad api key
             else
             {
-                check = false;
-                message = "Either Guid is empty or Category is null";
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                //return
+                return "";
             }
-
-
-            // Set Headers
-            Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = message;
-
-            if (check)
+            
+            }
+            else // objects are null
             {
-                Response.StatusCode = 200;
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Category is null or less then 1 char or ApiKey is not set";
+                //return
+                return "";
             }
-            else
-            {
-                Response.StatusCode = 400;
-            }
-            //return
-            return "";
         }
         /// <summary>
         /// Removes a category from the store.
