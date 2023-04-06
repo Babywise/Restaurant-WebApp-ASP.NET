@@ -189,35 +189,93 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/StoreManagement/Edit")]
         public string Edit([FromBody] Product product, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (ApiKey != Guid.Empty && product != null)
+            if (product != null || ApiKey != Guid.Empty || product.Name != null || product.Cost > 0 || product.CategoryId != null )
             {
-                check = true;
-                message = "Edit item";
-            }
-            else
-            {
-                check = false;
-                message = "Either Guid is empty or Product is null";
-            }
+                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                if (accounts.Count > 0) // ensure api key is valid
+                {
+                    // ---- Validation ------
+                    // validate account type
+                    Account account = accounts[0];
+                    switch (account.AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    {
+                        case "Resteraunt":
+                            break;
+                        default:
+                            check = false;
+                            message = "Invalid account Type";
+                            break;
+                    }
 
 
-            // Set Headers
-            Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = message;
+                    //validate category
+                    bool exists = _dbContext.category.Where(d => d.Id == product.Id).Count() > 0;
+                    if (!exists)
+                    {
+                        message = "Product Category does not exist";
+                        check = false;
+                    }
+                    if (product.Name.Length < 4 || product.Name.Length > 20)
+                    {
+                        message = "Name is too short or too long";
+                        check = false;
+                    }
 
-            if (check)
-            {
-                Response.StatusCode = 200;
+                    //set product ID
+                    List<Product> products = _dbContext.product.Where(a => a.Id == product.Id).ToList();
+                    if (products.Count > 0)
+                    {
+                        products[0].Name = product.Name;
+                        products[0].Cost = product.Cost;
+                        products[0].Inventory= product.Inventory;
+                        products[0].Available = product.Available;
+                        products[0].CategoryId = product.CategoryId;
+                        products[0].orderId = product.orderId;
+                        products[0].Quantity = product.Quantity;
+                        products[0].StoreId = product.StoreId;
+                        try
+                        {
+                            _dbContext.SaveChanges();
+                        }
+                        catch(Exception ex) {
+                            TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                            Trace.Listeners.Add(logListener);
+                            Trace.WriteLine(ex.Message);
+                            Trace.Close();
+                            check = false;
+                            message = "500 Internal Error";
+                        }   
+                    }
+
+    
+
+                    // Set Headers
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = message;
+
+
+                    //return
+                    return "";
+                }
+                else // bad api key
+                {
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                    //return
+                    return "";
+                }
             }
-            else
+            else // objects are null
             {
-                Response.StatusCode = 400;
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Product or ApiKey or name or categoryId is null or cost is lower then 0";
+                //return
+                return "";
             }
-            //return
-            return "";
         }
 
 
