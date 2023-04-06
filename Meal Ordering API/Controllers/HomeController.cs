@@ -33,7 +33,7 @@ namespace Meal_Ordering_API.Controllers
             catch (Exception ex) {
             }
             string data = Classes.Responses.getKeyFromResponse(response, "Message");
-            //LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
+          //  LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
         
             return View();
         }

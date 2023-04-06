@@ -22,7 +22,7 @@ namespace Meal_Ordering_API.Migrations
                  StoreId = table.Column<int>(type: "int", nullable: true),
                  Quantity = table.Column<int>(type: "int", nullable: true),
                  Available = table.Column<bool>(type: "tinyint", nullable: true),
-
+                 orderId = table.Column<int>(type: "int", nullable: true),
 
              },
              constraints: table => {

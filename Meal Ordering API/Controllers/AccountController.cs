@@ -41,6 +41,8 @@ namespace Meal_Ordering_API.Controllers
         {
             _dbContext = dbContext;
         }
+
+
         /// <summary>
         /// Hashes a string using SHA256
         /// </summary>
@@ -61,6 +63,8 @@ namespace Meal_Ordering_API.Controllers
 
             return Sb.ToString();
         }
+
+
         /// <summary>s
         /// Register an account with the API. Takes in an account object. Must have username, password, address filled out at minimum
         /// Returns 200 OK if good, sets response.headers["Message"] to status message if success or fail for more details
@@ -225,20 +229,33 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Account/Login")]
         public string Login(Account account)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (account.Username != null && account.Password != null)
-            {
-                check = true;
-                message = "Login";
-            }
-            else
-            {
-                check = false;
-                message = "Either Username, or Password is null";
-            }
 
+            //verify
+            List<Account> accounts = _dbContext.account.Where(b => b.Username == account.Username).ToList();
+
+            if (account == null || account.Password == null || account.Username == null) // ensure all required fields are filled in
+            {
+                message = "account, Password, or Username is null";
+                check = false;
+            }
+            else { // all required fields are filled in
+                if (accounts.Count == 0) // if no accounts match username
+                {
+                    message = "No account found";
+                    check = false;
+                }
+                else
+                {
+                    //account exists now verify password
+                    if (hash(account.Password) != accounts[0].Password)
+                    {
+                        message = "Password is invalid";
+                        check = false;
+                    }
+                }
+            }
 
             // Set Headers
             Response.Headers.UserAgent = "API";
@@ -250,35 +267,30 @@ namespace Meal_Ordering_API.Controllers
             }
             else
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 200;
             }
 
 
             //return
-            Category cat = new Category();
-            cat.Name = "STUB";
 
-            Product prod = new Product();
-            prod.Cost = 1;
-            prod.Name = "Banana";
-
-            Order order = new Order();
-            order.Status = "Cart";
-            order.Id = 1;
-            order.StoreId = 1;
-            order.CustomerId = 1;
-            order.products = new List<Product>();
-            order.products.Add(prod);
 
             LoginResponse response = new LoginResponse();
-            response.products = new List<Product>();
-            response.products.Add(prod);
-            response.orders = new List<Order>();
-            response.orders.Add(order);
-            response.user = account;
-            response.categories = new List<Category>();
-            response.categories.Add(cat);
-
+            if (check == true)
+            {
+                response.user = accounts[0];
+                response.user.Password = "";
+                response.categories = _dbContext.category.ToList();
+                response.products = _dbContext.product.ToList();
+                switch (accounts[0].AccountType)
+                {
+                    case "Resteraunt": // return all orders that are linked to the resteraunt
+                        response.orders = _dbContext.order.Where(b => b.StoreId == accounts[0].Id).ToList();
+                        break;
+                    case "Customer": // return all orders related to the customer that requested
+                        response.orders = _dbContext.order.Where(b => b.CustomerId == accounts[0].Id).ToList();
+                        break;
+                }
+            }
             return JsonSerializer.Serialize(response);
 
         }

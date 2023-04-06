@@ -2,6 +2,7 @@
 {
     public class Product
     {
+        public int? orderId { get; set; }
         public string? Name { get; set; }   
         public float? Cost { get; set; }   
         public int? Inventory { get; set; }
