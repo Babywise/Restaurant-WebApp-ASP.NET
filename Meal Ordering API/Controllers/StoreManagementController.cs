@@ -18,6 +18,8 @@ namespace Meal_Ordering_API.Controllers
         {
             _dbContext = dbContext;
         }
+
+
         /// <summary>
         /// Adds a product to the store. Takes the ApiKey and a product
         /// Type : POST
@@ -153,6 +155,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Edits a product for the store.
         /// Type: POST
@@ -193,6 +197,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Adds a category from a string to the given store that links to the ApiKey
         /// Type: POST
@@ -275,6 +281,8 @@ namespace Meal_Ordering_API.Controllers
                 return "";
             }
         }
+
+
         /// <summary>
         /// Removes a category from the store.
         /// Type: POST
@@ -315,6 +323,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Edits a category for the given store.
         /// Type: PUT
@@ -355,6 +365,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Gets all categories from the store.
         /// Type : GET
@@ -364,21 +376,9 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/StoreManagement/getAllCategories")]
         public string GetAllCategories()
         {
-            List<Category> categories = new List<Category>();
-
-            Category category1 = new Category()
-            {
-                Name = "Category1",
-                Id = 1
-            };
-            Category category2 = new Category()
-            {
-                Name = "Category2",
-                Id = 1
-            };
-
-            categories.Add(category1);
-            categories.Add(category2);
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = "Got all categories";
+            List<Category> categories =_dbContext.category.OrderByDescending(b =>b.Name).ToList();
             return JsonSerializer.Serialize(categories);
         }
     }
