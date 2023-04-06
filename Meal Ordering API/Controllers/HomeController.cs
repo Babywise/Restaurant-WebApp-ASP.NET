@@ -457,12 +457,37 @@ namespace Meal_Ordering_API.Controllers
 
             return View();
         }
-        public IActionResult Index()
+        public IActionResult add()
         {
 
             // create request to register test
             HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/Add?storeId=1&&itemId=1&&Quantity=2") as HttpWebRequest;
             request.Method = "POST";
+            request.ContentType = "application/json";
+            request.UserAgent = "StubTest";
+            request.Headers.Add("ApiKey", "{2bcf9c86-dad9-4fee-a884-769dd60f4b0f}");
+
+
+            HttpWebResponse response = null;
+            //Response from api
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (Exception ex)
+            {
+            }
+            string data = Classes.Responses.getKeyFromResponse(response, "Message");
+            //  LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
+
+            return View();
+        }
+        public IActionResult Index()
+        {
+
+            // create request to register test
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/Remove?storeId=1&&itemId=4") as HttpWebRequest;
+            request.Method = "PUT";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
             request.Headers.Add("ApiKey", "{2bcf9c86-dad9-4fee-a884-769dd60f4b0f}");

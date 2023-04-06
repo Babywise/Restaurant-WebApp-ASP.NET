@@ -129,20 +129,70 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Ordering/Remove")]
-        public string Remove([FromBody] Product product, [FromQuery] int Quantity, [FromHeader] Guid ApiKey)
+        public string Remove([FromQuery] int storeId, [FromQuery] int itemId, [FromQuery] int Quantity, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+
+            bool check = true;
             string message = "";
+
+
+
             //verify
-            if (ApiKey != Guid.Empty && product != null && Quantity > 0)
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                check = true;
-                message = "Remove item";
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                {
+                    case "customer":
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+                if (check)//valid customer account
+                {
+                    if (itemId >= 0)
+                    {
+                        List<Product> products = _dbContext.product.Where(b => b.Id == itemId).ToList();
+                        if (products.Count > 0)// ID matches
+                        {
+                            if (products[0].customerId == accounts[0].Id)
+                            {
+                                try
+                                {
+                                    _dbContext.Remove(products[0]);
+                                    _dbContext.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                                    Trace.Listeners.Add(logListener);
+                                    Trace.WriteLine(ex.Message);
+                                    Trace.Close();
+                                    check = false;
+                                    message = "500 Internal Error";
+                                }
+                            }
+                            else
+                            {
+                                message = "500 Internal Error";
+                            }
+                          
+                        }
+
+                    }
+
+                }
             }
-            else
+            else // bad api key
             {
-                check = false;
-                message = "Either Guid is empty or Product is null or Quantity <= 0";
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                //return
+                return "";
             }
 
 
