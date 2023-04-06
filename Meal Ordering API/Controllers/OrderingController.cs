@@ -115,20 +115,31 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/placeOrder")]
         public string Place([FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (ApiKey != Guid.Empty)
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                check = true;
-                message = "Cart Checked-out";
+                switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
+                {
+                    case "customer":
+           // _dbContext.product.Where(b => b.) -------------------------------------------------------------------------------------------------------
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
             }
-            else
+            else // bad api key
             {
-                check = false;
-                message = "Guid is empty";
-            }
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
 
+
+                //return
+                return "";
+            }
 
             // Set Headers
             Response.Headers.UserAgent = "API";
@@ -140,21 +151,22 @@ namespace Meal_Ordering_API.Controllers
             }
             else
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 200;
             }
+
             //return
             return "";
         }
 
-
-        /// <summary>
-        /// Updates an order. Update order status of an existing order to change
-        /// Type: PUT
-        /// </summary>
-        /// <param name="order"></param>
-        /// <param name="ApiKey"></param>
-        /// <returns></returns>
-        [HttpPut("/API/V1/Ordering/update")]
+            /// <summary>
+            /// <summary>
+            /// Updates an order. Update order status of an existing order to change
+            /// Type: PUT
+            /// </summary>
+            /// <param name="order"></param>
+            /// <param name="ApiKey"></param>
+            /// <returns></returns>
+            [HttpPut("/API/V1/Ordering/update")]
         public string Update([FromBody]Order order, [FromHeader] Guid ApiKey)
         {
            bool check = true;

@@ -225,7 +225,7 @@ namespace Meal_Ordering_API.Controllers
             return View();
         }
 
-        public IActionResult editProduct()
+        public IActionResult Index()
         {
 
             // create request to register test
@@ -233,14 +233,15 @@ namespace Meal_Ordering_API.Controllers
             request.Method = "POST";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
-            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+            request.Headers.Add("ApiKey", "{6e6aa943-69e7-4a99-b464-db7fd04c4e71}");
             Product product = new Product()
             {
-                Id = 0,
+                Id = 1,
                 Cost = (float?)2.13,
                 Name = "Testing2",
                 StoreId = 1,
-                CategoryId = 0
+                CategoryId = 1,
+                status=false
             };
 
             string stringData = JsonSerializer.Serialize(product); // place body here
@@ -392,25 +393,63 @@ namespace Meal_Ordering_API.Controllers
 
             return View();
         }
-        public IActionResult Index()
+        public IActionResult Register()
         {
 
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/update") as HttpWebRequest;
-            request.Method = "PUT";
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Register") as HttpWebRequest;
+            request.Method = "POST";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
             request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
 
-            Order order = new Order()
+            Account account = new Account()
             {
-                Id = 0,
-                CustomerId = 1,
-                StoreId = 3,
-                Updated = false,
-                Status = "Started"
+                Address = "1234Testing",
+                Username = "Danny",
+                Password = "Danny12",
+                AccountType = "Resteraunt"
             };
-            string stringData = JsonSerializer.Serialize(order); // place body here
+            string stringData = JsonSerializer.Serialize(account); // place body here
+            UTF8Encoding encoding = new UTF8Encoding();
+            Byte[] bytes = encoding.GetBytes(stringData);
+
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(bytes, 0, bytes.Length);
+            newStream.Close();
+
+            HttpWebResponse response = null;
+            //Response from api
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (Exception ex)
+            {
+            }
+            string data = Classes.Responses.getKeyFromResponse(response, "Message");
+            //  LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
+
+            return View();
+        }
+        public IActionResult Index2()
+        {
+
+            // create request to register test
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Register") as HttpWebRequest;
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.UserAgent = "StubTest";
+            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+
+            Account account = new Account()
+            {
+                Address = "1234Testing",
+                Username = "Danny",
+                Password = "Danny12",
+                AccountType = "Resteraunt"
+            };
+            string stringData = JsonSerializer.Serialize(account); // place body here
             UTF8Encoding encoding = new UTF8Encoding();
             Byte[] bytes = encoding.GetBytes(stringData);
 

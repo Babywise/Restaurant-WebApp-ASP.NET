@@ -235,6 +235,7 @@ namespace Meal_Ordering_API.Controllers
                         products[0].orderId = product.orderId;
                         products[0].Quantity = product.Quantity;
                         products[0].StoreId = product.StoreId;
+                        products[0].status = product.status;
                         try
                         {
                             _dbContext.SaveChanges();

@@ -23,7 +23,7 @@ namespace Meal_Ordering_API.Migrations
                  Quantity = table.Column<int>(type: "int", nullable: true),
                  Available = table.Column<bool>(type: "tinyint", nullable: true),
                  orderId = table.Column<int>(type: "int", nullable: true),
-
+                 status = table.Column<bool>(type: "tinyint", nullable: true),
              },
              constraints: table => {
                  table.PrimaryKey("productId", x => x.Id);
