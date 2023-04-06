@@ -403,11 +403,6 @@ namespace Meal_Ordering_API.Controllers
                         {
                             categories[0].Name = category.Name;
                             _dbContext.SaveChanges();
-                            _dbContext.Entry(categories[0]).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                            _dbContext.Remove(categories[0]);
-                            _dbContext.SaveChanges();
-                            _dbContext.category.Add(category);
-                            _dbContext.SaveChanges();
                             message = "Category Updated";
                         }
                         else
