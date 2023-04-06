@@ -145,6 +145,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Updates an order. Update order status of an existing order to change
         /// Type: PUT
@@ -153,35 +155,76 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Ordering/update")]
-        public string Update(Order order, [FromHeader] Guid ApiKey)
+        public string Update([FromBody]Order order, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
-            string message = "";
-            //verify
-            if (order != null && ApiKey != Guid.Empty)
+           bool check = true;
+           string message = "";
+            if (order == null || order.Id == null || order.Status == null)
             {
-                check = true;
-                message = "Updated Order";
+                message = "order or order Id or order Status is null";
+                check = false;
             }
             else
             {
-                check = false;
-                message = "Either Guid is empty or order is null";
+                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                if (accounts.Count > 0) // ensure api key is valid
+                {
+                    switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    {
+                        case "Resteraunt":
+                            if(order.StoreId!= accounts[0].Id)
+                            {
+                                check = false;
+                                message = "Order Unavailable";
+                            }
+                            break;
+                        default:
+                            check = false;
+                            message = "Invalid account Type";
+                            break;
+                    }
+
+                    if (check)
+                    {
+                        List<Order> orders = _dbContext.order.Where(d => d.Id == order.Id).ToList();
+                        if (orders.Count > 0)
+                        {
+                            orders[0].Status = order.Status;
+                            orders[0].Updated = true;
+                            _dbContext.SaveChanges();
+                        }
+                        else
+                        {
+                            check = false;
+                            message = "No Available Orders";
+                        }
+                    }
+                }
+                else // bad api key
+                {
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                    //return
+                    return "";
+                }
+
+
             }
-
-
             // Set Headers
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = message;
+                Response.Headers["Message"] = message;
 
-            if (check)
-            {
-                Response.StatusCode = 200;
-            }
-            else
-            {
-                Response.StatusCode = 400;
-            }
+                if (check)
+                {
+                    Response.StatusCode = 200;
+                }
+                else
+                {
+                    Response.StatusCode = 200;
+                }
+          
             //return
             return "";
         }
