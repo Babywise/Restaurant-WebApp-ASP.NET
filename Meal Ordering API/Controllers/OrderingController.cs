@@ -1,6 +1,7 @@
 ﻿using Meal_Ordering_API.Entities;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
@@ -28,21 +29,77 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/Ordering/Add")]
-        public string Add(Product product, int Quantity, [FromHeader] Guid ApiKey)
+        public string Add([FromQuery]int storeId, [FromQuery]int itemId, [FromQuery]int Quantity, [FromHeader] Guid ApiKey)
         {
 
-            bool check = false;
+            bool check = true;
             string message = "";
+
+
+
             //verify
-            if (ApiKey!= Guid.Empty && product != null && Quantity > 0)
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                check = true;
-                message = "Add item";
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                {
+                    case "customer":
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+                if (check)//valid customer account
+                {
+                    if (itemId >= 0)
+                    {
+                        List<Product> products = _dbContext.product.Where(b => b.Id == itemId).ToList();
+                        if (products.Count > 0)// ID matches
+                        {
+                            Product product= products[0];
+                            List<Product> productsId = _dbContext.product.ToList().OrderByDescending(a => a.Id).ToList();
+                            product.Id = productsId[0].Id + 1;
+                            product.customerId = accounts[0].Id;
+                            List<Account>accountsVerify = _dbContext.account.Where(b => b.Id==storeId).ToList();
+                            if (accountsVerify.Count > 0)
+                            {
+                                product.StoreId = storeId;
+                            }
+                            if (Quantity == 0)
+                            {
+                                Quantity = 1;
+                            }
+                            product.Quantity = Quantity;
+                            product.status = false;
+                            try
+                            {
+                                _dbContext.Add(product);
+                                _dbContext.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                                Trace.Listeners.Add(logListener);
+                                Trace.WriteLine(ex.Message);
+                                Trace.Close();
+                                check = false;
+                                message = "500 Internal Error";
+                            }
+                        }
+                    
+                    }
+                    
+                }
             }
-            else
+            else // bad api key
             {
-                check = false;
-                message = "Either Guid is empty or Product is null or Quantity <= 0";
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                //return
+                return "";
             }
 
 
@@ -72,20 +129,70 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Ordering/Remove")]
-        public string Remove(Product product, int Quantity, [FromHeader] Guid ApiKey)
+        public string Remove([FromQuery] int storeId, [FromQuery] int itemId, [FromQuery] int Quantity, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+
+            bool check = true;
             string message = "";
+
+
+
             //verify
-            if (ApiKey != Guid.Empty && product != null && Quantity > 0)
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                check = true;
-                message = "Remove item";
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                {
+                    case "customer":
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+                if (check)//valid customer account
+                {
+                    if (itemId >= 0)
+                    {
+                        List<Product> products = _dbContext.product.Where(b => b.Id == itemId).ToList();
+                        if (products.Count > 0)// ID matches
+                        {
+                            if (products[0].customerId == accounts[0].Id)
+                            {
+                                try
+                                {
+                                    _dbContext.Remove(products[0]);
+                                    _dbContext.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                                    Trace.Listeners.Add(logListener);
+                                    Trace.WriteLine(ex.Message);
+                                    Trace.Close();
+                                    check = false;
+                                    message = "500 Internal Error";
+                                }
+                            }
+                            else
+                            {
+                                message = "500 Internal Error";
+                            }
+                          
+                        }
+
+                    }
+
+                }
             }
-            else
+            else // bad api key
             {
-                check = false;
-                message = "Either Guid is empty or Product is null or Quantity <= 0";
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                //return
+                return "";
             }
 
 
@@ -115,20 +222,77 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/placeOrder")]
         public string Place([FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (ApiKey != Guid.Empty)
+            Order order = new Order();
+            
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                check = true;
-                message = "Cart Checked-out";
-            }
-            else
-            {
-                check = false;
-                message = "Guid is empty";
-            }
+                
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                {
+                    case "customer":
+                        List<Order> orders = _dbContext.order.OrderByDescending(b => b.Id).ToList();
+                        int orderId = 0;
 
+                        if(orders.Count > 0)
+                        {
+                            orderId = (int)(orders[0].Id + 1);
+                        }
+                        order.Id = orderId;
+                       
+                        List<Product>products= _dbContext.product.Where(b => b.status == false && b.customerId == accounts[0].Id).ToList();
+                        if (products.Count > 0)
+                        {
+                            order.StoreId = products[0].StoreId;
+                            order.CustomerId= accounts[0].Id;
+                            foreach (Product p in products)
+                            {
+                                p.status = true;
+                                p.orderId = orderId;
+                            }
+                            order.products = products;
+                            order.Status = "sending";
+                            order.Updated = true;
+                            try
+                            {
+                                _dbContext.Add(order);
+                                _dbContext.SaveChanges();
+                                order.Status = "sent";
+                                _dbContext.SaveChanges();
+   
+                            }
+                            catch(Exception ex)
+                            {
+                                TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                                Trace.Listeners.Add(logListener);
+                                Trace.WriteLine(ex.Message);
+                                Trace.Close();
+                                check = false;
+                                message = "500 Internal Error";
+                            }
+                        }
+                        else
+                        {
+                            message = "No Products";
+                        }
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+            }
+            else // bad api key
+            {
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                //return
+                return "";
+            }
 
             // Set Headers
             Response.Headers.UserAgent = "API";
@@ -140,48 +304,92 @@ namespace Meal_Ordering_API.Controllers
             }
             else
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 200;
             }
+
             //return
             return "";
         }
-        /// <summary>
-        /// Updates an order. Update order status of an existing order to change
-        /// Type: PUT
-        /// </summary>
-        /// <param name="order"></param>
-        /// <param name="ApiKey"></param>
-        /// <returns></returns>
-        [HttpPut("/API/V1/Ordering/update")]
-        public string Update(Order order, [FromHeader] Guid ApiKey)
+
+            /// <summary>
+            /// <summary>
+            /// Updates an order. Update order status of an existing order to change
+            /// Type: PUT
+            /// </summary>
+            /// <param name="order"></param>
+            /// <param name="ApiKey"></param>
+            /// <returns></returns>
+            [HttpPut("/API/V1/Ordering/update")]
+        public string Update([FromBody]Order order, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
-            string message = "";
-            //verify
-            if (order != null && ApiKey != Guid.Empty)
+           bool check = true;
+           string message = "";
+            if (order == null || order.Id == null || order.Status == null)
             {
-                check = true;
-                message = "Updated Order";
+                message = "order or order Id or order Status is null";
+                check = false;
             }
             else
             {
-                check = false;
-                message = "Either Guid is empty or order is null";
+                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                if (accounts.Count > 0) // ensure api key is valid
+                {
+                    switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    {
+                        case "Resteraunt":
+                            if(order.StoreId!= accounts[0].Id)
+                            {
+                                check = false;
+                                message = "Order Unavailable";
+                            }
+                            break;
+                        default:
+                            check = false;
+                            message = "Invalid account Type";
+                            break;
+                    }
+
+                    if (check)
+                    {
+                        List<Order> orders = _dbContext.order.Where(d => d.Id == order.Id).ToList();
+                        if (orders.Count > 0)
+                        {
+                            orders[0].Status = order.Status;
+                            orders[0].Updated = true;
+                            _dbContext.SaveChanges();
+                        }
+                        else
+                        {
+                            check = false;
+                            message = "No Available Orders";
+                        }
+                    }
+                }
+                else // bad api key
+                {
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                    //return
+                    return "";
+                }
+
+
             }
-
-
             // Set Headers
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = message;
+                Response.Headers["Message"] = message;
 
-            if (check)
-            {
-                Response.StatusCode = 200;
-            }
-            else
-            {
-                Response.StatusCode = 400;
-            }
+                if (check)
+                {
+                    Response.StatusCode = 200;
+                }
+                else
+                {
+                    Response.StatusCode = 200;
+                }
+          
             //return
             return "";
         }
@@ -195,22 +403,9 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllProducts")]
         public string GetAllProducts()
         {
-           List<Product> products = new List<Product>();
-            Product p1 = new Product
-            {
-                Inventory = 3,
-                Cost = (float)2.23,
-                Name = "Test"
-            };
-
-            Product p2 = new Product
-            {
-                Inventory = 1,
-                Name = "Stub",
-                Cost = (float)4.33
-            };
-            products.Add(p1);
-            products.Add(p2);
+            List<Product> products = _dbContext.product.ToList();
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = "Get all products";
             return JsonSerializer.Serialize(products);
         }
 
@@ -221,51 +416,13 @@ namespace Meal_Ordering_API.Controllers
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        [HttpGet("/API/V1/Ordering/GetAllProducts")]
+        [HttpPost("/API/V1/Ordering/GetAllProducts")]
         public string GetAllProductsCategory(Category category)
         {
-            List<Product> products = new List<Product>();
-            if (category.Name== "Test")
-            {
-                Product p1 = new Product
-                {
-                    Inventory = 3,
-                    Cost = (float)2.23,
-                    Name = "category1_item1",
-                    CategoryId = category.Id
-                };
-
-                Product p2 = new Product
-                {
-                    Inventory = 1,
-                    Name = "category1_item2",
-                    Cost = (float)4.33,
-                    CategoryId = category.Id
-                };
-                products.Add(p1);
-                products.Add(p2);
-            }
-            else
-            {
-                Product p1 = new Product
-                {
-                    Inventory = 3,
-                    Cost = (float)2.23,
-                    Name = "category2_item1",
-                    CategoryId = category.Id
-                };
-
-                Product p2 = new Product
-                {
-                    Inventory = 1,
-                    Name = "category2_item2",
-                    Cost = (float)4.33,
-                    CategoryId = category.Id
-                };
-                products.Add(p1);
-                products.Add(p2);
-            }
-   
+            List<Product> products = _dbContext.product.Where(b => b.CategoryId == category.Id).ToList();
+            // Set Headers
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = "Get all products from "+products[0].Name;
             return JsonSerializer.Serialize(products);
         }
 
@@ -279,46 +436,41 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllOrders")]
         public string GetAllOrders([FromHeader] Guid ApiKey)
         {
-          List<Order> orders = new List<Order>();
-            List<Product> products = new List<Product>();
-
-            Product p1 = new Product
+            string message = "";
+            List<Order> orders = new List<Order>();
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                Inventory = 3,
-                Cost = (float)2.23,
-                Name = "category2_item1",
-                CategoryId = 1
-            };
-
-            Product p2 = new Product
+                switch (accounts[0].AccountType)
+                {
+                    case "Resteraunt":
+                       orders= _dbContext.order.Where(d => d.StoreId == accounts[0].Id).ToList();
+                        message = "All Resteraunt Orders";
+                        break;
+                    case "Customer":
+                       orders= _dbContext.order.Where(d => d.CustomerId == accounts[0].Id).ToList();
+                        message = "All Customer Orders";
+                        break;
+                    default:
+                        message = "Invalid account Type";
+                        break;
+                }
+                
+            }
+            else // bad api key
             {
-                Inventory = 1,
-                Name = "category2_item2",
-                Cost = (float)4.33,
-                CategoryId =2
-            };
-            products.Add(p1);
-            products.Add(p2);
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+                //return
+                return "";
+            }
+           
+      
 
-            Order o1 = new Order()
-            {
-                Id= 1, 
-                CustomerId=1,
-                StoreId=2,
-                products=products,
-                Status = "cart",
-                Updated= false
-            };
+            // Set Headers
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = message;
 
-            Order o2 = new Order()
-            {
-                Id = 2,
-                CustomerId = 1,
-                StoreId = 2,
-                products = products,
-                Status = "cart",
-                Updated = false
-            };
             return JsonSerializer.Serialize(orders);
         }
         

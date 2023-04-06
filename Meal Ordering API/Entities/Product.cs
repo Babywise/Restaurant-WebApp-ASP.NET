@@ -16,5 +16,8 @@ namespace Meal_Ordering_API.Entities
         public int? Quantity { get; set; }
         [Column(TypeName = "tinyint")]
         public bool? Available { get; set; }
+        [Column(TypeName = "tinyint")]
+        public bool? status { get; set; }
+        public int? customerId { get; set; }    
     }
 }

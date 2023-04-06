@@ -23,12 +23,14 @@ namespace Meal_Ordering_API.Migrations
                  Quantity = table.Column<int>(type: "int", nullable: true),
                  Available = table.Column<bool>(type: "tinyint", nullable: true),
                  orderId = table.Column<int>(type: "int", nullable: true),
-
+                 status = table.Column<bool>(type: "tinyint", nullable: true),
+                 customerId = table.Column<int>(type: "int", nullable: true),
              },
              constraints: table => {
                  table.PrimaryKey("productId", x => x.Id);
                  table.ForeignKey("categoryId", x => x.CategoryId,"category");
                  table.ForeignKey("accountId", x => x.StoreId, "account");
+                 table.ForeignKey("productCustomerId", x => x.customerId, "account");
              }
              );
         }
