@@ -110,7 +110,7 @@ namespace Meal_Ordering_API.Controllers
             return View();
         }
 
-        public IActionResult Index()
+        public IActionResult removeProduct()
         {
 
             // create request to register test
@@ -149,5 +149,80 @@ namespace Meal_Ordering_API.Controllers
 
             return View();
         }
+
+
+        public IActionResult removeCategory()
+        {
+
+            // create request to register test
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/RemoveCategory") as HttpWebRequest;
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.UserAgent = "StubTest";
+            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+
+            Category category = new Category()
+            {
+               Name= "TestFromCode"
+            };
+            string stringData = JsonSerializer.Serialize(category); // place body here
+            UTF8Encoding encoding = new UTF8Encoding();
+            Byte[] bytes = encoding.GetBytes(stringData);
+
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(bytes, 0, bytes.Length);
+            newStream.Close();
+
+            HttpWebResponse response = null;
+            //Response from api
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (Exception ex)
+            {
+            }
+            string data = Classes.Responses.getKeyFromResponse(response, "Message");
+            //  LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
+
+            return View();
+        }
+        public IActionResult Index()
+        {
+
+            // create request to register test
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/RemoveCategory") as HttpWebRequest;
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.UserAgent = "StubTest";
+            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+
+            Category category = new Category()
+            {
+                Name = "TestFromCode"
+            };
+            string stringData = JsonSerializer.Serialize(category); // place body here
+            UTF8Encoding encoding = new UTF8Encoding();
+            Byte[] bytes = encoding.GetBytes(stringData);
+
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(bytes, 0, bytes.Length);
+            newStream.Close();
+
+            HttpWebResponse response = null;
+            //Response from api
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (Exception ex)
+            {
+            }
+            string data = Classes.Responses.getKeyFromResponse(response, "Message");
+            //  LoginResponse resp = Classes.Responses.getLoginResponseFromResponse(response); // gets account from string
+
+            return View();
+        }
+
     }
 }
