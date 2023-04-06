@@ -225,7 +225,7 @@ namespace Meal_Ordering_API.Controllers
             return View();
         }
 
-        public IActionResult Index()
+        public IActionResult editProduct()
         {
 
             // create request to register test
@@ -408,7 +408,7 @@ namespace Meal_Ordering_API.Controllers
                 Address = "1234Testing",
                 Username = "Danny",
                 Password = "Danny12",
-                AccountType = "Resteraunt"
+                AccountType = "Customer"
             };
             string stringData = JsonSerializer.Serialize(account); // place body here
             UTF8Encoding encoding = new UTF8Encoding();
@@ -432,30 +432,16 @@ namespace Meal_Ordering_API.Controllers
 
             return View();
         }
-        public IActionResult Index2()
+        public IActionResult Index()
         {
 
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Register") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/placeOrder") as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
-            request.Headers.Add("ApiKey", "{1a07e8f6-825c-442d-a3d7-1315e6780697}");
+            request.Headers.Add("ApiKey", "{2bcf9c86-dad9-4fee-a884-769dd60f4b0f}");
 
-            Account account = new Account()
-            {
-                Address = "1234Testing",
-                Username = "Danny",
-                Password = "Danny12",
-                AccountType = "Resteraunt"
-            };
-            string stringData = JsonSerializer.Serialize(account); // place body here
-            UTF8Encoding encoding = new UTF8Encoding();
-            Byte[] bytes = encoding.GetBytes(stringData);
-
-            Stream newStream = request.GetRequestStream();
-            newStream.Write(bytes, 0, bytes.Length);
-            newStream.Close();
 
             HttpWebResponse response = null;
             //Response from api

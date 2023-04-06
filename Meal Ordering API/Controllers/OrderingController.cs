@@ -1,6 +1,7 @@
 ﻿using Meal_Ordering_API.Entities;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
@@ -117,13 +118,59 @@ namespace Meal_Ordering_API.Controllers
         {
             bool check = true;
             string message = "";
+            Order order = new Order();
+            
             List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
-                switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
+                
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
                 {
                     case "customer":
-           // _dbContext.product.Where(b => b.) -------------------------------------------------------------------------------------------------------
+                        List<Order> orders = _dbContext.order.OrderByDescending(b => b.Id).ToList();
+                        int orderId = 0;
+
+                        if(orders.Count > 0)
+                        {
+                            orderId = (int)(orders[0].Id + 1);
+                        }
+                        order.Id = orderId;
+                       
+                        List<Product>products= _dbContext.product.Where(b => b.status == false && b.customerId == accounts[0].Id).ToList();
+                        if (products.Count > 0)
+                        {
+                            order.StoreId = products[0].StoreId;
+                            order.CustomerId= accounts[0].Id;
+                            foreach (Product p in products)
+                            {
+                                p.status = true;
+                                p.orderId = orderId;
+                            }
+                            order.products = products;
+                            order.Status = "sending";
+                            order.Updated = true;
+                            try
+                            {
+                                _dbContext.Add(order);
+                                _dbContext.SaveChanges();
+                                order.Status = "sent";
+                                _dbContext.SaveChanges();
+   
+                            }
+                            catch(Exception ex)
+                            {
+                                TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                                Trace.Listeners.Add(logListener);
+                                Trace.WriteLine(ex.Message);
+                                Trace.Close();
+                                check = false;
+                                message = "500 Internal Error";
+                            }
+                        }
+                        else
+                        {
+                            message = "No Products";
+                        }
                         break;
                     default:
                         check = false;
