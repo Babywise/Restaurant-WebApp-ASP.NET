@@ -331,11 +331,11 @@ namespace Meal_Ordering_API.Controllers
                             _dbContext.Entry(accounts[0]).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
                             _dbContext.category.Remove(category);
                             _dbContext.SaveChanges();
-                            message = "Category removed to inventory";
+                            message = "Category removed";
                         }
                         else
                         {
-                            message = "500 Internal Error";
+                            message = "Category Not Found";
                         }
                     }
                     catch (Exception ex)
@@ -389,35 +389,70 @@ namespace Meal_Ordering_API.Controllers
         [HttpPut("/API/V1/StoreManagement/EditCategory")]
         public string EditCategory([FromBody] Category category, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (ApiKey != Guid.Empty && category != null)
+            if (category != null && ApiKey != Guid.Empty && category.Name != null)
             {
-                check = true;
-                message = "Edit Category";
-            }
-            else
-            {
-                check = false;
-                message = "Either Guid is empty or Category is null";
-            }
+                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                if (accounts.Count > 0) // ensure api key is valid
+                {
+                    try
+                    {
+                        List<Category> categories = _dbContext.category.Where(d => d.Id == category.Id).ToList();
+                        if (categories.Count > 0)
+                        {
+                            categories[0].Name = category.Name;
+                            _dbContext.SaveChanges();
+                            _dbContext.Entry(categories[0]).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                            _dbContext.Remove(categories[0]);
+                            _dbContext.SaveChanges();
+                            _dbContext.category.Add(category);
+                            _dbContext.SaveChanges();
+                            message = "Category Updated";
+                        }
+                        else
+                        {
+                            message = "Edited Category";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                        Trace.Listeners.Add(logListener);
+                        Trace.WriteLine(ex.Message);
+                        Trace.Close();
+                        check = false;
+                        message = "500 Internal Error";
+                    }
 
 
-            // Set Headers
-            Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = message;
 
-            if (check)
-            {
-                Response.StatusCode = 200;
+
+                    // Set Headers
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = message;
+
+
+                    //return
+                    return "";
+                }
+                else // bad api key
+                {
+                    Response.Headers.UserAgent = "API";
+                    Response.Headers["Message"] = "Invalid ApiKey";
+
+
+                    //return
+                    return "";
+                }
             }
-            else
+            else // objects are null
             {
-                Response.StatusCode = 400;
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "category, ApiKey, or category name is null";
+                //return
+                return "";
             }
-            //return
-            return "";
         }
 
 

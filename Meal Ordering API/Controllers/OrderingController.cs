@@ -18,6 +18,8 @@ namespace Meal_Ordering_API.Controllers
         {
             _dbContext = dbContext;
         }
+
+
         /// <summary>
         /// Adds an item to cart. Takes an ApiKey from header. Also takes a product.
         /// Type : POST
@@ -60,6 +62,8 @@ namespace Meal_Ordering_API.Controllers
             return "";
         }
 
+
+
         /// <summary>
         /// removes an item from the users cart. Requires an ApiKey and Product
         /// Type : PUT
@@ -100,6 +104,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Places an order for the current user based on the ApiKey
         /// Type: POST
@@ -180,6 +186,7 @@ namespace Meal_Ordering_API.Controllers
             return "";
         }
 
+
         /// <summary>
         /// Gets all available products from the store
         /// Type : GET
@@ -206,6 +213,7 @@ namespace Meal_Ordering_API.Controllers
             products.Add(p2);
             return JsonSerializer.Serialize(products);
         }
+
 
         /// <summary>
         /// Get all available products from the category passed in. Returns an empty list on fail
@@ -260,6 +268,7 @@ namespace Meal_Ordering_API.Controllers
    
             return JsonSerializer.Serialize(products);
         }
+
 
         /// <summary>
         /// Gets all orders from the database for the store or user.
