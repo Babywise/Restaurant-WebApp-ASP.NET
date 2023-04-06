@@ -195,22 +195,9 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllProducts")]
         public string GetAllProducts()
         {
-           List<Product> products = new List<Product>();
-            Product p1 = new Product
-            {
-                Inventory = 3,
-                Cost = (float)2.23,
-                Name = "Test"
-            };
-
-            Product p2 = new Product
-            {
-                Inventory = 1,
-                Name = "Stub",
-                Cost = (float)4.33
-            };
-            products.Add(p1);
-            products.Add(p2);
+            List<Product> products = _dbContext.product.ToList();
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = "Get all products";
             return JsonSerializer.Serialize(products);
         }
 
@@ -221,51 +208,13 @@ namespace Meal_Ordering_API.Controllers
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        [HttpGet("/API/V1/Ordering/GetAllProducts")]
+        [HttpPost("/API/V1/Ordering/GetAllProducts")]
         public string GetAllProductsCategory(Category category)
         {
-            List<Product> products = new List<Product>();
-            if (category.Name== "Test")
-            {
-                Product p1 = new Product
-                {
-                    Inventory = 3,
-                    Cost = (float)2.23,
-                    Name = "category1_item1",
-                    CategoryId = category.Id
-                };
-
-                Product p2 = new Product
-                {
-                    Inventory = 1,
-                    Name = "category1_item2",
-                    Cost = (float)4.33,
-                    CategoryId = category.Id
-                };
-                products.Add(p1);
-                products.Add(p2);
-            }
-            else
-            {
-                Product p1 = new Product
-                {
-                    Inventory = 3,
-                    Cost = (float)2.23,
-                    Name = "category2_item1",
-                    CategoryId = category.Id
-                };
-
-                Product p2 = new Product
-                {
-                    Inventory = 1,
-                    Name = "category2_item2",
-                    Cost = (float)4.33,
-                    CategoryId = category.Id
-                };
-                products.Add(p1);
-                products.Add(p2);
-            }
-   
+            List<Product> products = _dbContext.product.Where(b => b.CategoryId == category.Id).ToList();
+            // Set Headers
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = "Get all products from "+products[0].Name;
             return JsonSerializer.Serialize(products);
         }
 
