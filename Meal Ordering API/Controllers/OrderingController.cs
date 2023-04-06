@@ -1,4 +1,5 @@
 ﻿using Meal_Ordering_API.Entities;
+using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
@@ -7,6 +8,16 @@ namespace Meal_Ordering_API.Controllers
 {
     public class OrderingController : Controller
     {
+        private MealOrderingAPIContext _dbContext;
+
+        /// <summary>
+        /// Home controller handles all home related functions with the home page.
+        /// </summary>
+        /// <param name="dbContext"></param>
+        public OrderingController(MealOrderingAPIContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         /// <summary>
         /// Adds an item to cart. Takes an ApiKey from header. Also takes a product.
         /// Type : POST
@@ -17,6 +28,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/Add")]
         public string Add(Product product, int Quantity, [FromHeader] Guid ApiKey)
         {
+
             bool check = false;
             string message = "";
             //verify
