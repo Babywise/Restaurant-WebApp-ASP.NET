@@ -461,7 +461,7 @@ namespace Meal_Ordering_API.Controllers
         {
 
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/placeOrder") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Ordering/Add?storeId=1&&itemId=1&&Quantity=2") as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
