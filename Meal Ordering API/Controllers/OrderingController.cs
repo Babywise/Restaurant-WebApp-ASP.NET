@@ -279,46 +279,41 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllOrders")]
         public string GetAllOrders([FromHeader] Guid ApiKey)
         {
-          List<Order> orders = new List<Order>();
-            List<Product> products = new List<Product>();
-
-            Product p1 = new Product
+            string message = "";
+            List<Order> orders = new List<Order>();
+            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            if (accounts.Count > 0) // ensure api key is valid
             {
-                Inventory = 3,
-                Cost = (float)2.23,
-                Name = "category2_item1",
-                CategoryId = 1
-            };
-
-            Product p2 = new Product
+                switch (accounts[0].AccountType)
+                {
+                    case "Resteraunt":
+                       orders= _dbContext.order.Where(d => d.StoreId == accounts[0].Id).ToList();
+                        message = "All Resteraunt Orders";
+                        break;
+                    case "Customer":
+                       orders= _dbContext.order.Where(d => d.CustomerId == accounts[0].Id).ToList();
+                        message = "All Customer Orders";
+                        break;
+                    default:
+                        message = "Invalid account Type";
+                        break;
+                }
+                
+            }
+            else // bad api key
             {
-                Inventory = 1,
-                Name = "category2_item2",
-                Cost = (float)4.33,
-                CategoryId =2
-            };
-            products.Add(p1);
-            products.Add(p2);
+                Response.Headers.UserAgent = "API";
+                Response.Headers["Message"] = "Invalid ApiKey";
+                //return
+                return "";
+            }
+           
+      
 
-            Order o1 = new Order()
-            {
-                Id= 1, 
-                CustomerId=1,
-                StoreId=2,
-                products=products,
-                Status = "cart",
-                Updated= false
-            };
+            // Set Headers
+            Response.Headers.UserAgent = "API";
+            Response.Headers["Message"] = message;
 
-            Order o2 = new Order()
-            {
-                Id = 2,
-                CustomerId = 1,
-                StoreId = 2,
-                products = products,
-                Status = "cart",
-                Updated = false
-            };
             return JsonSerializer.Serialize(orders);
         }
         
