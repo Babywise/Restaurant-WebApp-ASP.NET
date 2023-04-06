@@ -1,4 +1,5 @@
 ﻿using Meal_Ordering_API.Entities;
+using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
@@ -7,6 +8,18 @@ namespace Meal_Ordering_API.Controllers
 {
     public class OrderingController : Controller
     {
+        private MealOrderingAPIContext _dbContext;
+
+        /// <summary>
+        /// Home controller handles all home related functions with the home page.
+        /// </summary>
+        /// <param name="dbContext"></param>
+        public OrderingController(MealOrderingAPIContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+
         /// <summary>
         /// Adds an item to cart. Takes an ApiKey from header. Also takes a product.
         /// Type : POST
@@ -17,6 +30,7 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/Add")]
         public string Add(Product product, int Quantity, [FromHeader] Guid ApiKey)
         {
+
             bool check = false;
             string message = "";
             //verify
@@ -47,6 +61,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
 
         /// <summary>
         /// removes an item from the users cart. Requires an ApiKey and Product
@@ -88,6 +104,8 @@ namespace Meal_Ordering_API.Controllers
             //return
             return "";
         }
+
+
         /// <summary>
         /// Places an order for the current user based on the ApiKey
         /// Type: POST
@@ -168,6 +186,7 @@ namespace Meal_Ordering_API.Controllers
             return "";
         }
 
+
         /// <summary>
         /// Gets all available products from the store
         /// Type : GET
@@ -194,6 +213,7 @@ namespace Meal_Ordering_API.Controllers
             products.Add(p2);
             return JsonSerializer.Serialize(products);
         }
+
 
         /// <summary>
         /// Get all available products from the category passed in. Returns an empty list on fail
@@ -248,6 +268,7 @@ namespace Meal_Ordering_API.Controllers
    
             return JsonSerializer.Serialize(products);
         }
+
 
         /// <summary>
         /// Gets all orders from the database for the store or user.
