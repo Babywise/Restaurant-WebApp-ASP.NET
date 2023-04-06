@@ -74,7 +74,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/Account/Register")]
-        public string Register(Account account)
+        public string Register([FromBody] Account account)
         {
             
             bool check = true;
@@ -227,7 +227,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/Account/Login")]
-        public string Login(Account account)
+        public string Login([FromBody] Account account)
         {
             bool check = true;
             string message = "";
@@ -306,7 +306,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/Account/Edit")]
-        public string Edit(Account account, [FromHeader] Guid ApiKey)
+        public string Edit([FromBody] Account account, [FromHeader] Guid ApiKey)
         {
             bool check = true;
             string message = "";

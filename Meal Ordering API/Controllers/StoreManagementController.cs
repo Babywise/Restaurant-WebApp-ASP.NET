@@ -109,6 +109,9 @@ namespace Meal_Ordering_API.Controllers
                 return "";
             }
         }
+
+
+
         /// <summary>
         /// Removes an item from the store.
         /// Type : POST
@@ -117,7 +120,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/StoreManagement/Remove")]
-        public string Remove(Product product, [FromHeader] Guid ApiKey)
+        public string Remove([FromBody] Product product, [FromHeader] Guid ApiKey)
         {
             bool check = false;
             string message = "";
@@ -157,7 +160,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/StoreManagement/Edit")]
-        public string Edit(Product product, [FromHeader] Guid ApiKey)
+        public string Edit([FromBody] Product product, [FromHeader] Guid ApiKey)
         {
             bool check = false;
             string message = "";
@@ -197,7 +200,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/StoreManagement/AddCategory")]
-        public string AddCategory(string category, [FromHeader] Guid ApiKey)
+        public string AddCategory([FromBody] string category, [FromHeader] Guid ApiKey)
         {
             bool check = false;
             string message = "";
@@ -237,7 +240,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPost("/API/V1/StoreManagement/RemoveCategory")]
-        public string RemoveCategory(Category category, [FromHeader] Guid ApiKey)
+        public string RemoveCategory([FromBody] Category category, [FromHeader] Guid ApiKey)
         {
             bool check = false;
             string message = "";
@@ -277,7 +280,7 @@ namespace Meal_Ordering_API.Controllers
         /// <param name="ApiKey"></param>
         /// <returns></returns>
         [HttpPut("/API/V1/StoreManagement/EditCategory")]
-        public string EditCategory(Category category, [FromHeader] Guid ApiKey)
+        public string EditCategory([FromBody] Category category, [FromHeader] Guid ApiKey)
         {
             bool check = false;
             string message = "";
