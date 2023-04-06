@@ -19,6 +19,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Meal_Ordering_API.Controllers
 {
@@ -83,7 +84,6 @@ namespace Meal_Ordering_API.Controllers
             // account is not null
             if (account != null)
             {
-                // secure password
              
                 List<Account> accounts = _dbContext.account.Where(d => d.Username == account.Username).ToList();
          
@@ -308,21 +308,111 @@ namespace Meal_Ordering_API.Controllers
         [HttpPut("/API/V1/Account/Edit")]
         public string Edit(Account account, [FromHeader] Guid ApiKey)
         {
-            bool check = false;
+            bool check = true;
             string message = "";
-            //verify
-            if (account.Username != null && account.Password != null && account.AccountType != null)
+            List<Account> accounts = _dbContext.account.Where(b => b.ApiKey== account.ApiKey).ToList();
+            if (accounts.Count == 0) // check account for ApiKey if no results check the ApiKey from header
             {
-                check = true;
-                message = "Edited";
+                accounts = _dbContext.account.Where(b => b.ApiKey == ApiKey).ToList();
+                if (accounts.Count == 0) // if both header and account dont have a valid apikey then set false
+                {
+                    check = false;
+                    message = "Invalid Api-Key";
+                }
             }
-            else
+            else // ApiKey matches
             {
-                check = false;
-                message = "Either Username, Password, or Account type is null";
-            }
 
 
+                //Validation
+                // validate address
+                if (account.Address.Length <= 4) // -------------------------------Not valid validation... must be changed --------------------------
+                {
+                    message += " Address is too short";
+                    check = false;
+                }
+                if (account.Address.Length > 20)
+                {
+                    message += " Address is too long";
+                    check = false;
+                }
+
+
+                // account type validation
+                switch (account.AccountType)
+                {
+                    case "Resteraunt":
+                        break;
+                    case "Customer":
+                        break;
+                    default:
+                        check = false;
+                        message = "Invalid account Type";
+                        break;
+                }
+
+                //Username validation
+                if (account.Username.Length <= 4) // username has to be larger then 4
+                {
+                    message += " Username is too short";
+                    check = false;
+                }
+                if (account.Username.Length > 20)
+                {
+                    message += " Username is too long";
+                    check = false;
+                }
+
+                //Password Validation
+                if (account.Password.Length <= 4) // username has to be larger then 4
+                {
+                    message += " Password is too short";
+                    check = false;
+                }
+                if (account.Password.Length > 20)
+                {
+                    message += " Password is too long";
+                    check = false;
+                }
+                if (account.Password.Any(char.IsUpper) && account.Password.Any(char.IsLower) && account.Password.Any(char.IsDigit)) // check to see if password has at least 1 lower, 1 upper, and 1 digit
+                {
+
+                }
+                else
+                {
+                    message += " Password must contain a lower character, upper character, and a digit";
+                    check = false;
+                }
+
+
+
+
+
+
+
+                if (check == true) // account is valid update it
+                {
+                    account.Id = accounts[0].Id;
+                    account.Password = hash(account.Password);
+                    account.ApiKey = accounts[0].ApiKey;
+                    _dbContext.Entry(accounts[0]).State = EntityState.Detached;
+                    try
+                    {
+                        _dbContext.Update(account);
+                        _dbContext.SaveChanges();
+                        message = "Updated";
+                    }
+                    catch (Exception ex)
+                    {
+                        TextWriterTraceListener logListener = new TextWriterTraceListener("./Log.txt", "Logs");
+                        Trace.Listeners.Add(logListener);
+                        Trace.WriteLine(ex.Message);
+                        Trace.Close();
+                        check = false;
+                        message = "500 Internal Error";
+                    }
+                }
+            }
             // Set Headers
             Response.Headers.UserAgent = "API";
             Response.Headers["Message"] = message;
@@ -333,10 +423,13 @@ namespace Meal_Ordering_API.Controllers
             }
             else
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 200;
             }
+
+
             //return
             return "";
+
         }
     }
 }
