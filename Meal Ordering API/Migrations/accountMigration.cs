@@ -16,11 +16,11 @@ namespace Meal_Ordering_API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    ApiKey = table.Column<Guid>(type: "varchar(45)", nullable: false),
+                    ApiKey = table.Column<Guid>(type: "nvarchar(36)", nullable: false),
                     FirstName = table.Column<string>(type: "varchar(45)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(45)", nullable: true),
                     Username = table.Column<string>(type: "varchar(45)", nullable: false),
-                    Password = table.Column<string>(type: "varchar(45)", nullable: false),
+                    Password = table.Column<string>(type: "varchar(128)", nullable: false),
                     AccountType = table.Column<string>(type: "varchar(45)", nullable: false),
                     Email = table.Column<string>(type: "varchar(45)", nullable: true),
                     Phone = table.Column<string>(type: "varchar(45)", nullable: true),

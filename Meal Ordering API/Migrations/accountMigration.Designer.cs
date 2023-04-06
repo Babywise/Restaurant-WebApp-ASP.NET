@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Meal_Ordering_API.Migrations
 {
-    [DbContext(typeof(MealOrderingContext))]
+    [DbContext(typeof(MealOrderingAPIContext))]
     [Migration("20230403234351_initial")]
     partial class accountMigration
     {
