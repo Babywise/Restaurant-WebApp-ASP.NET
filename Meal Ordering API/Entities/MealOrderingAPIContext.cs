@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace Meal_Ordering_WebApp.Entities
 {
     public class MealOrderingAPIContext : IdentityDbContext<User>
     {
-        public MealOrderingAPIContext(DbContextOptions<MealOrderingAPIContext> options)
+        public MealOrderingAPIContext(DbContextOptions options)
             : base(options)
         {
         }
@@ -39,9 +38,9 @@ namespace Meal_Ordering_WebApp.Entities
             }
         }
 
-        public DbSet<Order> Order { get; set; }
-        public DbSet<Category> Category { get; set; }
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,9 +59,6 @@ namespace Meal_Ordering_WebApp.Entities
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.Products);
 
             modelBuilder.Entity<Category>().HasData(
                 new Category()

@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JwtSettings:Key"));
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtSettings").GetValue<string>("Secret"));
 
 builder.Services.AddAuthentication(x =>
 {
@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(x =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-var connStr = builder.Configuration.GetConnectionString("db");
+var connStr = builder.Configuration.GetConnectionString("MealOrderingDb");
 builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
 builder.Services.AddScoped<IMealOrderingService, DbMealOrderingService>();
 builder.Services.AddScoped<IJwtService, JwtService>();

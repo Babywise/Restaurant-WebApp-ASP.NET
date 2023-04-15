@@ -12,6 +12,7 @@ namespace Meal_Ordering_Class_Library.Entities
         public bool? IsUpdated { get; set; } 
         public string? Status {  get; set; }
         //Nav
-        public List<Product>? Products { get; set; }
+        [NotMapped]
+        public ICollection<Product>? Products { get; set; }
     }
 }
