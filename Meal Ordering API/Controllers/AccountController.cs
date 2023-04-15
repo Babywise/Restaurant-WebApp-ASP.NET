@@ -32,7 +32,7 @@ namespace Meal_Ordering_API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate([FromBody] AccountLoginRequest accountLoginRequest)
+        public async Task<IActionResult> Login([FromBody] AccountLoginRequest accountLoginRequest)
         {
             var result = await _signInManager.PasswordSignInAsync(accountLoginRequest.Username, accountLoginRequest.Password, false, false);
 
