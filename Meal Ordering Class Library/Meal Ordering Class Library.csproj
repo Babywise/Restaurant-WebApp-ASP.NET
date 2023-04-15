@@ -7,9 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="ResponseEntitiesRestaurant\" />
-    <Folder Include="ResponseEntitiesCustomer\" />
-  </ItemGroup>
-
 </Project>
