@@ -3,7 +3,7 @@ using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
-
+/*
 namespace Meal_Ordering_API.Controllers
 {
     public class StoreManagementController : Controller
@@ -526,3 +526,4 @@ namespace Meal_Ordering_API.Controllers
         }
     }
 }
+*/

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
-
+/*
 namespace Meal_Ordering_API.Controllers
 {
     public class OrderingController : Controller
@@ -477,3 +477,4 @@ namespace Meal_Ordering_API.Controllers
 
     }
 }
+*/

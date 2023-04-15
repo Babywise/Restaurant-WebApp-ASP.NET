@@ -8,7 +8,7 @@ using System.Text.Json;
 using Meal_Ordering_API.Classes;
 using System.Text;
 using static System.Net.WebRequestMethods;
-
+/*
 namespace Meal_Ordering_API.Controllers
 {
     public class HomeController : Controller
@@ -509,3 +509,4 @@ namespace Meal_Ordering_API.Controllers
         }
     }
 }
+*/

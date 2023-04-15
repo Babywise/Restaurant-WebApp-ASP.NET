@@ -1,3 +1,5 @@
+using Meal_Ordering_API.Services;
+using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 var connStr = builder.Configuration.GetConnectionString("db");
 builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
-
+builder.Services.AddScoped<IMealOrderingService, DbMealOrderingService>();
 
 var app = builder.Build();
 
