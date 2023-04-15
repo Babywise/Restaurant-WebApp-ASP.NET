@@ -1,8 +1,6 @@
-﻿using Meal_Ordering_WebApp.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Meal_Ordering_API.Entities
+namespace Meal_Ordering_Class_Library.Entities
 {
     public class Order
     {

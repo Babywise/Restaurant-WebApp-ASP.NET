@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Meal_Ordering_API.Entities;
+using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_API.Models;
 
 namespace Meal_Ordering_API.Classes

@@ -11,7 +11,7 @@ namespace Meal_Ordering_API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-             name: "category",
+             name: "Category",
              columns: table => new
              {
                  Id = table.Column<int>(type: "int", nullable: false),

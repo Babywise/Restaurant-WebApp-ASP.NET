@@ -1,4 +1,4 @@
-﻿using Meal_Ordering_API.Entities;
+﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -38,7 +38,7 @@ namespace Meal_Ordering_API.Controllers
 
 
             //verify
-            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
                 switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
@@ -47,21 +47,21 @@ namespace Meal_Ordering_API.Controllers
                         break;
                     default:
                         check = false;
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
                 if (check)//valid customer account
                 {
                     if (itemId >= 0)
                     {
-                        List<Product> products = _dbContext.product.Where(b => b.Id == itemId).ToList();
+                        List<Product> products = _dbContext.Product.Where(b => b.Id == itemId).ToList();
                         if (products.Count > 0)// ID matches
                         {
                             Product product= products[0];
-                            List<Product> productsId = _dbContext.product.ToList().OrderByDescending(a => a.Id).ToList();
+                            List<Product> productsId = _dbContext.Product.ToList().OrderByDescending(a => a.Id).ToList();
                             product.Id = productsId[0].Id + 1;
                             product.customerId = accounts[0].Id;
-                            List<Account>accountsVerify = _dbContext.account.Where(b => b.Id==storeId).ToList();
+                            List<Account>accountsVerify = _dbContext.Account.Where(b => b.Id==storeId).ToList();
                             if (accountsVerify.Count > 0)
                             {
                                 product.StoreId = storeId;
@@ -138,7 +138,7 @@ namespace Meal_Ordering_API.Controllers
 
 
             //verify
-            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
                 switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
@@ -147,14 +147,14 @@ namespace Meal_Ordering_API.Controllers
                         break;
                     default:
                         check = false;
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
                 if (check)//valid customer account
                 {
                     if (itemId >= 0)
                     {
-                        List<Product> products = _dbContext.product.Where(b => b.Id == itemId).ToList();
+                        List<Product> products = _dbContext.Product.Where(b => b.Id == itemId).ToList();
                         if (products.Count > 0)// ID matches
                         {
                             if (products[0].customerId == accounts[0].Id)
@@ -226,14 +226,14 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             Order order = new Order();
             
-            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
                 
                 switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
                 {
                     case "customer":
-                        List<Order> orders = _dbContext.order.OrderByDescending(b => b.Id).ToList();
+                        List<Order> orders = _dbContext.Order.OrderByDescending(b => b.Id).ToList();
                         int orderId = 0;
 
                         if(orders.Count > 0)
@@ -242,7 +242,7 @@ namespace Meal_Ordering_API.Controllers
                         }
                         order.Id = orderId;
                        
-                        List<Product>products= _dbContext.product.Where(b => b.status == false && b.customerId == accounts[0].Id).ToList();
+                        List<Product>products= _dbContext.Product.Where(b => b.status == false && b.customerId == accounts[0].Id).ToList();
                         if (products.Count > 0)
                         {
                             order.StoreId = products[0].StoreId;
@@ -280,7 +280,7 @@ namespace Meal_Ordering_API.Controllers
                         break;
                     default:
                         check = false;
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
             }
@@ -326,12 +326,12 @@ namespace Meal_Ordering_API.Controllers
            string message = "";
             if (order == null || order.Id == null || order.Status == null)
             {
-                message = "order or order Id or order Status is null";
+                message = "Order or Order Id or Order Status is null";
                 check = false;
             }
             else
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
@@ -345,13 +345,13 @@ namespace Meal_Ordering_API.Controllers
                             break;
                         default:
                             check = false;
-                            message = "Invalid account Type";
+                            message = "Invalid Account Type";
                             break;
                     }
 
                     if (check)
                     {
-                        List<Order> orders = _dbContext.order.Where(d => d.Id == order.Id).ToList();
+                        List<Order> orders = _dbContext.Order.Where(d => d.Id == order.Id).ToList();
                         if (orders.Count > 0)
                         {
                             orders[0].Status = order.Status;
@@ -403,9 +403,9 @@ namespace Meal_Ordering_API.Controllers
         [HttpGet("/API/V1/Ordering/getAllProducts")]
         public string GetAllProducts()
         {
-            List<Product> products = _dbContext.product.ToList();
+            List<Product> products = _dbContext.Product.ToList();
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = "Get all products";
+            Response.Headers["Message"] = "Get all Products";
             return JsonSerializer.Serialize(products);
         }
 
@@ -419,10 +419,10 @@ namespace Meal_Ordering_API.Controllers
         [HttpPost("/API/V1/Ordering/GetAllProducts")]
         public string GetAllProductsCategory(Category category)
         {
-            List<Product> products = _dbContext.product.Where(b => b.CategoryId == category.Id).ToList();
+            List<Product> products = _dbContext.Product.Where(b => b.CategoryId == category.Id).ToList();
             // Set Headers
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = "Get all products from "+products[0].Name;
+            Response.Headers["Message"] = "Get all Products from "+products[0].Name;
             return JsonSerializer.Serialize(products);
         }
 
@@ -438,21 +438,21 @@ namespace Meal_Ordering_API.Controllers
         {
             string message = "";
             List<Order> orders = new List<Order>();
-            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
                 switch (accounts[0].AccountType)
                 {
                     case "Resteraunt":
-                       orders= _dbContext.order.Where(d => d.StoreId == accounts[0].Id).ToList();
+                       orders= _dbContext.Order.Where(d => d.StoreId == accounts[0].Id).ToList();
                         message = "All Resteraunt Orders";
                         break;
                     case "Customer":
-                       orders= _dbContext.order.Where(d => d.CustomerId == accounts[0].Id).ToList();
+                       orders= _dbContext.Order.Where(d => d.CustomerId == accounts[0].Id).ToList();
                         message = "All Customer Orders";
                         break;
                     default:
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
                 

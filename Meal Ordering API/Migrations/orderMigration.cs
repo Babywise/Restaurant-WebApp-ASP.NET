@@ -11,7 +11,7 @@ namespace Meal_Ordering_API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-     name: "order",
+     name: "Order",
      columns: table => new
      {
          Id = table.Column<int>(type: "int", nullable: false),
@@ -25,8 +25,8 @@ namespace Meal_Ordering_API.Migrations
      },
      constraints: table => {
          table.PrimaryKey("orderId", x => x.Id);
-         table.ForeignKey("customerId", x => x.CustomerId, "account");
-         table.ForeignKey("storeId", x => x.StoreId, "account");
+         table.ForeignKey("customerId", x => x.CustomerId, "Account");
+         table.ForeignKey("storeId", x => x.StoreId, "Account");
      }
      );
         }

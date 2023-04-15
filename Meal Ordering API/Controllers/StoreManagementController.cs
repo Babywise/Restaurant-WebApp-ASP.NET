@@ -1,4 +1,4 @@
-﻿using Meal_Ordering_API.Entities;
+﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_WebApp.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -34,8 +34,8 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             if (product != null && ApiKey != Guid.Empty && product.Name != null && product.Cost > 0 && product.CategoryId != null)
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
-                List<Product> products = _dbContext.product.ToList().OrderByDescending(a => a.Id).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Product> products = _dbContext.Product.ToList().OrderByDescending(a => a.Id).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     // ---- Validation ------
@@ -47,7 +47,7 @@ namespace Meal_Ordering_API.Controllers
                             break;
                         default:
                             check = false;
-                            message = "Invalid account Type";
+                            message = "Invalid Account Type";
                             break;
                     }
 
@@ -64,7 +64,7 @@ namespace Meal_Ordering_API.Controllers
                     product.Available = true;
 
                     //validate category
-                    bool exists = _dbContext.category.Where(d => d.Id == product.Id).Count() > 0;
+                    bool exists = _dbContext.Category.Where(d => d.Id == product.Id).Count() > 0;
                     if (!exists)
                     {
                         message = "Product Category does not exist";
@@ -78,7 +78,7 @@ namespace Meal_Ordering_API.Controllers
 
                     if(check) // product is validated 
                     {
-                        _dbContext.product.Add(product);
+                        _dbContext.Product.Add(product);
                         _dbContext.SaveChanges();
                         message = "Product added to inventory";
                     }
@@ -129,12 +129,12 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             if (product != null && ApiKey != Guid.Empty && product.Name != null && product.Cost > 0 && product.CategoryId != null)
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     try
                     {
-                        _dbContext.product.Remove(product);
+                        _dbContext.Product.Remove(product);
                         _dbContext.SaveChanges();
                         message = "Product removed to inventory";
                     }
@@ -193,7 +193,7 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             if (product != null || ApiKey != Guid.Empty || product.Name != null || product.Cost > 0 || product.CategoryId != null )
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     // ---- Validation ------
@@ -205,13 +205,13 @@ namespace Meal_Ordering_API.Controllers
                             break;
                         default:
                             check = false;
-                            message = "Invalid account Type";
+                            message = "Invalid Account Type";
                             break;
                     }
 
 
                     //validate category
-                    bool exists = _dbContext.category.Where(d => d.Id == product.Id).Count() > 0;
+                    bool exists = _dbContext.Category.Where(d => d.Id == product.Id).Count() > 0;
                     if (!exists)
                     {
                         message = "Product Category does not exist";
@@ -224,7 +224,7 @@ namespace Meal_Ordering_API.Controllers
                     }
 
                     //set product ID
-                    List<Product> products = _dbContext.product.Where(a => a.Id == product.Id).ToList();
+                    List<Product> products = _dbContext.Product.Where(a => a.Id == product.Id).ToList();
                     if (products.Count > 0)
                     {
                         products[0].Name = product.Name;
@@ -294,21 +294,21 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             Category categorySave= new Category();
             categorySave.Name = category;
-            List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (ApiKey != Guid.Empty || category.Length <= 0 || category == null) // check for null items
             {
                 //check ApiKey
                 if (accounts.Count > 0) // ensure api key is valid
             {
                     //validate category
-                    List<Category> categoriesNames = _dbContext.category.Where(b => b.Name==category).ToList();
+                    List<Category> categoriesNames = _dbContext.Category.Where(b => b.Name==category).ToList();
                     if(categoriesNames.Count > 0)
                     {
                         check = false;
                         message = "Category already exists";
                     }
                     //assign ID
-                    List<Category> categoriesIds = _dbContext.category.OrderByDescending(b => b.Id).ToList();
+                    List<Category> categoriesIds = _dbContext.Category.OrderByDescending(b => b.Id).ToList();
                     if (categoriesIds.Count > 0)
                     {
                         categorySave.Id = categoriesIds[0].Id+1;
@@ -323,7 +323,7 @@ namespace Meal_Ordering_API.Controllers
                     {
                         try
                         {
-                            _dbContext.category.Add(categorySave);
+                            _dbContext.Category.Add(categorySave);
                             _dbContext.SaveChanges();
                             message = "Category added";
                         }
@@ -378,17 +378,17 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             if (category != null && ApiKey != Guid.Empty && category.Name != null)
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     try
                     {
-                        List<Category> categories = _dbContext.category.Where(d => d.Name == category.Name).ToList();
+                        List<Category> categories = _dbContext.Category.Where(d => d.Name == category.Name).ToList();
                         if(categories.Count > 0)
                         {
                             category= categories[0];
                             _dbContext.Entry(accounts[0]).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                            _dbContext.category.Remove(category);
+                            _dbContext.Category.Remove(category);
                             _dbContext.SaveChanges();
                             message = "Category removed";
                         }
@@ -431,7 +431,7 @@ namespace Meal_Ordering_API.Controllers
             else // objects are null
             {
                 Response.Headers.UserAgent = "API";
-                Response.Headers["Message"] = "category, ApiKey, or category name is null";
+                Response.Headers["Message"] = "Category, ApiKey, or Category name is null";
                 //return
                 return "";
             }
@@ -452,12 +452,12 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
             if (category != null && ApiKey != Guid.Empty && category.Name != null)
             {
-                List<Account> accounts = _dbContext.account.Where(a => a.ApiKey == ApiKey).ToList();
+                List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
                     try
                     {
-                        List<Category> categories = _dbContext.category.Where(d => d.Id == category.Id).ToList();
+                        List<Category> categories = _dbContext.Category.Where(d => d.Id == category.Id).ToList();
                         if (categories.Count > 0)
                         {
                             categories[0].Name = category.Name;
@@ -503,7 +503,7 @@ namespace Meal_Ordering_API.Controllers
             else // objects are null
             {
                 Response.Headers.UserAgent = "API";
-                Response.Headers["Message"] = "category, ApiKey, or category name is null";
+                Response.Headers["Message"] = "Category, ApiKey, or Category name is null";
                 //return
                 return "";
             }
@@ -520,8 +520,8 @@ namespace Meal_Ordering_API.Controllers
         public string GetAllCategories()
         {
             Response.Headers.UserAgent = "API";
-            Response.Headers["Message"] = "Got all categories";
-            List<Category> categories =_dbContext.category.OrderByDescending(b =>b.Name).ToList();
+            Response.Headers["Message"] = "Got all Categories";
+            List<Category> categories =_dbContext.Category.OrderByDescending(b =>b.Name).ToList();
             return JsonSerializer.Serialize(categories);
         }
     }

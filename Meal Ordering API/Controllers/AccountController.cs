@@ -1,5 +1,5 @@
 ﻿using Azure;
-using Meal_Ordering_API.Entities;
+using Meal_Ordering_Class_Library.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -85,7 +85,7 @@ namespace Meal_Ordering_API.Controllers
             if (account != null)
             {
              
-                List<Account> accounts = _dbContext.account.Where(d => d.Username == account.Username).ToList();
+                List<Account> accounts = _dbContext.Account.Where(d => d.Username == account.Username).ToList();
          
                 if (accounts.Count>=1)
                 {
@@ -114,7 +114,7 @@ namespace Meal_Ordering_API.Controllers
                         break;
                     default:
                         check = false;
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
 
@@ -162,7 +162,7 @@ namespace Meal_Ordering_API.Controllers
                         Guid key = Guid.NewGuid();
                         account.ApiKey = key;
                         account.Password = hash(account.Password);
-                        List<Account> IdFromAccount = _dbContext.account.OrderByDescending(b => b.Id).ToList();
+                        List<Account> IdFromAccount = _dbContext.Account.OrderByDescending(b => b.Id).ToList();
                         if (IdFromAccount.Count>0)
                         {
                             account.Id = IdFromAccount[0].Id + 1;
@@ -233,17 +233,17 @@ namespace Meal_Ordering_API.Controllers
             string message = "";
 
             //verify
-            List<Account> accounts = _dbContext.account.Where(b => b.Username == account.Username).ToList();
+            List<Account> accounts = _dbContext.Account.Where(b => b.Username == account.Username).ToList();
 
             if (account == null || account.Password == null || account.Username == null) // ensure all required fields are filled in
             {
-                message = "account, Password, or Username is null";
+                message = "Account, Password, or Username is null";
                 check = false;
             }
             else { // all required fields are filled in
                 if (accounts.Count == 0) // if no accounts match username
                 {
-                    message = "No account found";
+                    message = "No Account found";
                     check = false;
                 }
                 else
@@ -277,17 +277,17 @@ namespace Meal_Ordering_API.Controllers
             LoginResponse response = new LoginResponse();
             if (check == true)
             {
-                response.user = accounts[0];
-                response.user.Password = "";
-                response.categories = _dbContext.category.ToList();
-                response.products = _dbContext.product.ToList();
+                response.Account = accounts[0];
+                response.Account.Password = "";
+                response.Categories = _dbContext.Category.ToList();
+                response.Products = _dbContext.Product.ToList();
                 switch (accounts[0].AccountType)
                 {
                     case "Resteraunt": // return all orders that are linked to the resteraunt
-                        response.orders = _dbContext.order.Where(b => b.StoreId == accounts[0].Id).ToList();
+                        response.Orders = _dbContext.Order.Where(b => b.StoreId == accounts[0].Id).ToList();
                         break;
                     case "Customer": // return all orders related to the customer that requested
-                        response.orders = _dbContext.order.Where(b => b.CustomerId == accounts[0].Id).ToList();
+                        response.Orders = _dbContext.Order.Where(b => b.CustomerId == accounts[0].Id).ToList();
                         break;
                 }
             }
@@ -310,10 +310,10 @@ namespace Meal_Ordering_API.Controllers
         {
             bool check = true;
             string message = "";
-            List<Account> accounts = _dbContext.account.Where(b => b.ApiKey== account.ApiKey).ToList();
+            List<Account> accounts = _dbContext.Account.Where(b => b.ApiKey== account.ApiKey).ToList();
             if (accounts.Count == 0) // check account for ApiKey if no results check the ApiKey from header
             {
-                accounts = _dbContext.account.Where(b => b.ApiKey == ApiKey).ToList();
+                accounts = _dbContext.Account.Where(b => b.ApiKey == ApiKey).ToList();
                 if (accounts.Count == 0) // if both header and account dont have a valid apikey then set false
                 {
                     check = false;
@@ -347,7 +347,7 @@ namespace Meal_Ordering_API.Controllers
                         break;
                     default:
                         check = false;
-                        message = "Invalid account Type";
+                        message = "Invalid Account Type";
                         break;
                 }
 

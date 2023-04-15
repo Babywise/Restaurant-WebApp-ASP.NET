@@ -12,7 +12,7 @@ namespace Meal_Ordering_API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "account",
+                name: "Account",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),

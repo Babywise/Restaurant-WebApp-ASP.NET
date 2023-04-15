@@ -1,5 +1,5 @@
 ﻿using Azure;
-using Meal_Ordering_API.Entities;
+using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -87,7 +87,7 @@ namespace Meal_Ordering_API.Controllers
         {
 
             // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/AddCategory?category=TestFromCode") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/StoreManagement/AddCategory?Category=TestFromCode") as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/json";
             request.UserAgent = "StubTest";
