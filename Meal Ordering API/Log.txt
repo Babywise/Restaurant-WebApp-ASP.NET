@@ -1,0 +1,4 @@
+test
+Unable to cast object of type 'System.String' to type 'System.Guid'.
+Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+The property 'Category.Id' has a temporary value while attempting to change the entity's state to 'Deleted'. Either set a permanent value explicitly, or ensure that the database is configured to generate values for this property.

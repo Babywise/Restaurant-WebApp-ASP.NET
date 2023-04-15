@@ -1,7 +1,15 @@
+using Meal_Ordering_WebApp.Entities;
+using Microsoft.EntityFrameworkCore;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+var connStr = builder.Configuration.GetConnectionString("db");
+builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
+
 
 var app = builder.Build();
 
@@ -22,6 +30,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{start=l}");
 
 app.Run();
