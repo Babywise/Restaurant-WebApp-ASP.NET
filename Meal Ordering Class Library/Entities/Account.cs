@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Meal_Ordering_Class_Library.Entities
 {
-    public class Account : IdentityUser
+    public class Account
     {
         /*public int? Id { get; set; }
         [Column(TypeName = "CHAR(36)")]

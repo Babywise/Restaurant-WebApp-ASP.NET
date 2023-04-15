@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meal Ordering Restaurant", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meal Ordering Class Library", "Meal Ordering Class Library\Meal Ordering Class Library.csproj", "{D44E0CA9-04A5-4637-86D4-16488F3CF91A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MealOrdering.Tests", "MealOrdering.Tests\MealOrdering.Tests.csproj", "{4C5BAFC2-5BF2-44FD-BDFA-8DD0A639989A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D44E0CA9-04A5-4637-86D4-16488F3CF91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D44E0CA9-04A5-4637-86D4-16488F3CF91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D44E0CA9-04A5-4637-86D4-16488F3CF91A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5BAFC2-5BF2-44FD-BDFA-8DD0A639989A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5BAFC2-5BF2-44FD-BDFA-8DD0A639989A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5BAFC2-5BF2-44FD-BDFA-8DD0A639989A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5BAFC2-5BF2-44FD-BDFA-8DD0A639989A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

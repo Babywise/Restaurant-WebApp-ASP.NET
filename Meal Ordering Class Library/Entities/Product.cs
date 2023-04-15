@@ -13,5 +13,7 @@ namespace Meal_Ordering_Class_Library.Entities
         public int? StoreId { get; set; }
         //FK
         public int CategoryId { get; set; }
+        //Nav
+        public Category? Category { get; set; }
     }
 }

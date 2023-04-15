@@ -11,10 +11,5 @@ namespace Meal_Ordering_API.Services
         {
             _mealOrderingContext = mealOrderingContext;
         }
-
-        public ICollection<Account> GetAccounts()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

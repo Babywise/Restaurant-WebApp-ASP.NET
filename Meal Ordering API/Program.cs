@@ -1,17 +1,47 @@
 using Meal_Ordering_API.Services;
+using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_WebApp.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JwtSettings:Key"));
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var connStr = builder.Configuration.GetConnectionString("db");
 builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
 builder.Services.AddScoped<IMealOrderingService, DbMealOrderingService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireDigit = true;
+}).AddEntityFrameworkStores<MealOrderingAPIContext>().AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -27,11 +57,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{start=l}");
+
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = scopeFactory.CreateScope())
+{
+    await MealOrderingAPIContext.CreateAdminUser(scope.ServiceProvider);
+}
 
 app.Run();

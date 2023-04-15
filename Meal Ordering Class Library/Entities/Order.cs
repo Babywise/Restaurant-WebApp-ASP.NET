@@ -4,13 +4,14 @@ namespace Meal_Ordering_Class_Library.Entities
 {
     public class Order
     {
- 
-        public List<Product>? Products { get; set; }
+        public int? OrderId { get; set; }
+        //FK
         public int? StoreId { get; set; }
+        //FK
         public int? CustomerId { get; set; }
-        public int? Id { get; set; }
-        [Column(TypeName = "tinyint")]
-        public bool? Updated { get; set; } 
+        public bool? IsUpdated { get; set; } 
         public string? Status {  get; set; }
+        //Nav
+        public List<Product>? Products { get; set; }
     }
 }
