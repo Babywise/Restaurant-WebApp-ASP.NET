@@ -7,4 +7,12 @@
     <RootNamespace>Meal_Ordering_Restaurant</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Meal Ordering Class Library\Meal Ordering Class Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="RequestEntities\" />
+  </ItemGroup>
+
 </Project>

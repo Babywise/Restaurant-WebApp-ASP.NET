@@ -108,7 +108,7 @@ namespace Meal_Ordering_API.Controllers
                 // account type validation
                 switch (account.AccountType)
                 {
-                    case "Resteraunt":
+                    case "Restaurant":
                         break;
                     case "Customer":
                         break;
@@ -283,7 +283,7 @@ namespace Meal_Ordering_API.Controllers
                 response.Products = _dbContext.Product.ToList();
                 switch (accounts[0].AccountType)
                 {
-                    case "Resteraunt": // return all orders that are linked to the resteraunt
+                    case "Restaurant": // return all orders that are linked to the restaurant
                         response.Orders = _dbContext.Order.Where(b => b.StoreId == accounts[0].Id).ToList();
                         break;
                     case "Customer": // return all orders related to the customer that requested
@@ -341,7 +341,7 @@ namespace Meal_Ordering_API.Controllers
                 // account type validation
                 switch (account.AccountType)
                 {
-                    case "Resteraunt":
+                    case "Restaurant":
                         break;
                     case "Customer":
                         break;

@@ -24,8 +24,8 @@ namespace Meal_Ordering_API.Migrations
 
      },
      constraints: table => {
-         table.PrimaryKey("orderId", x => x.Id);
-         table.ForeignKey("customerId", x => x.CustomerId, "Account");
+         table.PrimaryKey("OrderId", x => x.Id);
+         table.ForeignKey("CustomerId", x => x.CustomerId, "Account");
          table.ForeignKey("storeId", x => x.StoreId, "Account");
      }
      );

@@ -11,4 +11,8 @@
     <Folder Include="Entities\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Meal Ordering Class Library\Meal Ordering Class Library.csproj" />
+  </ItemGroup>
+
 </Project>

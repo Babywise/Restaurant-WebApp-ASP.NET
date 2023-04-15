@@ -5,7 +5,7 @@ namespace Meal_Ordering_Class_Library.Entities
     public class Order
     {
  
-        public List<Product>? products { get; set; }
+        public List<Product>? Products { get; set; }
         public int? StoreId { get; set; }
         public int? CustomerId { get; set; }
         public int? Id { get; set; }

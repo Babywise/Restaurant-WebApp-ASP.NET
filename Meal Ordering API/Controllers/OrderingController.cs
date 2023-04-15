@@ -41,7 +41,7 @@ namespace Meal_Ordering_API.Controllers
             List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
-                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the restaurant adding an item to their inventory
                 {
                     case "customer":
                         break;
@@ -60,7 +60,7 @@ namespace Meal_Ordering_API.Controllers
                             Product product= products[0];
                             List<Product> productsId = _dbContext.Product.ToList().OrderByDescending(a => a.Id).ToList();
                             product.Id = productsId[0].Id + 1;
-                            product.customerId = accounts[0].Id;
+                            product.CustomerId = accounts[0].Id;
                             List<Account>accountsVerify = _dbContext.Account.Where(b => b.Id==storeId).ToList();
                             if (accountsVerify.Count > 0)
                             {
@@ -71,7 +71,7 @@ namespace Meal_Ordering_API.Controllers
                                 Quantity = 1;
                             }
                             product.Quantity = Quantity;
-                            product.status = false;
+                            product.Status = false;
                             try
                             {
                                 _dbContext.Add(product);
@@ -141,7 +141,7 @@ namespace Meal_Ordering_API.Controllers
             List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
             if (accounts.Count > 0) // ensure api key is valid
             {
-                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the restaurant adding an item to their inventory
                 {
                     case "customer":
                         break;
@@ -157,7 +157,7 @@ namespace Meal_Ordering_API.Controllers
                         List<Product> products = _dbContext.Product.Where(b => b.Id == itemId).ToList();
                         if (products.Count > 0)// ID matches
                         {
-                            if (products[0].customerId == accounts[0].Id)
+                            if (products[0].CustomerId == accounts[0].Id)
                             {
                                 try
                                 {
@@ -230,7 +230,7 @@ namespace Meal_Ordering_API.Controllers
             if (accounts.Count > 0) // ensure api key is valid
             {
                 
-                switch (accounts[0].AccountType.ToLower()) // ensure it is the resteraunt adding an item to their inventory
+                switch (accounts[0].AccountType.ToLower()) // ensure it is the restaurant adding an item to their inventory
                 {
                     case "customer":
                         List<Order> orders = _dbContext.Order.OrderByDescending(b => b.Id).ToList();
@@ -242,17 +242,17 @@ namespace Meal_Ordering_API.Controllers
                         }
                         order.Id = orderId;
                        
-                        List<Product>products= _dbContext.Product.Where(b => b.status == false && b.customerId == accounts[0].Id).ToList();
+                        List<Product>products= _dbContext.Product.Where(b => b.Status == false && b.CustomerId == accounts[0].Id).ToList();
                         if (products.Count > 0)
                         {
                             order.StoreId = products[0].StoreId;
                             order.CustomerId= accounts[0].Id;
                             foreach (Product p in products)
                             {
-                                p.status = true;
-                                p.orderId = orderId;
+                                p.Status = true;
+                                p.OrderId = orderId;
                             }
-                            order.products = products;
+                            order.Products = products;
                             order.Status = "sending";
                             order.Updated = true;
                             try
@@ -334,9 +334,9 @@ namespace Meal_Ordering_API.Controllers
                 List<Account> accounts = _dbContext.Account.Where(a => a.ApiKey == ApiKey).ToList();
                 if (accounts.Count > 0) // ensure api key is valid
                 {
-                    switch (accounts[0].AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    switch (accounts[0].AccountType) // ensure it is the restaurant adding an item to their inventory
                     {
-                        case "Resteraunt":
+                        case "Restaurant":
                             if(order.StoreId!= accounts[0].Id)
                             {
                                 check = false;
@@ -443,9 +443,9 @@ namespace Meal_Ordering_API.Controllers
             {
                 switch (accounts[0].AccountType)
                 {
-                    case "Resteraunt":
+                    case "Restaurant":
                        orders= _dbContext.Order.Where(d => d.StoreId == accounts[0].Id).ToList();
-                        message = "All Resteraunt Orders";
+                        message = "All Restaurant Orders";
                         break;
                     case "Customer":
                        orders= _dbContext.Order.Where(d => d.CustomerId == accounts[0].Id).ToList();

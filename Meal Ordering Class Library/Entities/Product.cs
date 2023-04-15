@@ -4,7 +4,7 @@ namespace Meal_Ordering_Class_Library.Entities
 {
     public class Product
     {
-        public int? orderId { get; set; }
+        public int? OrderId { get; set; }
         public string? Name { get; set; }
         [Column(TypeName = "float")]
         public float? Cost { get; set; }   
@@ -16,7 +16,7 @@ namespace Meal_Ordering_Class_Library.Entities
         [Column(TypeName = "tinyint")]
         public bool? Available { get; set; }
         [Column(TypeName = "tinyint")]
-        public bool? status { get; set; }
-        public int? customerId { get; set; }    
+        public bool? Status { get; set; }
+        public int? CustomerId { get; set; }    
     }
 }

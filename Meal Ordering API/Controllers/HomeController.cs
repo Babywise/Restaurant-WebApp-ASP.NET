@@ -66,7 +66,7 @@ namespace Meal_Ordering_API.Controllers
         {
             //if (product != null && ApiKey != Guid.Empty && product.Name != null && product.Cost > 0 && product.CategoryId != null)
                 // create request to register test
-            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Edit?Username=Danny&&Password=Danny123&&AccountType=Resteraunt&&Address=123Testing&&ApiKey={1a07e8f6-825c-442d-a3d7-1315e6780697}") as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create("https://localhost:7062/API/V1/Account/Edit?Username=Danny&&Password=Danny123&&AccountType=Restaurant&&Address=123Testing&&ApiKey={1a07e8f6-825c-442d-a3d7-1315e6780697}") as HttpWebRequest;
             request.Method = "PUT";
             request.ContentType = "application/text";
             request.UserAgent = "StubTest";
@@ -241,7 +241,7 @@ namespace Meal_Ordering_API.Controllers
                 Name = "Testing2",
                 StoreId = 1,
                 CategoryId = 1,
-                status=false
+                Status=false
             };
 
             string stringData = JsonSerializer.Serialize(product); // place body here

@@ -41,9 +41,9 @@ namespace Meal_Ordering_API.Controllers
                     // ---- Validation ------
                     // validate account type
                     Account account = accounts[0];
-                    switch (account.AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    switch (account.AccountType) // ensure it is the restaurant adding an item to their inventory
                     {
-                        case "Resteraunt":
+                        case "Restaurant":
                             break;
                         default:
                             check = false;
@@ -199,9 +199,9 @@ namespace Meal_Ordering_API.Controllers
                     // ---- Validation ------
                     // validate account type
                     Account account = accounts[0];
-                    switch (account.AccountType) // ensure it is the resteraunt adding an item to their inventory
+                    switch (account.AccountType) // ensure it is the restaurant adding an item to their inventory
                     {
-                        case "Resteraunt":
+                        case "Restaurant":
                             break;
                         default:
                             check = false;
@@ -232,10 +232,10 @@ namespace Meal_Ordering_API.Controllers
                         products[0].Inventory= product.Inventory;
                         products[0].Available = product.Available;
                         products[0].CategoryId = product.CategoryId;
-                        products[0].orderId = product.orderId;
+                        products[0].OrderId = product.OrderId;
                         products[0].Quantity = product.Quantity;
                         products[0].StoreId = product.StoreId;
-                        products[0].status = product.status;
+                        products[0].Status = product.Status;
                         try
                         {
                             _dbContext.SaveChanges();
