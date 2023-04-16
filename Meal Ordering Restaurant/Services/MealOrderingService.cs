@@ -2,6 +2,7 @@
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Meal_Ordering_Restaurant.Services
 {
@@ -34,12 +35,10 @@ namespace Meal_Ordering_Restaurant.Services
             return await _httpClient.PutAsJsonAsync("api/v1/account/edit", accountEditRequest);
         }
 
-        public async Task<AccountEditRequest> GetAccountDetails(string userId, string accessToken)
+        public async Task<AccountEditRequest> GetAccountDetails(string username, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            _httpClient.DefaultRequestHeaders.Add("UserId", userId);
-
-            return await _httpClient.GetFromJsonAsync<AccountEditRequest>("api/v1/account/edit");
+            return await _httpClient.GetFromJsonAsync<AccountEditRequest>($"api/v1/account/edit?Username={username}");
         }
         private void SetAccessToken(HttpClient httpClient, string accessToken)
         {

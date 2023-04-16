@@ -21,6 +21,25 @@ namespace MealOrderingApi.Services
         }
         public async Task<string> GenerateJwtToken(User user)
         {
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("Id", user.Id),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, user.Id)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Jwt:Key"])),SecurityAlgorithms.HmacSha512Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+
+/*
             var key = Encoding.ASCII.GetBytes(_config.GetValue<string>("Jwt:Key"));
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -47,7 +66,7 @@ namespace MealOrderingApi.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return tokenHandler.WriteToken(token);*/
 
         }
     }

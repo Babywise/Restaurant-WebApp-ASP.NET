@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Azure.Core;
 
 namespace MealOrderingApi.Controllers
 {
@@ -49,6 +50,8 @@ namespace MealOrderingApi.Controllers
                 var appUser = await _userManager.FindByNameAsync(accountLoginRequest.Username);
                 var userId = appUser.Id;
                 var jwtToken = await _jwtService.GenerateJwtToken(appUser);
+
+                Response.Headers.Add("Authorization", jwtToken);
 
                 LoginResponse loginResponse = new LoginResponse()
                 {
@@ -112,9 +115,10 @@ namespace MealOrderingApi.Controllers
         /// <returns></returns>
         //[Authorize]
         [HttpPut("edit")]
+        [Authorize]
         public async Task<IActionResult> Edit([FromBody] AccountEditRequest accountEditRequest)
         {
-            var user = await _userManager.FindByIdAsync(accountEditRequest.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(accountEditRequest.Username);
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });
@@ -148,11 +152,11 @@ namespace MealOrderingApi.Controllers
         }
 
         //[Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Edit()
+        [HttpGet("edit")]
+        [Authorize]
+        public async Task<IActionResult> Edit(string Username)
         {
-            string userId = HttpContext.Request.Headers["UserId"];
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByNameAsync(Username);
 
             if (user == null)
             {
@@ -161,7 +165,6 @@ namespace MealOrderingApi.Controllers
 
             AccountEditRequest accountEditRequest = new AccountEditRequest() 
             {
-                UserId = user.Id,
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,

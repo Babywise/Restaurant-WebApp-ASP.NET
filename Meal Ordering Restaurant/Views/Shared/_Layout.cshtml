@@ -28,7 +28,7 @@
                     </ul>
                     
                     @{
-                        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("AccessToken"));
+                        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("Authorization"));
                         var username = Context.Session.GetString("Username");
                     }
 
@@ -61,10 +61,11 @@
         <div>
             AccessToken: @Context.Session.GetString("AccessToken")
             <br />
-            UserId: @Context.Session.GetString("UserId")
+            Authorization: @Context.Session.GetString("Authorization")
             <br />
             Username: @Context.Session.GetString("Username")
         </div>
+        <partial name="_ValidationBannerPartial" />
     </header>
     <div class="container">
         <main role="main" class="pb-3">

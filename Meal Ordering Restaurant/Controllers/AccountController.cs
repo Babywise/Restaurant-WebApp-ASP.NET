@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Net.Http.Headers;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
@@ -41,9 +42,12 @@ namespace Meal_Ordering_Restaurant.Controllers
                     string jsonResponse = await response.Content.ReadAsStringAsync();
 
                     LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(jsonResponse);
-                    HttpContext.Session.SetString("AccessToken", loginResponse.Account.AccessToken);
-                    HttpContext.Session.SetString("UserId", loginResponse.Account.UserId);
-                    HttpContext.Session.SetString("Username", loginResponse.Account.Username);
+
+                    if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
+                    {
+                        HttpContext.Session.SetString("Authorization", values.First());
+                        HttpContext.Session.SetString("Username", loginResponse.Account.Username);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -78,10 +82,9 @@ namespace Meal_Ordering_Restaurant.Controllers
         }
 
         [HttpGet("Account/Edit/")]
-        [Authorize(Roles = "Admin, Restaurant")]
         public async Task<IActionResult> Edit()
         {
-            var response = await _mealOrderingService.GetAccountDetails(HttpContext.Session.GetString("UserId"), HttpContext.Session.GetString("AccessToken"));
+            var response = await _mealOrderingService.GetAccountDetails(HttpContext.Session.GetString("Username"), HttpContext.Session.GetString("Authorization"));
 
             AccountEditViewModel accountEditViewModel = new AccountEditViewModel()
             {
@@ -92,12 +95,11 @@ namespace Meal_Ordering_Restaurant.Controllers
         }
 
         [HttpPost("Account/Edit/")]
-        [Authorize(Roles = "Admin, Restaurant")]
         public async Task<IActionResult> Edit(AccountEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string accessToken = HttpContext.Session.GetString("AccessToken");
+                string accessToken = HttpContext.Session.GetString("Authorization");
 
                 if (string.IsNullOrEmpty(accessToken))
                 {
@@ -117,7 +119,6 @@ namespace Meal_Ordering_Restaurant.Controllers
             return View(model);
         }
         [HttpPost]
-        [Authorize]
         public IActionResult LogOut()
         {
             HttpContext.Session.Clear();
