@@ -1,4 +1,7 @@
+using Meal_Ordering_Restaurant.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -9,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Add session services and configure options
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -17,30 +21,18 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Add authentication configuration
+builder.Services.AddScoped<MealOrderingService>();
+
+// Configure authentication middleware
 builder.Services.AddAuthentication(options =>
 {
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.Authority = builder.Configuration["ApiSettings:ApiBaseUrl"];
-    options.Audience = "MealOrderingApi";
-    options.RequireHttpsMetadata = false;
-    options.BackchannelHttpHandler = new HttpClientHandler
-    {
-        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-    };
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidIssuer = "MealOrderingApi", // Make sure this matches the issuer in the API JwtService
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
+    options.Audience = builder.Configuration["ApiSettings:ApiBaseUrl"];
 });
 
 var app = builder.Build();
@@ -61,7 +53,6 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthentication();
-app.UseStatusCodePagesWithReExecute("/Home/AccessDenied/{0}");
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Meal Ordering API\Meal Ordering API.csproj" />
     <ProjectReference Include="..\Meal Ordering Class Library\Meal Ordering Class Library.csproj" />
   </ItemGroup>
 

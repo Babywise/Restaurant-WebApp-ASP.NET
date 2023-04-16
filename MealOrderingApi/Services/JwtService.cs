@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Meal_Ordering_API.Services
+namespace MealOrderingApi.Services
 {
     public class JwtService : IJwtService
     {
@@ -21,7 +21,7 @@ namespace Meal_Ordering_API.Services
         }
         public async Task<string> GenerateJwtToken(User user)
         {
-            var key = Encoding.ASCII.GetBytes(_config.GetValue<string>("JwtSettings:Secret"));
+            var key = Encoding.ASCII.GetBytes(_config.GetValue<string>("Jwt:Key"));
 
             var roles = await _userManager.GetRolesAsync(user);
 

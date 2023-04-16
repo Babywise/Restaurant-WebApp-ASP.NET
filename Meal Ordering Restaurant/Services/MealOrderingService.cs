@@ -8,10 +8,14 @@ namespace Meal_Ordering_Restaurant.Services
     public class MealOrderingService
     {
         private readonly HttpClient _httpClient;
-        
-        public MealOrderingService(string apiAddress)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _config;
+        public MealOrderingService(IConfiguration config, HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(apiAddress) };
+            _config = config;
+            _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri(_config["ApiSettings:ApiBaseUrl"]);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<HttpResponseMessage> LoginAsync(AccountLoginRequest accountLoginRequest)

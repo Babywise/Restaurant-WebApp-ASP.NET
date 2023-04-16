@@ -19,17 +19,16 @@ namespace Meal_Ordering_Restaurant.Controllers
     {
         private readonly MealOrderingService _mealOrderingService;
         private readonly IConfiguration _config;
-        public AccountController(IConfiguration config)
+        public AccountController(IConfiguration config, MealOrderingService mealOrderingService)
         {
             _config = config;
-            _mealOrderingService = new MealOrderingService(_config.GetValue<string>("ApiSettings:ApiBaseUrl"));
+            _mealOrderingService = mealOrderingService;
         }
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(AccountLoginViewModel model)
         {
@@ -45,17 +44,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                     HttpContext.Session.SetString("AccessToken", loginResponse.Account.AccessToken);
                     HttpContext.Session.SetString("UserId", loginResponse.Account.UserId);
                     HttpContext.Session.SetString("Username", loginResponse.Account.Username);
-                    //For debuging jwtToken
-                    /*var tokenHandler = new JwtSecurityTokenHandler();
-                    var securityToken = tokenHandler.ReadJwtToken(loginResponse.Account.AccessToken);
-
-                    foreach (var claim in securityToken.Claims)
-                    {
-                        if (claim.Type == ClaimTypes.Role)
-                        {
-                            Console.WriteLine($"Role claim: {claim.Value}");
-                        }
-                    }*/
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -129,6 +117,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult LogOut()
         {
             HttpContext.Session.Clear();
