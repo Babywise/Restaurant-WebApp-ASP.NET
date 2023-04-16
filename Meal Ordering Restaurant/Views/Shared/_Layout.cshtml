@@ -26,16 +26,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-
-                    @using Microsoft.AspNetCore.Identity
-                    @inject SignInManager<Account> _signInManager
+                    
+                    @{
+                        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("AccessToken"));
+                        var username = Context.Session.GetString("Username");
+                    }
 
                     <ul class="navbar-nav">
-                        @if (_signInManager.IsSignedIn(User))
+                        @if (isSignedIn)
                         {
                             <li class="nav-item">
                                 <form class="form-inline" asp-controller="Account" asp-action="LogOut" method="post">
-                                    <input type="submit" class="nav-link btn btn-link text-dark" value="Logout @User.Identity.Name" />
+                                    <input type="submit" class="nav-link btn btn-link text-dark" value="Logout @username" />
                                 </form>
                             </li>
                         }
@@ -45,7 +47,7 @@
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="LogIn">Login</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>
@@ -53,6 +55,11 @@
                 </div>
             </div>
         </nav>
+        <div>
+            AccessToken: @Context.Session.GetString("AccessToken")
+            <br />
+            Username: @Context.Session.GetString("Username")
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
