@@ -100,5 +100,11 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
