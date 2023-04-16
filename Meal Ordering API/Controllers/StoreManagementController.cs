@@ -1,5 +1,5 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_WebApp.Entities;
+using Meal_Ordering_WebApp.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;

@@ -1,9 +1,10 @@
-﻿using Meal_Ordering_Class_Library.Entities;
+﻿using Meal_Ordering_API.DataAccess;
+using Meal_Ordering_Class_Library.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Meal_Ordering_WebApp.Entities
+namespace Meal_Ordering_WebApp.DataAccess
 {
     public class MealOrderingAPIContext : IdentityDbContext<User>
     {
@@ -12,7 +13,7 @@ namespace Meal_Ordering_WebApp.Entities
         {
         }
 
-        public static async Task CreateAdminUser(IServiceProvider serviceProvider)
+        public static async Task IntitalizeUserIdentities(IServiceProvider serviceProvider)
         {
             UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
             RoleManager<IdentityRole> roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -21,11 +22,24 @@ namespace Meal_Ordering_WebApp.Entities
             string password = "Sesame123#";
             string roleName = "Admin";
 
-            // if role doesn't exist, create it
-            if (await roleManager.FindByNameAsync(roleName) == null)
+            string username2 = "restaurant";
+            string password2 = "Sesame123#";
+            string roleName2 = "Restaurant";
+
+            string username3 = "customer";
+            string password3 = "Sesame123#";
+            string roleName3 = "Customer";
+
+            // Seed custom roles
+            var customRoles = new[] { "Admin", "Customer", "Restaurant" };
+            foreach (var role in customRoles)
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
             }
+
             // if username doesn't exist, create it and add it to role
             if (await userManager.FindByNameAsync(username) == null)
             {
@@ -34,6 +48,26 @@ namespace Meal_Ordering_WebApp.Entities
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, roleName);
+                }
+            }
+            // if username doesn't exist, create it and add it to role
+            if (await userManager.FindByNameAsync(username2) == null)
+            {
+                User user = new User { UserName = username2 };
+                var result = await userManager.CreateAsync(user, password2);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, roleName2);
+                }
+            }
+            // if username doesn't exist, create it and add it to role
+            if (await userManager.FindByNameAsync(username3) == null)
+            {
+                User user = new User { UserName = username3 };
+                var result = await userManager.CreateAsync(user, password3);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, roleName3);
                 }
             }
         }

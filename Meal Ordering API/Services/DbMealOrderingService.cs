@@ -1,6 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.Services;
-using Meal_Ordering_WebApp.Entities;
+using Meal_Ordering_WebApp.DataAccess;
 
 namespace Meal_Ordering_API.Services
 {

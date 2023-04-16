@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Meal_Ordering_API.Migrations
 {
     [DbContext(typeof(MealOrderingAPIContext))]
-    [Migration("20230415231715_updatedModelsAndRelations")]
-    partial class updatedModelsAndRelations
+    [Migration("20230416045813_fixedcustomroles")]
+    partial class fixedcustomroles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,6 +1,6 @@
-﻿using Meal_Ordering_Class_Library.ResponseEntitiesShared;
-using Meal_Ordering_Restaurant.RequestEntities;
-using Newtonsoft.Json;
+﻿using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Meal_Ordering_Class_Library.ResponseEntities;
 using System.Net.Http.Headers;
 
 namespace Meal_Ordering_Restaurant.Services
@@ -26,25 +26,21 @@ namespace Meal_Ordering_Restaurant.Services
 
         public async Task<HttpResponseMessage> UpdateUserDetailsAsync(AccountEditRequest accountEditRequest, string accessToken)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            SetAccessToken(_httpClient, accessToken);
             return await _httpClient.PutAsJsonAsync("api/v1/account/edit", accountEditRequest);
         }
 
-        /*public async Task<T> GetAsync<T>(string requestUri)
+        public async Task<AccountEditRequest> GetAccountDetails(string userId, string accessToken)
         {
-            SetAccessTokenHeader();
-            var response = await _httpClient.GetAsync(requestUri);
-            response.EnsureSuccessStatusCode();
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(jsonResponse);
-        }*/
-        /*private void SetAccessTokenHeader()
+            SetAccessToken(_httpClient, accessToken);
+            _httpClient.DefaultRequestHeaders.Add("UserId", userId);
+
+            return await _httpClient.GetFromJsonAsync<AccountEditRequest>("api/v1/account/edit");
+        }
+        private void SetAccessToken(HttpClient httpClient, string accessToken)
         {
-            if (!string.IsNullOrEmpty(_accessToken))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-            }
-        }*/
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
 
     }
 }

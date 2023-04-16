@@ -1,6 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 
-namespace Meal_Ordering_Class_Library.ResponseEntitiesCustomer
+namespace Meal_Ordering_Class_Library.RequestEntitiesCustomer
 {
     public class UpdateCartRequest
     {

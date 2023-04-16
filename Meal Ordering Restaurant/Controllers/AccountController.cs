@@ -1,11 +1,17 @@
-﻿using Meal_Ordering_Class_Library.ResponseEntitiesShared;
+﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.ResponseEntities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
@@ -13,11 +19,10 @@ namespace Meal_Ordering_Restaurant.Controllers
     {
         private readonly MealOrderingService _mealOrderingService;
         private readonly IConfiguration _config;
-
         public AccountController(IConfiguration config)
         {
             _config = config;
-            _mealOrderingService = new MealOrderingService("https://localhost:7062");
+            _mealOrderingService = new MealOrderingService(_config.GetValue<string>("ApiSettings:ApiBaseUrl"));
         }
         [HttpGet]
         public IActionResult Login()
@@ -30,14 +35,27 @@ namespace Meal_Ordering_Restaurant.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpResponseMessage response = await _mealOrderingService.LoginAsync(model.AccountLoginRequest);
+                var response = await _mealOrderingService.LoginAsync(model.AccountLoginRequest);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string jsonResponse = await response.Content.ReadAsStringAsync();
-                    JObject jsonObject = JObject.Parse(jsonResponse);
-                    string accessToken = (string)jsonObject["accessToken"];
-                    HttpContext.Session.SetString("AccessToken", accessToken);
-                    HttpContext.Session.SetString("Username", model.AccountLoginRequest.Username);
+
+                    LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(jsonResponse);
+                    HttpContext.Session.SetString("AccessToken", loginResponse.Account.AccessToken);
+                    HttpContext.Session.SetString("UserId", loginResponse.Account.UserId);
+                    HttpContext.Session.SetString("Username", loginResponse.Account.Username);
+                    //For debuging jwtToken
+                    /*var tokenHandler = new JwtSecurityTokenHandler();
+                    var securityToken = tokenHandler.ReadJwtToken(loginResponse.Account.AccessToken);
+
+                    foreach (var claim in securityToken.Claims)
+                    {
+                        if (claim.Type == ClaimTypes.Role)
+                        {
+                            Console.WriteLine($"Role claim: {claim.Value}");
+                        }
+                    }*/
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -70,14 +88,24 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             return View(model);
         }
-        [HttpGet]
-        public IActionResult UpdateDetails()
+
+        [HttpGet("Account/Edit/")]
+        [Authorize(Roles = "Admin, Restaurant")]
+        public async Task<IActionResult> Edit()
         {
-            return View();
+            var response = await _mealOrderingService.GetAccountDetails(HttpContext.Session.GetString("UserId"), HttpContext.Session.GetString("AccessToken"));
+
+            AccountEditViewModel accountEditViewModel = new AccountEditViewModel()
+            {
+                AccountEditRequest = response
+            };
+
+            return View(accountEditViewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateDetails(AccountEditViewModel model)
+        [HttpPost("Account/Edit/")]
+        [Authorize(Roles = "Admin, Restaurant")]
+        public async Task<IActionResult> Edit(AccountEditViewModel model)
         {
             if (ModelState.IsValid)
             {

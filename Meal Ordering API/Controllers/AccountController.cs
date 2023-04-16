@@ -1,8 +1,8 @@
 ﻿using Meal_Ordering_API.Services;
 using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_Class_Library.ResponseEntitiesShared;
+using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Class_Library.Services;
-using Meal_Ordering_Restaurant.RequestEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +18,22 @@ namespace Meal_Ordering_API.Controllers
     [ApiController()]
     public class AccountController : ControllerBase
     {
-        private readonly IConfiguration _config;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IJwtService _jwtService;
 
         public AccountController(IConfiguration config, SignInManager<User> signInManager, UserManager<User> userManager, IJwtService jwtService)
         {
-            _config = config;
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtService = jwtService;
         }
 
+        /// <summary>
+        /// Authenticates an existing user
+        /// </summary>
+        /// <param name="accountLoginRequest"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AccountLoginRequest accountLoginRequest)
         {
@@ -39,46 +42,80 @@ namespace Meal_Ordering_API.Controllers
             if (result.Succeeded)
             {
                 var appUser = await _userManager.FindByNameAsync(accountLoginRequest.Username);
-                var token = _jwtService.GenerateJwtToken(appUser);
-                return Ok(new { AccessToken = token });
+                var userId = appUser.Id;
+                var jwtToken = await _jwtService.GenerateJwtToken(appUser);
+
+                LoginResponse loginResponse = new LoginResponse()
+                {
+                    Account = new Account
+                    {
+                        UserId = userId,
+                        AccessToken = jwtToken,
+                        FirstName = appUser.FirstName,
+                        LastName = appUser.LastName,
+                        AccountType = appUser.AccountType,
+                        Email = appUser.Email,
+                        Address = appUser.Address,
+                        Phone = appUser.PhoneNumber,
+                        Username = appUser.UserName
+                    },
+                    
+                };
+
+                return Ok(loginResponse);
             }
 
             return Unauthorized();
         }
-
+        /// <summary>
+        /// Registers a new account
+        /// </summary>
+        /// <param name="accountRegisterRequest"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AccountRegisterRequest accountRegisterRequest)
         {
-            var newUser = new User
+            if (ModelState.IsValid)
             {
-                UserName = accountRegisterRequest.Username,
-                Email = accountRegisterRequest.Email,
-                PhoneNumber = accountRegisterRequest.PhoneNumber,
-                FirstName = accountRegisterRequest.FirstName,
-                LastName = accountRegisterRequest.LastName,
-                AccountType = accountRegisterRequest.AccountType,
-            };
+                var newUser = new User
+                {
+                    UserName = accountRegisterRequest.Username,
+                    Email = accountRegisterRequest.Email,
+                    PhoneNumber = accountRegisterRequest.PhoneNumber,
+                    FirstName = accountRegisterRequest.FirstName,
+                    LastName = accountRegisterRequest.LastName,
+                    AccountType = accountRegisterRequest.AccountType,
+                };
 
-            var result = await _userManager.CreateAsync(newUser, accountRegisterRequest.Password);
+                var result = await _userManager.CreateAsync(newUser, accountRegisterRequest.Password);
 
-            if (result.Succeeded)
-            {
-                return Ok(new { Message = "User registration successful" });
+                if (result.Succeeded)
+                {
+                    // Set user role based on AccountType
+                    string roleName = accountRegisterRequest.AccountType == "Customer" ? "Customer" : "Restaurant";
+                    await _userManager.AddToRoleAsync(newUser, roleName);
+                    return Ok(new { Message = "User registration successful" });
+                }
+                return BadRequest(result.Errors);
             }
-
-            return BadRequest(result.Errors);
+            return BadRequest(new { Message = "There are errors in the registration form." });
         }
-
-        [Authorize]
+        /// <summary>
+        /// Modifys an existing account details
+        /// </summary>
+        /// <param name="accountEditRequest"></param>
+        /// <returns></returns>
+        //[Authorize]
         [HttpPut("edit")]
-        public async Task<IActionResult> EditDetails([FromBody] AccountEditRequest accountEditRequest)
+        public async Task<IActionResult> Edit([FromBody] AccountEditRequest accountEditRequest)
         {
-            var user = await _userManager.FindByIdAsync(accountEditRequest.AccountId.ToString());
+            var user = await _userManager.FindByIdAsync(accountEditRequest.UserId.ToString());
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });
             }
 
+            //further validation can be done here
             user.Email = accountEditRequest.Email;
             user.PhoneNumber = accountEditRequest.PhoneNumber;
             user.FirstName = accountEditRequest.FirstName;
@@ -103,6 +140,32 @@ namespace Meal_Ordering_API.Controllers
             }
 
             return Ok(new { Message = "User details updated successfully" });
+        }
+
+        //[Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            string userId = HttpContext.Request.Headers["UserId"];
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            AccountEditRequest accountEditRequest = new AccountEditRequest() 
+            {
+                UserId = user.Id,
+                Username = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address
+            };
+
+            return Ok(accountEditRequest);
         }
     }
 }

@@ -36,6 +36,9 @@
                         @if (isSignedIn)
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">Edit</a>
+                            </li>
+                            <li class="nav-item">
                                 <form class="form-inline" asp-controller="Account" asp-action="LogOut" method="post">
                                     <input type="submit" class="nav-link btn btn-link text-dark" value="Logout @username" />
                                 </form>
@@ -57,6 +60,8 @@
         </nav>
         <div>
             AccessToken: @Context.Session.GetString("AccessToken")
+            <br />
+            UserId: @Context.Session.GetString("UserId")
             <br />
             Username: @Context.Session.GetString("Username")
         </div>

@@ -1,10 +1,9 @@
-﻿using Meal_Ordering_Class_Library.Entities;
-
-namespace Meal_Ordering_Class_Library.ResponseEntitiesShared
+﻿namespace Meal_Ordering_Class_Library.RequestEntitiesShared
 {
     public class AccountEditRequest
     {
-        public int AccountId { get; set; }
+        public string? UserId { get; set; }
+        public string? Username { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
@@ -12,5 +11,6 @@ namespace Meal_Ordering_Class_Library.ResponseEntitiesShared
         public string? Address { get; set; }
         public string? CurrentPassword { get; set; }
         public string? NewPassword { get; set; }
+        public string? ConfirmNewPassword { get; set; }
     }
 }

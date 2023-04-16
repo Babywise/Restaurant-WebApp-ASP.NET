@@ -4,9 +4,8 @@ namespace Meal_Ordering_Class_Library.Entities
 {
     public class Account
     {
-        /*public int? Id { get; set; }
-        [Column(TypeName = "CHAR(36)")]
-        public Guid? ApiKey { get; set; }
+        public string? UserId { get; set; }
+        public string? AccessToken { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Username { get; set; }
@@ -14,7 +13,7 @@ namespace Meal_Ordering_Class_Library.Entities
         public string? AccountType { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
-        public string? Address { get; set; }*/
+        public string? Address { get; set; }
 
     }
 }

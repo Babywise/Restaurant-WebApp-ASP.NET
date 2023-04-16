@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Meal_Ordering_API.Classes;
-using Meal_Ordering_WebApp.Entities;
+using Meal_Ordering_WebApp.DataAccess;
 using System;
 using System.IO;
 using System.Diagnostics;

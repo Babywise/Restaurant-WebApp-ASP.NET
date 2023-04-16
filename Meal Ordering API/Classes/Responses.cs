@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_API.Models;
+using Meal_Ordering_Class_Library.ResponseEntities;
 
 namespace Meal_Ordering_API.Classes
 {
