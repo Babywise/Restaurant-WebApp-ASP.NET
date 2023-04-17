@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MealOrderingApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,7 +62,8 @@ namespace MealOrderingApi.Migrations
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,9 +76,8 @@ namespace MealOrderingApi.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: true),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
-                    IsUpdated = table.Column<bool>(type: "bit", nullable: true),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -201,6 +201,7 @@ namespace MealOrderingApi.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     Cost = table.Column<float>(type: "real", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     StoreId = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -215,31 +216,69 @@ namespace MealOrderingApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderProduct",
+                columns: table => new
+                {
+                    OrderProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProduct", x => x.OrderProductId);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "CategoryId", "Name" },
+                columns: new[] { "CategoryId", "IsDeleted", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Pizza" },
-                    { 2, "Wings" }
+                    { 1, false, "Pizza" },
+                    { 2, false, "Wings" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "OrderId", "CustomerId", "IsUpdated", "Status", "StoreId" },
-                values: new object[] { 1, 1, null, "In the Oven", 1 });
+                columns: new[] { "OrderId", "CustomerId", "Status", "StoreId" },
+                values: new object[,]
+                {
+                    { 1, 1, "In the Oven", 1 },
+                    { 2, 1, "Confirmed", 1 },
+                    { 3, 1, "Canceled", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrderProduct",
+                columns: new[] { "OrderProductId", "OrderId", "ProductId", "Quantity" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 10 },
+                    { 2, 1, 2, 20 },
+                    { 3, 2, 3, 14 },
+                    { 4, 2, 4, 50 },
+                    { 5, 3, 1, 10 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "ProductId", "CategoryId", "Cost", "Description", "Name", "Quantity", "StoreId" },
+                columns: new[] { "ProductId", "CategoryId", "Cost", "Description", "IsDeleted", "Name", "Quantity", "StoreId" },
                 values: new object[,]
                 {
-                    { 1, 1, 5f, "Delicious & Cheesy!", "Cheese Pizza", 100, 1 },
-                    { 2, 1, 5f, "Delicious & Cheesy!", "Pepperoni Pizza", 50, 1 },
-                    { 3, 1, 10f, "SoOoOoo many mushrooms!", "Canadian Pizza", 50, 1 },
-                    { 4, 2, 5f, "Spicy & Delicious!", "Buffalo Wings", 1000, 1 },
-                    { 5, 2, 5f, "Sweet & Delicious!", "Honey Garlic Wings", 500, 1 },
-                    { 6, 2, 5f, "What a combination!", "Sweet & Spicy Wings", 500, 1 }
+                    { 1, 1, 5f, "Delicious & Cheesy!", false, "Cheese Pizza", 100, 1 },
+                    { 2, 1, 5f, "Delicious & Cheesy!", false, "Pepperoni Pizza", 50, 1 },
+                    { 3, 1, 10f, "SoOoOoo many mushrooms!", false, "Canadian Pizza", 50, 1 },
+                    { 4, 2, 5f, "Spicy & Delicious!", false, "Buffalo Wings", 1000, 1 },
+                    { 5, 2, 5f, "Sweet & Delicious!", false, "Honey Garlic Wings", 500, 1 },
+                    { 6, 2, 5f, "What a combination!", false, "Sweet & Spicy Wings", 500, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -282,6 +321,11 @@ namespace MealOrderingApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_OrderId",
+                table: "OrderProduct",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
@@ -306,7 +350,7 @@ namespace MealOrderingApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "OrderProduct");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -316,6 +360,9 @@ namespace MealOrderingApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Categories");

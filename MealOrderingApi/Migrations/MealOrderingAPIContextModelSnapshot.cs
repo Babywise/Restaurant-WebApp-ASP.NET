@@ -44,11 +44,13 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             CategoryId = 1,
+                            IsDeleted = false,
                             Name = "Pizza"
                         },
                         new
                         {
                             CategoryId = 2,
+                            IsDeleted = false,
                             Name = "Wings"
                         });
                 });
@@ -201,6 +203,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 5f,
                             Description = "Delicious & Cheesy!",
+                            IsDeleted = false,
                             Name = "Cheese Pizza",
                             Quantity = 100,
                             StoreId = 1
@@ -211,6 +214,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 5f,
                             Description = "Delicious & Cheesy!",
+                            IsDeleted = false,
                             Name = "Pepperoni Pizza",
                             Quantity = 50,
                             StoreId = 1
@@ -221,6 +225,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 10f,
                             Description = "SoOoOoo many mushrooms!",
+                            IsDeleted = false,
                             Name = "Canadian Pizza",
                             Quantity = 50,
                             StoreId = 1
@@ -231,6 +236,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "Spicy & Delicious!",
+                            IsDeleted = false,
                             Name = "Buffalo Wings",
                             Quantity = 1000,
                             StoreId = 1
@@ -241,6 +247,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "Sweet & Delicious!",
+                            IsDeleted = false,
                             Name = "Honey Garlic Wings",
                             Quantity = 500,
                             StoreId = 1
@@ -251,6 +258,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "What a combination!",
+                            IsDeleted = false,
                             Name = "Sweet & Spicy Wings",
                             Quantity = 500,
                             StoreId = 1

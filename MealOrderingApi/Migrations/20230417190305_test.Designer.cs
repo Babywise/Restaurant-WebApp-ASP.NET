@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MealOrderingApi.Migrations
 {
     [DbContext(typeof(MealOrderingAPIContext))]
-    [Migration("20230417032500_updatedNav")]
-    partial class updatedNav
+    [Migration("20230417190305_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,11 +47,13 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             CategoryId = 1,
+                            IsDeleted = false,
                             Name = "Pizza"
                         },
                         new
                         {
                             CategoryId = 2,
+                            IsDeleted = false,
                             Name = "Wings"
                         });
                 });
@@ -89,43 +91,15 @@ namespace MealOrderingApi.Migrations
                         {
                             OrderId = 2,
                             CustomerId = 1,
-                            Status = "In the Oven",
+                            Status = "Confirmed",
                             StoreId = 1
-                        });
-                });
-
-            modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.OrderContents", b =>
-                {
-                    b.Property<int>("OrderContentsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderContentsId"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderContentsId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderContents");
-
-                    b.HasData(
-                        new
-                        {
-                            OrderContentsId = 1,
-                            OrderId = 1
                         },
                         new
                         {
-                            OrderContentsId = 2,
-                            OrderId = 1
-                        },
-                        new
-                        {
-                            OrderContentsId = 3,
-                            OrderId = 2
+                            OrderId = 3,
+                            CustomerId = 1,
+                            Status = "Canceled",
+                            StoreId = 1
                         });
                 });
 
@@ -137,7 +111,7 @@ namespace MealOrderingApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderProductId"));
 
-                    b.Property<int>("OrderContentsId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -148,7 +122,7 @@ namespace MealOrderingApi.Migrations
 
                     b.HasKey("OrderProductId");
 
-                    b.HasIndex("OrderContentsId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderProduct");
 
@@ -156,35 +130,35 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             OrderProductId = 1,
-                            OrderContentsId = 1,
+                            OrderId = 1,
                             ProductId = 1,
                             Quantity = 10
                         },
                         new
                         {
                             OrderProductId = 2,
-                            OrderContentsId = 1,
+                            OrderId = 1,
                             ProductId = 2,
                             Quantity = 20
                         },
                         new
                         {
                             OrderProductId = 3,
-                            OrderContentsId = 2,
+                            OrderId = 2,
                             ProductId = 3,
                             Quantity = 14
                         },
                         new
                         {
                             OrderProductId = 4,
-                            OrderContentsId = 2,
+                            OrderId = 2,
                             ProductId = 4,
                             Quantity = 50
                         },
                         new
                         {
                             OrderProductId = 5,
-                            OrderContentsId = 3,
+                            OrderId = 3,
                             ProductId = 1,
                             Quantity = 10
                         });
@@ -232,6 +206,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 5f,
                             Description = "Delicious & Cheesy!",
+                            IsDeleted = false,
                             Name = "Cheese Pizza",
                             Quantity = 100,
                             StoreId = 1
@@ -242,6 +217,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 5f,
                             Description = "Delicious & Cheesy!",
+                            IsDeleted = false,
                             Name = "Pepperoni Pizza",
                             Quantity = 50,
                             StoreId = 1
@@ -252,6 +228,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 1,
                             Cost = 10f,
                             Description = "SoOoOoo many mushrooms!",
+                            IsDeleted = false,
                             Name = "Canadian Pizza",
                             Quantity = 50,
                             StoreId = 1
@@ -262,6 +239,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "Spicy & Delicious!",
+                            IsDeleted = false,
                             Name = "Buffalo Wings",
                             Quantity = 1000,
                             StoreId = 1
@@ -272,6 +250,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "Sweet & Delicious!",
+                            IsDeleted = false,
                             Name = "Honey Garlic Wings",
                             Quantity = 500,
                             StoreId = 1
@@ -282,6 +261,7 @@ namespace MealOrderingApi.Migrations
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "What a combination!",
+                            IsDeleted = false,
                             Name = "Sweet & Spicy Wings",
                             Quantity = 500,
                             StoreId = 1
@@ -498,26 +478,15 @@ namespace MealOrderingApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.OrderContents", b =>
+            modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.OrderProduct", b =>
                 {
                     b.HasOne("Meal_Ordering_Class_Library.Entities.Order", "Order")
-                        .WithMany("OrderContents")
+                        .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.OrderProduct", b =>
-                {
-                    b.HasOne("Meal_Ordering_Class_Library.Entities.OrderContents", "OrderContents")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("OrderContentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderContents");
                 });
 
             modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.Product", b =>
@@ -588,11 +557,6 @@ namespace MealOrderingApi.Migrations
                 });
 
             modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.Order", b =>
-                {
-                    b.Navigation("OrderContents");
-                });
-
-            modelBuilder.Entity("Meal_Ordering_Class_Library.Entities.OrderContents", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
