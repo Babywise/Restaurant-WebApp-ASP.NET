@@ -1,0 +1,21 @@
+﻿@model ICollection<Category>
+@{
+    ViewData["Title"] = "Menu";
+}
+
+@foreach (var category in Model)
+{
+    <span>---</span>
+    <div>
+        <label>@category.Name</label>
+    </div>
+    @foreach (var product in category.Products)
+    {
+        <div>
+            <label>@product.Name</label>
+        </div>
+
+    }
+    <span>---</span>
+    <br />
+}

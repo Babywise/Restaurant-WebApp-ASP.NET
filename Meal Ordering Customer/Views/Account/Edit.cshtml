@@ -1,0 +1,53 @@
+﻿@model AccountEditViewModel
+@{
+    ViewData["Title"] = $"Edit {Model.AccountEditRequest.Username}";
+}
+
+<form method="post">
+    <div>
+        <span asp-validation-for="AccountEditRequest.Username" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.Username">Username:</label>
+        <input asp-for="AccountEditRequest.Username" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.CurrentPassword" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.CurrentPassword">Current Password:</label>
+        <input asp-for="AccountEditRequest.CurrentPassword" type="password" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.NewPassword" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.NewPassword">Confirm Password:</label>
+        <input asp-for="AccountEditRequest.NewPassword" type="password" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.ConfirmNewPassword" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.ConfirmNewPassword">Confirm New Password:</label>
+        <input asp-for="AccountEditRequest.ConfirmNewPassword" type="password" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.FirstName" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.FirstName">First Name:</label>
+        <input asp-for="AccountEditRequest.FirstName" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.LastName" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.LastName">Last Name:</label>
+        <input asp-for="AccountEditRequest.LastName" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.Email" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.Email">Email:</label>
+        <input asp-for="AccountEditRequest.Email" type="email" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.PhoneNumber" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.PhoneNumber">Phone Number:</label>
+        <input asp-for="AccountEditRequest.PhoneNumber" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AccountEditRequest.Address" class="text-danger"></span>
+        <label asp-for="AccountEditRequest.Address">Address:</label>
+        <input asp-for="AccountEditRequest.Address" type="" />
+    </div>
+    <button type="submit">Edit</button>
+</form>

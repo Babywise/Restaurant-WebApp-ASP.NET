@@ -26,9 +26,44 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @{
+                        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("Authorization"));
+                        var username = Context.Session.GetString("Username");
+                    }
+
+                    <ul class="navbar-nav">
+                        @if (isSignedIn)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">Edit</a>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-controller="Account" asp-action="LogOut" method="post">
+                                    <input type="submit" class="nav-link btn btn-link text-dark" value="Logout @username" />
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
+        <div>
+            AccessToken: @Context.Session.GetString("AccessToken")
+            <br />
+            Authorization: @Context.Session.GetString("Authorization")
+            <br />
+            Username: @Context.Session.GetString("Username")
+        </div>
+        <partial name="_ValidationBannerPartial" />
     </header>
     <div class="container">
         <main role="main" class="pb-3">

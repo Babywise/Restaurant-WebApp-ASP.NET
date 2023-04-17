@@ -1,6 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
 
-namespace Meal_Ordering_Restaurant.Models
+namespace Meal_Ordering_Class_Library.Models
 {
     public class AccountEditViewModel
     {

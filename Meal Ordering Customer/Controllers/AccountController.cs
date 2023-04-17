@@ -1,11 +1,12 @@
-﻿using Meal_Ordering_Class_Library.Models;
-using Meal_Ordering_Restaurant.Services;
+﻿using Meal_Ordering_Customer.Models;
+using Meal_Ordering_Customer.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
 using Meal_Ordering_Class_Library.ResponseEntities;
+using Meal_Ordering_Class_Library.Models;
 
-namespace Meal_Ordering_Restaurant.Controllers
+namespace Meal_Ordering_Customer.Controllers
 {
     public class AccountController : Controller
     {
@@ -41,7 +42,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                         HttpContext.Session.SetString("Username", loginResponse.Account.Username);
                     }
 
-                    return RedirectToAction("Index", "Management");
+                    return RedirectToAction("Menu", "Order");
                 }
 
                 ModelState.AddModelError(string.Empty, "Login failed");
