@@ -32,7 +32,7 @@ namespace Meal_Ordering_Restaurant.Services
         public async Task<HttpResponseMessage> AddCategoryAsync(AddCategoryRequest addCategoryRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync("api/v1/management/addcategory", addCategoryRequest);
+            return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", addCategoryRequest);
         }
 
         private void SetAccessToken(HttpClient httpClient, string accessToken)

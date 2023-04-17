@@ -1,4 +1,5 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Class_Library.Services;
@@ -24,7 +25,7 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> Menu()
         {
-            var categories = await _mealOrderingService.GetMenu();
+            var categories = await _mealOrderingService.GetMenuAsync();
 
             if (categories == null)
             {
@@ -44,7 +45,7 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> Orders()
         {
-            var orders = await _mealOrderingService.GetOrders();
+            var orders = await _mealOrderingService.GetOrdersAsync();
 
             if (orders == null)
             {
@@ -57,6 +58,19 @@ namespace MealOrderingApi.Controllers
             };
 
             return Ok(getOrdersRequest);
+
+        }
+
+        [HttpPost("add-category")]
+        [Authorize]
+        public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest addCategoryRequest)
+        {
+            if (!await _mealOrderingService.AddCategoryAsync(addCategoryRequest.Name))
+            {
+                return BadRequest(new { Message = $"Category '{addCategoryRequest.Name}' not found" });
+            }
+
+            return Ok(new { Message = $"Category '{addCategoryRequest.Name}' was successfully added" });
 
         }
 

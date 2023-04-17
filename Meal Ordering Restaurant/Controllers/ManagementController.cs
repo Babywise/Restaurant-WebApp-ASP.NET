@@ -36,28 +36,10 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             return View(managementViewModel);
         }
-
         [HttpPost]
-        public async Task<IActionResult> AddCategories(ManagementViewModel model)
+        public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _managementService.AddCategoryAsync(model.AddCategoryRequest, HttpContext.Session.GetString("Authorization"));
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Index", "Management");
-                }
-
-                ModelState.AddModelError(string.Empty, $"Add Category \"{model.AddCategoryRequest.Name}\" failed");
-            }
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddCategory(ManagementViewModel model)
-        {
             if (ModelState.IsValid)
             {
                 var response = await _managementService.AddCategoryAsync(model.AddCategoryRequest, HttpContext.Session.GetString("Authorization"));

@@ -13,17 +13,33 @@ namespace MealOrderingApi.Services
             _mealOrderingContext = mealOrderingContext;
         }
 
-        public async Task<ICollection<Category>> GetMenu()
+        public async Task<ICollection<Category>> GetMenuAsync()
         {
             return await _mealOrderingContext.Categories
                 .Include(c => c.Products)
                 .ToListAsync();
         }
-        public async Task<ICollection<Order>> GetOrders()
+        public async Task<ICollection<Order>> GetOrdersAsync()
         {
             return await _mealOrderingContext.Orders
                 .Include(o => o.OrderProducts)
                 .ToListAsync();
         }
+
+        public async Task<bool> AddCategoryAsync(string categoryName)
+        {
+            if(!_mealOrderingContext.Categories.Where(c => c.Name == categoryName).Any())
+            {
+                _mealOrderingContext.Categories.Add(new Category()
+                {
+                    Name = categoryName
+                });
+
+                if (await _mealOrderingContext.SaveChangesAsync() != 0) 
+                    return true;
+            }
+            return false;
+        }
+
     }
 }

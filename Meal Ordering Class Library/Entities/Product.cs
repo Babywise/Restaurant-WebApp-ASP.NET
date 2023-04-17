@@ -11,7 +11,7 @@ namespace Meal_Ordering_Class_Library.Entities
         public string? Description { get; set; }
         public int? Quantity { get; set; }
         public float? Cost { get; set; } 
-        public bool? IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; } = false;
         //FK
         public int? StoreId { get; set; }
         //FK

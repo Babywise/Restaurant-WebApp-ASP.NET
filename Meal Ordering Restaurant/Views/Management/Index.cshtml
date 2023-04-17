@@ -18,3 +18,12 @@
     }
     <span>---</span><br />
 }
+
+<form method="post">
+    <div>
+        <span asp-validation-for="AddCategoryRequest.Name" class="text-danger"></span>
+        <label asp-for="AddCategoryRequest.Name">New Category Name:</label>
+        <input asp-for="AddCategoryRequest.Name" type="text" />
+    </div>
+    <button type="submit">Add Category</button>
+</form>
