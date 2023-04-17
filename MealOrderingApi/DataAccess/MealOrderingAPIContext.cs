@@ -138,7 +138,7 @@ namespace MealOrderingApi.DataAccess
                 {
                     ProductId = 3,
                     Name = "Canadian Pizza",
-                    Description = "SoOoOoo many mushrooms!",
+                    Description = "SoOoOoo Many mushrooms!",
                     Quantity = 50,
                     Cost = 10,
                     StoreId = 1,
@@ -147,16 +147,85 @@ namespace MealOrderingApi.DataAccess
                 new Product()
                 {
                     ProductId = 4,
-                    Name = "Buffalo Wings",
-                    Description = "Spicy & Delicious!",
-                    Quantity = 1000,
+                    Name = "MeatLovers Pizza",
+                    Description = "Not for Vegans!",
+                    Quantity = 100,
                     Cost = 5,
                     StoreId = 1,
-                    CategoryId = 2,
+                    CategoryId = 1,
                 },
                 new Product()
                 {
                     ProductId = 5,
+                    Name = "Veggie Pizza",
+                    Description = "For Vegans!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 6,
+                    Name = "Margherita Pizza",
+                    Description = "Not Quite Like the Drink!",
+                    Quantity = 50,
+                    Cost = 10,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 7,
+                    Name = "BBQ Chicken Pizza",
+                    Description = "Chicken Slathered on toppa da pie! Sweet and Tangy Sauce!",
+                    Quantity = 100,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 8,
+                    Name = "Buffalo Pizza",
+                    Description = "For a spicy kick!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 9,
+                    Name = "The Works Pizza",
+                    Description = "This thing has it all!",
+                    Quantity = 50,
+                    Cost = 10,
+                    StoreId = 1,
+                    CategoryId = 1,
+                }, new Product()
+                {
+                    ProductId = 10,
+                    Name = "Pepperoni Panzarotti",
+                    Description = "For our hot pocket lovers!",
+                    Quantity = 100,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 11,
+                    Name = "Roman-style Pizza",
+                    Description = "Imagine a square focaccia pizza!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 12,
                     Name = "Honey Garlic Wings",
                     Description = "Sweet & Delicious!",
                     Quantity = 500,
@@ -166,7 +235,7 @@ namespace MealOrderingApi.DataAccess
                 },
                 new Product()
                 {
-                    ProductId = 6,
+                    ProductId = 13,
                     Name = "Sweet & Spicy Wings",
                     Description = "What a combination!",
                     Quantity = 500,

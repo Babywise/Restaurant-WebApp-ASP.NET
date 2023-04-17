@@ -23,6 +23,7 @@ namespace Meal_Ordering_Customer.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(AccountLoginViewModel model)
         {
@@ -42,7 +43,7 @@ namespace Meal_Ordering_Customer.Controllers
                         HttpContext.Session.SetString("Username", loginResponse.Account.Username);
                     }
 
-                    return RedirectToAction("Menu", "Order");
+                    return RedirectToAction("Categories", "Menu");
                 }
 
                 ModelState.AddModelError(string.Empty, "Login failed");
@@ -50,6 +51,7 @@ namespace Meal_Ordering_Customer.Controllers
 
             return View(model);
         }
+
         [HttpGet]
         public IActionResult Register()
         {

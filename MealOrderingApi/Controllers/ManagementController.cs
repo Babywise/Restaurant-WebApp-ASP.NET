@@ -41,6 +41,21 @@ namespace MealOrderingApi.Controllers
 
         }
 
+        [HttpGet("category")]
+        [Authorize]
+        public async Task<IActionResult> Category([FromQuery] int CategoryId)
+        {
+            var category = await _mealOrderingService.GetCategoryAsync(CategoryId);
+
+            if (category == null)
+            {
+                return NotFound(new { Message = "Category not found" });
+            }
+
+            return Ok(category);
+
+        }
+
         [HttpGet("orders")]
         [Authorize]
         public async Task<IActionResult> Orders()

@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="RequestEntitiesCustomer\**" />
-    <EmbeddedResource Remove="RequestEntitiesCustomer\**" />
-    <None Remove="RequestEntitiesCustomer\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
   </ItemGroup>
 

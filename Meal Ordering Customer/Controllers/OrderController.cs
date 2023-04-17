@@ -14,25 +14,6 @@ namespace Meal_Ordering_Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> Menu()
         {
-            if (ModelState.IsValid)
-            {
-                string accessToken = HttpContext.Session.GetString("Authorization");
-
-                if (string.IsNullOrEmpty(accessToken))
-                {
-                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
-
-                GetMenuRequest getMenuRequest = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
-
-                if (getMenuRequest == null)
-                {
-                    ModelState.AddModelError(string.Empty, $"Failed to get Menu from API.");
-                }
-
-                return View(getMenuRequest.Categories);
-            }
-
             return View();
 
         }

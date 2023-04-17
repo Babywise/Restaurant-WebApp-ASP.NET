@@ -1,0 +1,12 @@
+﻿@model ICollection<Category>
+@{
+    ViewData["Title"] = "Menu Categories";
+}
+
+<h1 class="align-content-center">{Restaurant Name}</h1>
+
+
+@foreach (var category in Model)
+{
+    <a class="btn btn-secondary" asp-action="Display" asp-route-CategoryId=@category.CategoryId asp-CategoryId=@category.CategoryId>@category.Name</a>
+}

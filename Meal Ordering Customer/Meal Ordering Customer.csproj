@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Meal Ordering Class Library\Meal Ordering Class Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Order\" />
+  </ItemGroup>
+
 </Project>

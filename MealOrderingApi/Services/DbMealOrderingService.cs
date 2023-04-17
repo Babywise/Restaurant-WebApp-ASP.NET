@@ -1,6 +1,8 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.Services;
 using MealOrderingApi.DataAccess;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MealOrderingApi.Services
@@ -19,6 +21,15 @@ namespace MealOrderingApi.Services
                 .Include(c => c.Products)
                 .ToListAsync();
         }
+
+        public async Task<Category> GetCategoryAsync([FromQuery]int CategoryId)
+        {
+            return await _mealOrderingContext.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.CategoryId == CategoryId);
+        }
+
+
         public async Task<ICollection<Order>> GetOrdersAsync()
         {
             return await _mealOrderingContext.Orders
@@ -40,6 +51,5 @@ namespace MealOrderingApi.Services
             }
             return false;
         }
-
     }
 }
