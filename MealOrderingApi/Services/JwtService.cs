@@ -27,7 +27,6 @@ namespace MealOrderingApi.Services
                 {
                     new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, user.Id)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
@@ -37,7 +36,7 @@ namespace MealOrderingApi.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+            return await Task.FromResult(tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)));
 
 /*
             var key = Encoding.ASCII.GetBytes(_config.GetValue<string>("Jwt:Key"));

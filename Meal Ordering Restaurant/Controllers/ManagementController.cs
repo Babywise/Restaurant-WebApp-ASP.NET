@@ -20,7 +20,6 @@ namespace Meal_Ordering_Restaurant.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
-            GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
 
             if (getMenuRequest == null)
             {
@@ -29,7 +28,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                 return View();
             }
 
-            ManagementViewModel managementViewModel = new ManagementViewModel
+            ManagementViewModel managementViewModel = new ManagementViewModel()
             {
                 Categories = getMenuRequest.Categories
             };
@@ -40,19 +39,78 @@ namespace Meal_Ordering_Restaurant.Controllers
         public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {
 
+            GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
+            
+
             if (ModelState.IsValid)
             {
-                var response = await _managementService.AddCategoryAsync(model.AddCategoryRequest, HttpContext.Session.GetString("Authorization"));
 
-                if (response.IsSuccessStatusCode)
+                if (model.AddCategoryRequest != null)
                 {
-                    return RedirectToAction("Index", "Management");
+                    var response = await _managementService.AddCategoryAsync(model.AddCategoryRequest, HttpContext.Session.GetString("Authorization"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index", "Management");
+                    }
+                }
+
+                if (model.AddProductRequest != null)
+                {
+                    var response = await _managementService.AddProductAsync(model.AddProductRequest, HttpContext.Session.GetString("Authorization"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index", "Management");
+                    }
                 }
 
                 ModelState.AddModelError(string.Empty, $"Add Category \"{model.AddCategoryRequest.Name}\" failed");
             }
 
             return View(model);
+        }
+
+        [HttpGet("Management/Product/Add/")]
+        public async Task<IActionResult> AddProductAsync()
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+
+            AddProductViewModel addProductViewModel = new AddProductViewModel()
+            {
+                Categories = getMenuRequest.Categories,
+                AddProductRequest = new AddProductRequest()
+            };
+
+            return View("AddProduct", addProductViewModel);
+        }
+
+        [HttpPost("Management/Product/Add/")]
+        public async Task<IActionResult> AddProductAsync(AddProductRequest addProductRequest)
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+
+            AddProductViewModel addProductViewModel = new AddProductViewModel()
+            {
+                Categories = getMenuRequest.Categories,
+                AddProductRequest = new AddProductRequest()
+            };
+
+            return View("AddProduct", addProductViewModel);
         }
 
     }
