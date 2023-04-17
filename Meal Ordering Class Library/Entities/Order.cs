@@ -9,7 +9,6 @@ namespace Meal_Ordering_Class_Library.Entities
         public int? StoreId { get; set; }
         //FK
         public int? CustomerId { get; set; }
-        public bool? IsUpdated { get; set; } 
         public string? Status {  get; set; }
         //Nav
         [NotMapped]

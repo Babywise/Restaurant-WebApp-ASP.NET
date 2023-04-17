@@ -1,4 +1,5 @@
 using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.Services;
 using MealOrderingApi.DataAccess;
 using MealOrderingApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connStr = builder.Configuration.GetConnectionString("MealOrderingDb");
 builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
+builder.Services.AddScoped<IMealOrderingService, DbMealOrderingService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options => {

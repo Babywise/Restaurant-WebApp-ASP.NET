@@ -1,0 +1,11 @@
+﻿@model ManagementViewModel
+@{
+    ViewData["Title"] = "Management";
+}
+
+@foreach (var category in Model.Categories)
+{
+    <div>
+        <label>@category.Name</label>
+    </div>
+}

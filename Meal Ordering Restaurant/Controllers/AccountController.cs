@@ -1,30 +1,22 @@
-﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
-using Meal_Ordering_Restaurant.Models;
+﻿using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.ResponseEntities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Net.Http.Headers;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly MealOrderingService _mealOrderingService;
+        private readonly AccountService _accountService;
         private readonly IConfiguration _config;
-        public AccountController(IConfiguration config, MealOrderingService mealOrderingService)
+        public AccountController(IConfiguration config, AccountService accountService)
         {
             _config = config;
-            _mealOrderingService = mealOrderingService;
+            _accountService = accountService;
         }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -35,7 +27,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _mealOrderingService.LoginAsync(model.AccountLoginRequest);
+                var response = await _accountService.LoginAsync(model.AccountLoginRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -49,7 +41,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                         HttpContext.Session.SetString("Username", loginResponse.Account.Username);
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Management");
                 }
 
                 ModelState.AddModelError(string.Empty, "Login failed");
@@ -68,7 +60,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _mealOrderingService.RegisterAsync(model.AccountRegisterRequest);
+                var response = await _accountService.RegisterAsync(model.AccountRegisterRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -84,7 +76,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpGet("Account/Edit/")]
         public async Task<IActionResult> Edit()
         {
-            var response = await _mealOrderingService.GetAccountDetails(HttpContext.Session.GetString("Username"), HttpContext.Session.GetString("Authorization"));
+            var response = await _accountService.GetAccountDetailsAsync(HttpContext.Session.GetString("Username"), HttpContext.Session.GetString("Authorization"));
 
             AccountEditViewModel accountEditViewModel = new AccountEditViewModel()
             {
@@ -106,7 +98,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                     return RedirectToAction("Login"); // Redirect to the login page if not authenticated
                 }
 
-                var response = await _mealOrderingService.UpdateUserDetailsAsync(model.AccountEditRequest, accessToken);
+                var response = await _accountService.UpdateUserDetailsAsync(model.AccountEditRequest, accessToken);
 
                 if (response.IsSuccessStatusCode)
                 {

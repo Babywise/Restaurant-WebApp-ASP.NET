@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 
 // Add session services and configure options
 builder.Services.AddHttpClient();
-builder.Services.AddHttpContextAccessor();
+//builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".MealOrderingApp.Session";
@@ -22,7 +22,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddScoped<MealOrderingService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ManagementService>();
 
 // Configure authentication middleware
 builder.Services.AddAuthentication(options =>

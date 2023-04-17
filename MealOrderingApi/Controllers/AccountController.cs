@@ -25,7 +25,6 @@ namespace MealOrderingApi.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _config;
 
-
         public AccountController(IConfiguration config, ILogger<AccountController> logger, SignInManager<User> signInManager, UserManager<User> userManager, IJwtService jwtService)
         {
             _config = config;

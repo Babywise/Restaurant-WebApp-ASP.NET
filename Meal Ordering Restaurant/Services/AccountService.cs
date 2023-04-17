@@ -6,17 +6,15 @@ using System.Net.Http.Json;
 
 namespace Meal_Ordering_Restaurant.Services
 {
-    public class MealOrderingService
+    public class AccountService
     {
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _config;
-        public MealOrderingService(IConfiguration config, HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public AccountService(IConfiguration config, HttpClient httpClient)
         {
             _config = config;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri(_config["ApiSettings:ApiBaseUrl"]);
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<HttpResponseMessage> LoginAsync(AccountLoginRequest accountLoginRequest)
@@ -35,7 +33,7 @@ namespace Meal_Ordering_Restaurant.Services
             return await _httpClient.PutAsJsonAsync("api/v1/account/edit", accountEditRequest);
         }
 
-        public async Task<AccountEditRequest> GetAccountDetails(string username, string accessToken)
+        public async Task<AccountEditRequest> GetAccountDetailsAsync(string username, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.GetFromJsonAsync<AccountEditRequest>($"api/v1/account/edit?Username={username}");
