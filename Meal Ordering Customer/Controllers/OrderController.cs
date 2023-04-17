@@ -36,5 +36,5 @@ namespace Meal_Ordering_Customer.Controllers
             return View();
 
         }
-    }
+    } 
 }
