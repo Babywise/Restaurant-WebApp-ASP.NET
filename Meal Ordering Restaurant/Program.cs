@@ -26,15 +26,12 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ManagementService>();
 
 // Configure authentication middleware
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
 {
     options.Authority = builder.Configuration["ApiSettings:ApiBaseUrl"];
     options.Audience = builder.Configuration["ApiSettings:ApiBaseUrl"];
+    
 });
 
 var app = builder.Build();
