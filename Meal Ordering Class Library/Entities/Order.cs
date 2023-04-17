@@ -1,17 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Meal_Ordering_Class_Library.Entities
 {
     public class Order
     {
-        public int? OrderId { get; set; }
+        //PK
+        public int OrderId { get; set; }
         //FK
-        public int? StoreId { get; set; }
+        public int StoreId { get; set; }
         //FK
-        public int? CustomerId { get; set; }
+        public int CustomerId { get; set; }
         public string? Status {  get; set; }
         //Nav
-        [NotMapped]
-        public ICollection<Product>? Products { get; set; }
+        public ICollection<OrderProduct>? OrderProducts { get; set; }
     }
 }

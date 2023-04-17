@@ -2,8 +2,8 @@
 
 namespace Meal_Ordering_Class_Library.RequestEntitiesShared
 {
-    public class GetAllOrdersRequest
+    public class GetOrdersRequest
     {
-        ICollection<Order>? Orders { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

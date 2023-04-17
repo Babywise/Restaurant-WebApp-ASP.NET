@@ -5,11 +5,13 @@ namespace Meal_Ordering_Class_Library.Entities
 {
     public class Product
     {
+        //PK
         public int ProductId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Quantity { get; set; }
         public float? Cost { get; set; } 
+        public bool? IsDeleted { get; set; }
         //FK
         public int? StoreId { get; set; }
         //FK

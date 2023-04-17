@@ -93,6 +93,13 @@ namespace MealOrderingApi.DataAccess
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // OrderContents and OrderProducts FK relationship (1-to-Many)
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Order)
+                .WithMany(o => o.OrderProducts)
+                .HasForeignKey(op => op.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category()
                 {
@@ -176,31 +183,61 @@ namespace MealOrderingApi.DataAccess
                     CustomerId = 1,
                     StoreId = 1,
                     Status = "In the Oven",
-                    Products = new List<Product>()
-                    {
-                        new Product()
-                        {
-                            ProductId = 6,
-                            Name = "Sweet & Spicy Wings",
-                            Description = "What a combination!",
-                            Quantity = 500,
-                            Cost = 5,
-                            StoreId = 1,
-                            CategoryId = 2,
-                        },
-                        new Product()
-                        {
-                            ProductId = 2,
-                            Name = "Pepperoni Pizza",
-                            Description = "Delicious & Cheesy!",
-                            Quantity = 50,
-                            Cost = 5,
-                            StoreId = 1,
-                            CategoryId = 1,
-                        },
-                    }
+                },
+                new Order()
+                {
+                    OrderId = 2,
+                    CustomerId = 1,
+                    StoreId = 1,
+                    Status = "Confirmed",
+                },
+                new Order()
+                {
+                    OrderId = 3,
+                    CustomerId = 1,
+                    StoreId = 1,
+                    Status = "Canceled",
                 }
             );
+
+            modelBuilder.Entity<OrderProduct>().HasData(
+                new OrderProduct()
+                {
+                    OrderProductId = 1,
+                    OrderId = 1,
+                    ProductId = 1,
+                    Quantity = 10,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 2,
+                    OrderId = 1,
+                    ProductId = 2,
+                    Quantity = 20,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 3,
+                    OrderId = 2,
+                    ProductId = 3,
+                    Quantity = 14,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 4,
+                    OrderId = 2,
+                    ProductId = 4,
+                    Quantity = 50,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 5,
+                    OrderId = 3,
+                    ProductId = 1,
+                    Quantity = 10,
+                }
+            );
+
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+            GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
 
             if (getMenuRequest == null)
             {
@@ -30,7 +31,7 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             ManagementViewModel managementViewModel = new ManagementViewModel
             {
-                Categories = getMenuRequest.Categories,
+                Categories = getMenuRequest.Categories
             };
 
             return View(managementViewModel);

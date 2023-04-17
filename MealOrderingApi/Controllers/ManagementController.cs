@@ -40,5 +40,25 @@ namespace MealOrderingApi.Controllers
 
         }
 
+        [HttpGet("orders")]
+        [Authorize]
+        public async Task<IActionResult> orders()
+        {
+            var orders = await _mealOrderingService.GetOrders();
+
+            if (orders == null)
+            {
+                return NotFound(new { Message = "Orders not found" });
+            }
+
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
+            {
+                Orders = orders
+            };
+
+            return Ok(getOrdersRequest);
+
+        }
+
     }
 }

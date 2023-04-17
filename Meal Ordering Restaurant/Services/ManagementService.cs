@@ -23,6 +23,11 @@ namespace Meal_Ordering_Restaurant.Services
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.GetFromJsonAsync<GetMenuRequest>("api/v1/management/menu");
         }
+        public async Task<GetOrdersRequest> GetOrdersAsync(string accessToken)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>("api/v1/management/orders");
+        }
 
         public async Task<HttpResponseMessage> AddCategoryAsync(AddCategoryRequest addCategoryRequest, string accessToken)
         {

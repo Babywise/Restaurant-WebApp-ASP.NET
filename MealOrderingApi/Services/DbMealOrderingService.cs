@@ -15,7 +15,15 @@ namespace MealOrderingApi.Services
 
         public async Task<ICollection<Category>> GetMenu()
         {
-            return await _mealOrderingContext.Categories.Include(c => c.Products).ToListAsync();
+            return await _mealOrderingContext.Categories
+                .Include(c => c.Products)
+                .ToListAsync();
+        }
+        public async Task<ICollection<Order>> GetOrders()
+        {
+            return await _mealOrderingContext.Orders
+                .Include(o => o.OrderProducts)
+                .ToListAsync();
         }
     }
 }
