@@ -28,7 +28,7 @@ namespace MealOrderingApi.Controllers
 
             if (categories == null)
             {
-                return NotFound(new { Message = "No categories found" });
+                return NotFound(new { Message = "Menu not found" });
             }
 
             GetMenuRequest getAllCategoriesRequest = new GetMenuRequest()

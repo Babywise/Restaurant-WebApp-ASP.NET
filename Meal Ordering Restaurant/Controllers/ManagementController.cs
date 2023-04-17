@@ -23,7 +23,7 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             if (getMenuRequest == null)
             {
-                ModelState.AddModelError(string.Empty, $"Failed to get Categories from API.");
+                ModelState.AddModelError(string.Empty, $"Failed to get Menu from API.");
 
                 return View();
             }
