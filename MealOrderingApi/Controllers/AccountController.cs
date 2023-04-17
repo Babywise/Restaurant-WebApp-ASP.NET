@@ -117,7 +117,7 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> Edit([FromBody] AccountEditRequest accountEditRequest)
         {
-            var user = await _userManager.FindByIdAsync(accountEditRequest.Username);
+            var user = await _userManager.FindByNameAsync(accountEditRequest.Username);
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });

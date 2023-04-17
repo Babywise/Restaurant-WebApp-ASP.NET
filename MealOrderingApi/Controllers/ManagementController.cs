@@ -22,7 +22,7 @@ namespace MealOrderingApi.Controllers
 
         [HttpGet("menu")]
         [Authorize]
-        public async Task<IActionResult> menu()
+        public async Task<IActionResult> Menu()
         {
             var categories = await _mealOrderingService.GetMenu();
 
@@ -42,7 +42,7 @@ namespace MealOrderingApi.Controllers
 
         [HttpGet("orders")]
         [Authorize]
-        public async Task<IActionResult> orders()
+        public async Task<IActionResult> Orders()
         {
             var orders = await _mealOrderingService.GetOrders();
 
