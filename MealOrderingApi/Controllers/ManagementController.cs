@@ -43,9 +43,10 @@ namespace MealOrderingApi.Controllers
 
         [HttpGet("category")]
         [Authorize]
-        public async Task<IActionResult> Category([FromQuery] int CategoryId)
+        public async Task<IActionResult> Category([FromQuery] int CategoryId, [FromQuery] bool IncludeProduct)
         {
-            var category = await _mealOrderingService.GetCategoryAsync(CategoryId);
+
+            var category = await _mealOrderingService.GetCategoryAsync(CategoryId, IncludeProduct);
 
             if (category == null)
             {
@@ -53,6 +54,21 @@ namespace MealOrderingApi.Controllers
             }
 
             return Ok(category);
+
+        }
+
+        [HttpGet("product")]
+        [Authorize]
+        public async Task<IActionResult> Product([FromQuery] int ProductId)
+        {
+            var product = await _mealOrderingService.GetProductAsync(ProductId);
+
+            if (product == null)
+            {
+                return NotFound(new { Message = "Category not found" });
+            }
+
+            return Ok(product);
 
         }
 

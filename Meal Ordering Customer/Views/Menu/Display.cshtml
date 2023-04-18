@@ -22,13 +22,16 @@
 
         <div class="col-md-4">
             <div class="card mb-4">
-                <a href="@Url.Action("DisplayItem", "Menu", new { id = product.ProductId })">
+                <a class="text-decoration-none" href="@Url.Action("DisplayItem", "Menu", new { ProductId = product.ProductId, CategoryId = product.CategoryId })">
                     <div class="card-body">
                         <h5 class="card-title">@product.Name</h5>
                         <p class="card-text">$@product.Cost<p>
                     </div>
                 </a>
             </div>
+            <a class="btn btn-secondary mb-4" asp-controller="Order" asp-action="AddToCart" 
+            asp-route-CategoryId=@product.CategoryId asp-route-ProductId=@product.ProductId asp-route-QuantityToAdd=1>Quick Add</a>
+            <br />
         </div>
 
         productCount++;

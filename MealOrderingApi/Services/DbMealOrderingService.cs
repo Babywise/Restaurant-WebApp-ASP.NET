@@ -18,17 +18,41 @@ namespace MealOrderingApi.Services
         public async Task<ICollection<Category>> GetMenuAsync()
         {
             return await _mealOrderingContext.Categories
-                .Include(c => c.Products)
+                .Include(c => c.Products).Where(p => p.IsDeleted != true)
                 .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryAsync([FromQuery]int CategoryId)
+        public async Task<Category> GetCategoryAsync([FromQuery] int CategoryId, bool IncludeProduct)
         {
-            return await _mealOrderingContext.Categories
-                .Include(c => c.Products)
+            if (IncludeProduct)
+            {
+                return await _mealOrderingContext.Categories
+                .Include(c => c.Products).Where(p => p.IsDeleted != true)
                 .FirstOrDefaultAsync(c => c.CategoryId == CategoryId);
+            }
+            else 
+            {
+                return await _mealOrderingContext.Categories
+                .FirstOrDefaultAsync(c => c.CategoryId == CategoryId);
+            }
         }
 
+        public async Task<Product> GetProductAsync([FromQuery] int ProductId)
+        {
+            Product product = await _mealOrderingContext.Products
+               .Include(p => p.Category)
+               .FirstOrDefaultAsync(p => p.ProductId == ProductId);
+
+            // For security reasons. We do not want people to get the product info for "soft-deleted" items.
+            // So make the product null except for the description, which tells us that it has been deleted.
+            if (product.IsDeleted == true) {
+                product = null;
+                product.Description = "Deleted Item, Cannot Fetch";
+            }
+
+            return product;
+
+        }
 
         public async Task<ICollection<Order>> GetOrdersAsync()
         {

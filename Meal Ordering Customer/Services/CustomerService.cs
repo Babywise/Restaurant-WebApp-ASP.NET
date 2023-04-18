@@ -23,10 +23,18 @@ namespace Meal_Ordering_Customer.Services
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.GetFromJsonAsync<GetMenuRequest>("api/v1/management/menu");
         }
-        public async Task<Category> GetCategoryAsync(string accessToken, int CategoryId)
+
+        public async Task<Category> GetCategoryAsync(string accessToken, int CategoryId, bool IncludeProduct)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<Category>($"api/v1/management/category?CategoryId={CategoryId}");
+
+            return await _httpClient.GetFromJsonAsync<Category>($"api/v1/management/category?CategoryId={CategoryId}&IncludeProduct={IncludeProduct}");
+
+        }
+        public async Task<Product> GetProductAsync(string accessToken, int ProductId)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.GetFromJsonAsync<Product>($"api/v1/management/product?ProductId={ProductId}");
         }
         public async Task<GetOrdersRequest> GetOrdersAsync(string accessToken)
         {

@@ -11,11 +11,15 @@ namespace Meal_Ordering_Customer.Controllers
         {
             _customerService = customerService;
         }
-        [HttpGet]
-        public async Task<IActionResult> Menu()
-        {
-            return View();
 
+        public async Task<IActionResult> AddToCart(int CategoryId, int ProductId, int QuantityToAdd)
+        {
+            // Add the specified quantity to the cart
+            // ...
+
+            // Redirect back to the Menu Display page
+            return RedirectToAction("Display", "Menu", new { CategoryId = CategoryId });
         }
+
     } 
 }
