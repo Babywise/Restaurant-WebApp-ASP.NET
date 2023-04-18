@@ -6,7 +6,6 @@ namespace Meal_Ordering_Restaurant.Models
     public class ManagementViewModel
     {
         public ICollection<Category>? Categories { get; set; }
-        public ICollection<Product>? Products { get; set; }
         public AddCategoryRequest? AddCategoryRequest { get; set; }
         public AddProductRequest? AddProductRequest { get; set; }
     }

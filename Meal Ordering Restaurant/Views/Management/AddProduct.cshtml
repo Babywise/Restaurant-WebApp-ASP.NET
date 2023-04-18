@@ -3,23 +3,6 @@
     ViewData["Title"] = "Add New Product";
 }
 
-@foreach (var category in Model.Categories)
-{
-    <span>---</span>
-    <div>
-        <label>@category.Name</label>
-    </div>
-    @foreach (var product in category.Products)
-    {
-        <div>
-            <label>@product.Name</label>
-        </div>
-
-    }
-    <span>---</span>
-    <br />
-}
-
 <form method="post">
     <div>
         <span asp-validation-for="AddProductRequest.Name" class="text-danger"></span>
@@ -43,8 +26,7 @@
     </div>
     <div>
         <span asp-validation-for="AddProductRequest.CategoryId" class="text-danger"></span>
-        <label asp-for="AddProductRequest.CategoryId">New Category Name:</label>
-        <select asp-for="AddProductRequest.CategoryId" type="text" />
+        <label asp-for="AddProductRequest.CategoryId">Category:</label>
         <select asp-for="AddProductRequest.CategoryId">
             <option value="">Please select a category</option>
             @foreach (var c in Model.Categories)

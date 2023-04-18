@@ -39,8 +39,13 @@ namespace Meal_Ordering_Restaurant.Controllers
         public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {
 
-            GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
-            
+            //GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
 
             if (ModelState.IsValid)
             {
@@ -93,7 +98,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         }
 
         [HttpPost("Management/Product/Add/")]
-        public async Task<IActionResult> AddProductAsync(AddProductRequest addProductRequest)
+        public async Task<IActionResult> AddProductAsync(AddProductViewModel model)
         {
             string accessToken = HttpContext.Session.GetString("Authorization");
 
@@ -102,15 +107,29 @@ namespace Meal_Ordering_Restaurant.Controllers
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             }
 
-            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+            if (ModelState.IsValid)
+            {
+                var response = await _managementService.AddProductAsync(model.AddProductRequest, HttpContext.Session.GetString("Authorization"));
 
-            AddProductViewModel addProductViewModel = new AddProductViewModel()
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Management");
+                }
+
+                ModelState.AddModelError(string.Empty, $"Add Product \"{model.AddProductRequest.Name}\" failed");
+            }
+            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+            model.Categories = getMenuRequest.Categories;
+            /*
+            ManagementViewModel managementViewModel = new ManagementViewModel()
             {
                 Categories = getMenuRequest.Categories,
+                AddCategoryRequest = new AddCategoryRequest(),
                 AddProductRequest = new AddProductRequest()
             };
 
-            return View("AddProduct", addProductViewModel);
+            return View("Index", managementViewModel);*/
+            return View(model);
         }
 
     }

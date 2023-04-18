@@ -74,5 +74,18 @@ namespace MealOrderingApi.Controllers
 
         }
 
+        [HttpPost("add-product")]
+        [Authorize]
+        public async Task<IActionResult> AddProduct([FromBody] AddProductRequest addProductRequest)
+        {
+            if (!await _mealOrderingService.AddProductAsync(addProductRequest))
+            {
+                return BadRequest(new { Message = $"Product '{addProductRequest.Name}' could not be added" });
+            }
+
+            return Ok(new { Message = $"Product '{addProductRequest.Name}' was successfully added" });
+
+        }
+
     }
 }

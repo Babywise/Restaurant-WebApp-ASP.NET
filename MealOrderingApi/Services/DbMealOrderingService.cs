@@ -1,4 +1,5 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.Services;
 using MealOrderingApi.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,25 @@ namespace MealOrderingApi.Services
                 _mealOrderingContext.Categories.Add(new Category()
                 {
                     Name = categoryName
+                });
+
+                if (await _mealOrderingContext.SaveChangesAsync() != 0) 
+                    return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> AddProductAsync(AddProductRequest addProductRequest)
+        {
+            if(!_mealOrderingContext.Products.Where(c => c.Name == addProductRequest.Name).Any())
+            {
+                _mealOrderingContext.Products.Add(new Product()
+                {
+                    Name = addProductRequest.Name,
+                    Description = addProductRequest.Description,
+                    CategoryId = addProductRequest.CategoryId,
+                    Cost = addProductRequest.Cost,
+                    Quantity = addProductRequest.Quantity
                 });
 
                 if (await _mealOrderingContext.SaveChangesAsync() != 0) 
