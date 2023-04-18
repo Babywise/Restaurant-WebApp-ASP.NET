@@ -9,6 +9,6 @@
 @foreach (var category in Model)
 {
     <div class="row">
-        <a class="btn btn-secondary mb-4" asp-action="Display" asp-route-CategoryId=@category.CategoryId asp-CategoryId=@category.CategoryId>@category.Name</a>
+        <a class="btn btn-secondary mb-4" asp-action="Display" asp-route-CategoryId=@category.CategoryId>@category.Name</a>
     </div>
 }

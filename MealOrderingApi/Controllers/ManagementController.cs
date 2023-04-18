@@ -72,7 +72,7 @@ namespace MealOrderingApi.Controllers
 
         }
 
-        [HttpGet("orders")]
+        /*[HttpGet("orders")]
         [Authorize]
         public async Task<IActionResult> Orders()
         {
@@ -92,11 +92,31 @@ namespace MealOrderingApi.Controllers
 
         }
 
-        [HttpGet("orders/{CustomerId}")]
+        [HttpGet("orders")]
         [Authorize]
-        public async Task<IActionResult> Orders(int CustomerId)
+        public async Task<IActionResult> Orders(int OrderId)
         {
-            var orders = await _mealOrderingService.GetOrdersByCustomerIdAsync(CustomerId);
+            var orders = await _mealOrderingService.GetOrderByIdAsync(OrderId);
+
+            if (orders == null)
+            {
+                return NotFound(new { Message = "Orders not found" });
+            }
+
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
+            {
+                Orders = orders
+            };
+
+            return Ok(getOrdersRequest);
+
+        }*/
+
+        [HttpGet("orders")]
+        [Authorize]
+        public async Task<IActionResult> OrdersByCustomerId(string Username)
+        {
+            var orders = await _mealOrderingService.GetOrdersByUsernameAsync(Username);
 
             if (orders == null)
             {

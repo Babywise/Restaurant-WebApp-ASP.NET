@@ -249,23 +249,23 @@ namespace MealOrderingApi.DataAccess
                 new Order()
                 {
                     OrderId = 1,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
                     Status = "In the Oven",
                 },
                 new Order()
                 {
                     OrderId = 2,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
                     Status = "Confirmed",
                 },
                 new Order()
                 {
                     OrderId = 3,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
-                    Status = "Canceled",
+                    Status = "Cart",
                 }
             );
 

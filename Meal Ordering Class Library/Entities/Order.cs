@@ -10,7 +10,7 @@ namespace Meal_Ordering_Class_Library.Entities
         //FK
         public int StoreId { get; set; }
         //FK
-        public int CustomerId { get; set; }
+        public string? Username{ get; set; }
         public string? Status {  get; set; }
         //Nav
         public ICollection<OrderProduct>? OrderProducts { get; set; }

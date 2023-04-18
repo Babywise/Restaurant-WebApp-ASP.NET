@@ -61,10 +61,18 @@ namespace MealOrderingApi.Services
                 .ToListAsync();
         }
 
-        public async Task<ICollection<Order>> GetOrdersByCustomerIdAsync(int CustomerId)
+        public async Task<Order> GetOrderByIdAsync(int OrderId)
         {
             return await _mealOrderingContext.Orders
-                .Where(o => o.CustomerId == CustomerId)
+                 .Where(o => o.OrderId == OrderId)
+                 .Include(o => o.OrderProducts)
+                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<ICollection<Order>> GetOrdersByUsernameAsync(string Username)
+        {
+            return await _mealOrderingContext.Orders
+                .Where(o => o.Username == Username)
                 .Include(o => o.OrderProducts)
                 .ToListAsync();
         }

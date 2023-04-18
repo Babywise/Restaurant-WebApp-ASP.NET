@@ -22,7 +22,8 @@ namespace Meal_Ordering_Customer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index() {
+        public async Task<IActionResult> Index()
+        {
             return RedirectToAction("Categories");
         }
 
@@ -56,45 +57,59 @@ namespace Meal_Ordering_Customer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Display(int CategoryId) {
-            string accessToken = HttpContext.Session.GetString("Authorization");
+        public async Task<IActionResult> Display(int CategoryId)
+        {
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
 
-            if (string.IsNullOrEmpty(accessToken))
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                bool IncludeProduct = true;
+                Category category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+
+                return View(category);
+            }
+            else
             {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             }
-
-            bool IncludeProduct = true;
-            Category category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
-
-            return View(category);
 
         }
 
         [HttpGet]
         public async Task<IActionResult> DisplayItem(int ProductId, int CategoryId)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
 
-            if (string.IsNullOrEmpty(accessToken))
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                Product product = await _customerService.GetProductAsync(HttpContext.Session.GetString("Authorization"), ProductId);
+                bool IncludeProduct = false;
+                product.Category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+
+                AddProductToCartViewModel vm = new AddProductToCartViewModel()
+                {
+                    Product = product,
+                    QuantityToAdd = 0
+                };
+
+                return View(vm);
+            }
+            else
             {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             }
 
-            Product product = await _customerService.GetProductAsync(HttpContext.Session.GetString("Authorization"), ProductId);
-            bool IncludeProduct = false;
-            product.Category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
-
-            AddProductToCartViewModel vm = new AddProductToCartViewModel()
-            {
-                Product = product,
-                QuantityToAdd = 0
-            };
-
-            return View(vm);
-
         }
-
     }
 }
 

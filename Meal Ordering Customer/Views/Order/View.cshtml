@@ -1,0 +1,35 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container">
+    <div class="card">
+        <a class="text-decoration-none">
+            <div class="card-body">
+                <h3 class="card-title">@Model.Status</h3>
+            </div>
+        </a>
+    </div>
+    <h2>Order Number: @Model.OrderId</h2>
+    <div class="card mb-4">
+        <a class="text-decoration-none">
+            <div class="card-body">
+                <h5 class="card-title">Order Details</h5>
+                @foreach (var product in Model.OrderProducts)
+                {
+                    <div class="row">
+                        <div class="col-8">
+                            
+                        </div>
+                        <div class="col-4">
+
+                        </div>
+                    </div>  
+                }
+            </div>
+        </a>
+    </div>
+</div>
+
+

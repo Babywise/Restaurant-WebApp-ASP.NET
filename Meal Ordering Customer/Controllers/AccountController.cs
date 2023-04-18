@@ -113,6 +113,7 @@ namespace Meal_Ordering_Customer.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         public IActionResult LogOut()
         {

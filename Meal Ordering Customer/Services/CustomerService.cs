@@ -27,19 +27,24 @@ namespace Meal_Ordering_Customer.Services
         public async Task<Category> GetCategoryAsync(string accessToken, int CategoryId, bool IncludeProduct)
         {
             SetAccessToken(_httpClient, accessToken);
-
             return await _httpClient.GetFromJsonAsync<Category>($"api/v1/management/category?CategoryId={CategoryId}&IncludeProduct={IncludeProduct}");
-
         }
+
         public async Task<Product> GetProductAsync(string accessToken, int ProductId)
         {
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.GetFromJsonAsync<Product>($"api/v1/management/product?ProductId={ProductId}");
         }
-        public async Task<GetOrdersRequest> GetOrdersAsync(string accessToken)
+
+        public async Task<Order> GetOrderAsync(string accessToken, int OrderId)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>("api/v1/management/orders");
+            return await _httpClient.GetFromJsonAsync<Order>($"api/v1/management/orders?OrderId={OrderId}");
+        }
+
+        public async Task<GetOrdersRequest> GetOrdersByUsernameAsync(string accessToken, string Username) {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>($"api/v1/management/orders?Username={Username}");
         }
 
         private void SetAccessToken(HttpClient httpClient, string accessToken)

@@ -1,0 +1,26 @@
+﻿@model GetOrdersRequest
+@{
+    ViewData["Title"] = "Order List";
+}
+
+<!-- Show the cart as the top order -->
+@foreach (var order in Model.Orders)
+{
+    if (order.Status == "Cart")
+    {
+        <div class="row">
+            <a class="btn btn-secondary mb-4" asp-action="List" asp-route-OrderId=@order.OrderId>@order.Status</a>
+        </div>
+    }
+}
+
+<!-- Show the rest of the orders -->
+@foreach (var order in Model.Orders)
+{
+    if (order.Status != "Cart")
+    {
+        <div class="row">
+            <a class="btn btn-secondary mb-4" asp-action="List">@order.OrderId</a>
+        </div>
+    }
+}
