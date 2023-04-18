@@ -61,6 +61,14 @@ namespace MealOrderingApi.Services
                 .ToListAsync();
         }
 
+        public async Task<ICollection<Order>> GetOrdersByCustomerIdAsync(int CustomerId)
+        {
+            return await _mealOrderingContext.Orders
+                .Where(o => o.CustomerId == CustomerId)
+                .Include(o => o.OrderProducts)
+                .ToListAsync();
+        }
+
         public async Task<bool> AddCategoryAsync(string categoryName)
         {
             if(!_mealOrderingContext.Categories.Where(c => c.Name == categoryName).Any())

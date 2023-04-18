@@ -55,7 +55,7 @@ namespace Meal_Ordering_Customer.Controllers
 
         }
 
-        //[HttpGet]
+        [HttpGet]
         public async Task<IActionResult> Display(int CategoryId) {
             string accessToken = HttpContext.Session.GetString("Authorization");
 

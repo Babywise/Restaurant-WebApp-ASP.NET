@@ -92,6 +92,27 @@ namespace MealOrderingApi.Controllers
 
         }
 
+        [HttpGet("orders/{CustomerId}")]
+        [Authorize]
+        public async Task<IActionResult> Orders(int CustomerId)
+        {
+            var orders = await _mealOrderingService.GetOrdersByCustomerIdAsync(CustomerId);
+
+            if (orders == null)
+            {
+                return NotFound(new { Message = "Orders not found" });
+            }
+
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
+            {
+                Orders = orders
+            };
+
+            return Ok(getOrdersRequest);
+
+        }
+
+
         [HttpPost("add-category")]
         [Authorize]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest addCategoryRequest)

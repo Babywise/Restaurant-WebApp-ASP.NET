@@ -35,11 +35,17 @@
                         @if (isSignedIn)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">Edit</a>
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Order" asp-action="ViewCart">Cart</a>
+                            </li>
+                             <li class="nav-item">
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Order" asp-action="OrderHistory">OrderHistory</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">ManageAccount</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline" asp-controller="Account" asp-action="LogOut" method="post">
-                                    <input type="submit" class="nav-link btn btn-link text-dark" value="Logout @username" />
+                                    <input type="submit" class="nav-link btn btn-link text-dark" value="Logout" />
                                 </form>
                             </li>
                         }
