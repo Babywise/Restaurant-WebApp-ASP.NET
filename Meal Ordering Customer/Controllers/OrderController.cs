@@ -71,7 +71,10 @@ namespace Meal_Ordering_Customer.Controllers
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
                 }
 
-                Order order = await _customerService.GetOrderAsync(HttpContext.Session.GetString("Authorization"), OrderId);
+                string Username = HttpContext.Session.GetString("Username");
+
+                GetOrdersRequest gor = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
+                Order order = gor.Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
                 GetMenuRequest gmr = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
                 OrderViewModel ovm = new OrderViewModel {

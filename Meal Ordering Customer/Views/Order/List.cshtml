@@ -9,7 +9,7 @@
     if (order.Status == "Cart")
     {
         <div class="row">
-            <a class="btn btn-secondary mb-4" asp-action="List" asp-route-OrderId=@order.OrderId>@order.Status</a>
+            <a class="btn btn-secondary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.Status</a>
         </div>
     }
 }
@@ -20,7 +20,7 @@
     if (order.Status != "Cart")
     {
         <div class="row">
-            <a class="btn btn-secondary mb-4" asp-action="List">@order.OrderId</a>
+            <a class="btn btn-secondary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.OrderId</a>
         </div>
     }
 }

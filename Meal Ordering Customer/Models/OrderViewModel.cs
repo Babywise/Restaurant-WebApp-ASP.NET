@@ -9,5 +9,6 @@ namespace Meal_Ordering_Customer.Models
         public Order Order { get; set; }
         // Holds the full list of restaurant products.
         public ICollection<Category> Menu { get; set; }
+
     }
 }

@@ -273,28 +273,28 @@ namespace MealOrderingApi.DataAccess
                 new OrderProduct()
                 {
                     OrderProductId = 1,
-                    OrderId = 1,
+                    OrderId = 3,
                     ProductId = 1,
                     Quantity = 10,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 2,
-                    OrderId = 1,
+                    OrderId = 3,
                     ProductId = 2,
                     Quantity = 20,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 3,
-                    OrderId = 2,
+                    OrderId = 3,
                     ProductId = 3,
                     Quantity = 14,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 4,
-                    OrderId = 2,
+                    OrderId = 3,
                     ProductId = 4,
                     Quantity = 50,
                 },

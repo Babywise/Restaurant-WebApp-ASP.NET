@@ -31,7 +31,8 @@
         <div class="row align-items-center">
             <div class="col-2">
                 <!-- Add Validation to make sure the user enters an integer! -->
-                <input asp-for="QuantityToAdd" type="text" />
+                <input asp-for=@Model.QuantityToAdd type="text" />
+                <span class="text-danger" asp-validation-for=@Model.QuantityToAdd></span>
             </div>
             <div class="col-1">
                 <button type="submit" class="btn btn-secondary"
