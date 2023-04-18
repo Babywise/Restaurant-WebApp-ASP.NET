@@ -35,10 +35,10 @@ namespace Meal_Ordering_Restaurant.Services
             return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", addCategoryRequest);
         }
 
-        public async Task<HttpResponseMessage> AddProductAsync(AddProductRequest addProductRequest, string accessToken)
+        public async Task<HttpResponseMessage> AddProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync("api/v1/management/add-product", addProductRequest);
+            return await _httpClient.PostAsJsonAsync("api/v1/management/add-product", productRequest);
         }
 
         private void SetAccessToken(HttpClient httpClient, string accessToken)

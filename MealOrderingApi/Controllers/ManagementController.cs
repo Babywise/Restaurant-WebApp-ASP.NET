@@ -42,7 +42,7 @@ namespace MealOrderingApi.Controllers
         }
 
         [HttpGet("orders")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Orders()
         {
             var orders = await _mealOrderingService.GetOrdersAsync();
@@ -76,14 +76,14 @@ namespace MealOrderingApi.Controllers
 
         [HttpPost("add-product")]
         [Authorize]
-        public async Task<IActionResult> AddProduct([FromBody] AddProductRequest addProductRequest)
+        public async Task<IActionResult> AddProduct([FromBody] ProductRequest productRequest)
         {
-            if (!await _mealOrderingService.AddProductAsync(addProductRequest))
+            if (!await _mealOrderingService.AddProductAsync(productRequest.Product))
             {
-                return BadRequest(new { Message = $"Product '{addProductRequest.Name}' could not be added" });
+                return BadRequest(new { Message = $"Product '{productRequest.Product.Name}' could not be added" });
             }
 
-            return Ok(new { Message = $"Product '{addProductRequest.Name}' was successfully added" });
+            return Ok(new { Message = $"Product '{productRequest.Product.Name}' was successfully added" });
 
         }
 

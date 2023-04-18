@@ -1,4 +1,5 @@
-﻿using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
+﻿using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Restaurant.Models;
@@ -58,11 +59,12 @@ namespace Meal_Ordering_Restaurant.Controllers
                     {
                         return RedirectToAction("Index", "Management");
                     }
+                    ModelState.AddModelError(string.Empty, $"Add Category \"{model.AddCategoryRequest.Name}\" failed");
                 }
 
-                if (model.AddProductRequest != null)
+                if (model.ProductRequest != null)
                 {
-                    var response = await _managementService.AddProductAsync(model.AddProductRequest, HttpContext.Session.GetString("Authorization"));
+                    var response = await _managementService.AddProductAsync(model.ProductRequest, HttpContext.Session.GetString("Authorization"));
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -70,7 +72,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                     }
                 }
 
-                ModelState.AddModelError(string.Empty, $"Add Category \"{model.AddCategoryRequest.Name}\" failed");
             }
 
             return View(model);
@@ -88,17 +89,18 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
-            AddProductViewModel addProductViewModel = new AddProductViewModel()
+            ProductViewModel productViewModel = new ProductViewModel()
             {
-                Categories = getMenuRequest.Categories,
-                AddProductRequest = new AddProductRequest()
+                ProductRequest = new ProductRequest(),
+                //AddProductRequest = new AddProductRequest(),
+                Categories = getMenuRequest.Categories
             };
 
-            return View("AddProduct", addProductViewModel);
+            return View("AddProduct", productViewModel);
         }
 
         [HttpPost("Management/Product/Add/")]
-        public async Task<IActionResult> AddProductAsync(AddProductViewModel model)
+        public async Task<IActionResult> AddProductAsync(ProductViewModel model)
         {
             string accessToken = HttpContext.Session.GetString("Authorization");
 
@@ -109,27 +111,45 @@ namespace Meal_Ordering_Restaurant.Controllers
 
             if (ModelState.IsValid)
             {
-                var response = await _managementService.AddProductAsync(model.AddProductRequest, HttpContext.Session.GetString("Authorization"));
+                var response = await _managementService.AddProductAsync(model.ProductRequest, HttpContext.Session.GetString("Authorization"));
 
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index", "Management");
                 }
 
-                ModelState.AddModelError(string.Empty, $"Add Product \"{model.AddProductRequest.Name}\" failed");
+                ModelState.AddModelError(string.Empty, $"Add Product \"{model.ProductRequest.Product.Name}\" failed. ({response.StatusCode}) : {response.RequestMessage}");
             }
+
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
             model.Categories = getMenuRequest.Categories;
-            /*
-            ManagementViewModel managementViewModel = new ManagementViewModel()
+
+            return View(model);
+        }
+
+
+        [HttpGet("Management/Product/Edit/{id}")]
+        public async Task<IActionResult> EditProductAsync(int id)
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
             {
-                Categories = getMenuRequest.Categories,
-                AddCategoryRequest = new AddCategoryRequest(),
-                AddProductRequest = new AddProductRequest()
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+
+            ProductViewModel productViewModel = new ProductViewModel() 
+            {
+                EditProductRequest = new EditProductRequest()
+                {
+                    Product = (Product)getMenuRequest.Categories.First().Products.Where(p => p.ProductId == id),
+                },
+                Categories = getMenuRequest.Categories
             };
 
-            return View("Index", managementViewModel);*/
-            return View(model);
+            return View("EditProduct", productViewModel);
         }
 
     }

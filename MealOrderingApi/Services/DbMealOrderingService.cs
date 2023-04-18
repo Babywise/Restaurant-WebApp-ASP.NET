@@ -42,17 +42,17 @@ namespace MealOrderingApi.Services
             return false;
         }
 
-        public async Task<bool> AddProductAsync(AddProductRequest addProductRequest)
+        public async Task<bool> AddProductAsync(Product product)
         {
-            if(!_mealOrderingContext.Products.Where(c => c.Name == addProductRequest.Name).Any())
+            if(!_mealOrderingContext.Products.Where(c => c.Name == product.Name).Any())
             {
                 _mealOrderingContext.Products.Add(new Product()
                 {
-                    Name = addProductRequest.Name,
-                    Description = addProductRequest.Description,
-                    CategoryId = addProductRequest.CategoryId,
-                    Cost = addProductRequest.Cost,
-                    Quantity = addProductRequest.Quantity
+                    Name = product.Name,
+                    Description = product.Description,
+                    CategoryId = product.CategoryId,
+                    Cost = product.Cost,
+                    Quantity = product.Quantity
                 });
 
                 if (await _mealOrderingContext.SaveChangesAsync() != 0) 

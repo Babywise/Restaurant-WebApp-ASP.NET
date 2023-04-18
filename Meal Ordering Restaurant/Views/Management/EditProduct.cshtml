@@ -1,0 +1,39 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = $"Edit - {Model.EditProductRequest.Product.Name}";
+}
+
+<form method="post">
+    <div>
+        <span asp-validation-for="AddProductRequest.Name" class="text-danger"></span>
+        <label asp-for="AddProductRequest.Name">Product Name:</label>
+        <input asp-for="AddProductRequest.Name" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AddProductRequest.Description" class="text-danger"></span>
+        <label asp-for="AddProductRequest.Description">Product Description:</label>
+        <input asp-for="AddProductRequest.Description" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AddProductRequest.Cost" class="text-danger"></span>
+        <label asp-for="AddProductRequest.Cost">Cost (per unit):</label>
+        <input asp-for="AddProductRequest.Cost" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AddProductRequest.Quantity" class="text-danger"></span>
+        <label asp-for="AddProductRequest.Quantity">Quantity:</label>
+        <input asp-for="AddProductRequest.Quantity" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="AddProductRequest.CategoryId" class="text-danger"></span>
+        <label asp-for="AddProductRequest.CategoryId">Category:</label>
+        <select asp-for="AddProductRequest.CategoryId">
+            <option value="">Please select a category</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.CategoryId">@c.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit">Add Product</button>
+</form>

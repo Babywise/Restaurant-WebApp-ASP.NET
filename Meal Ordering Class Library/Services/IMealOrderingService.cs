@@ -9,6 +9,6 @@ namespace Meal_Ordering_Class_Library.Services
         public Task<ICollection<Category>> GetMenuAsync();
         public Task<ICollection<Order>> GetOrdersAsync();
         public Task<bool> AddCategoryAsync(string categoryName);
-        public Task<bool> AddProductAsync(AddProductRequest addProductRequest);
+        public Task<bool> AddProductAsync(Product product);
     }
 }
