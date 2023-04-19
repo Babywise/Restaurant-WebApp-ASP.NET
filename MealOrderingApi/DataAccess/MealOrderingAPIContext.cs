@@ -25,8 +25,8 @@ namespace MealOrderingApi.DataAccess
             string password2 = "Sesame123#";
             string roleName2 = "Restaurant";
 
-            string username3 = "customer";
-            string password3 = "Sesame123#";
+            string username3 = "nick";
+            string password3 = "Nick123$";
             string roleName3 = "Customer";
 
             // Seed custom roles
@@ -74,6 +74,7 @@ namespace MealOrderingApi.DataAccess
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
