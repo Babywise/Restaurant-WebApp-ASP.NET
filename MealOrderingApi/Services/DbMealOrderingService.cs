@@ -112,23 +112,51 @@ namespace MealOrderingApi.Services
         // For updating the order products for the cart order
         public async Task<bool> UpdateOrderProductsAsync(UpdateOrderRequest updateOrderRequest)
         {
-            ICollection<OrderProduct> orderProducts = _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ToList();
-
-            if (orderProducts.Any())
+            // If the cart does not exist, create a new order with cart status for the given username and add the order products.
+            // Else, the cart does exist so update as normal
+            if (updateOrderRequest.Order.OrderId == 0 && updateOrderRequest.Order.Status == "Cart")
             {
-                
-                _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ExecuteDelete();
+                Order order = new Order
+                {
+                    OrderProducts = updateOrderRequest.Order.OrderProducts,
+                    Username = updateOrderRequest.Order.Username,
+                    Status = updateOrderRequest.Order.Status,
+                    StoreId = updateOrderRequest.Order.StoreId
+                };
 
-                foreach (var o in updateOrderRequest.Order.OrderProducts) {
+                foreach (var o in order.OrderProducts)
+                {
                     o.OrderProductId = 0;
                 }
-
-                _mealOrderingContext.OrderProducts.AddRange(updateOrderRequest.Order.OrderProducts);
+                _mealOrderingContext.Orders.Add(order);
+                _mealOrderingContext.OrderProducts.AddRange(order.OrderProducts);
                 if (await _mealOrderingContext.SaveChangesAsync() != 0)
                 {
                     return true;
                 }
             }
+            else 
+            { 
+            
+                ICollection<OrderProduct> orderProducts = _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ToList();
+
+                if (orderProducts.Any())
+                {
+                
+                    _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ExecuteDelete();
+
+                    foreach (var o in updateOrderRequest.Order.OrderProducts) {
+                        o.OrderProductId = 0;
+                    }
+
+                    _mealOrderingContext.OrderProducts.AddRange(updateOrderRequest.Order.OrderProducts);
+                    if (await _mealOrderingContext.SaveChangesAsync() != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
     }

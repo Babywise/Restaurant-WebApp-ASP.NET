@@ -33,7 +33,6 @@
                 <tbody>
                     @foreach (var orderProduct in Model.Order.OrderProducts)
                     {
-
                         @foreach (var category in Model.Menu)
                         {
                             var product = category.Products.FirstOrDefault(p => p.ProductId == orderProduct.ProductId);
@@ -44,12 +43,12 @@
                                     {
                                         if (attribute.Equals("Quantity"))
                                         {
-                                            CurrentQuantity = (int) orderProduct.GetType().GetProperty(attribute)?.GetValue(orderProduct);
+                                            CurrentQuantity = (int)orderProduct.GetType().GetProperty(attribute)?.GetValue(orderProduct);
                                             <td>@CurrentQuantity</td>
                                         }
                                         else if (attribute.Equals("Cost"))
                                         {
-                                            CurrentCost = (float) product.GetType().GetProperty(attribute)?.GetValue(product);
+                                            CurrentCost = (float)product.GetType().GetProperty(attribute)?.GetValue(product);
                                             <td>@CurrentCost</td>
                                         }
                                         else if (attribute.Equals("CurrentSubTotal"))
@@ -65,12 +64,13 @@
 
                                 </tr>
 
-                                SubTotal += CurrentSubTotal; 
+                                SubTotal += CurrentSubTotal;
 
                                 break;
                             }
-                        }
+                        }  
                     }
+                    
                 </tbody>
             </table>
             <div class="row mt-4">

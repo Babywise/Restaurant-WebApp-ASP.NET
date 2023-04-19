@@ -51,7 +51,8 @@ namespace Meal_Ordering_Customer.Controllers
                     orderProduct.OrderId = cart.OrderId;
                     cart.OrderProducts.Add(orderProduct);
                 }
-                else {
+                else 
+                {
                     cart = new Order
                     {
                         OrderProducts = new List<OrderProduct>(),
@@ -110,6 +111,12 @@ namespace Meal_Ordering_Customer.Controllers
 
                 // Find the order that has the cart status
                 Order cart = orders.Orders.Where(o => o.Status == "Cart").FirstOrDefault();
+
+                if (cart == null) {
+                    TempData["ErrorMessage"] = "Cart does not exist. To view cart, first add an item.";
+                    return RedirectToAction("Categories", "Menu");
+                }
+
                 // Get the menu
                 GetMenuRequest gmr = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
                 // set the view model
