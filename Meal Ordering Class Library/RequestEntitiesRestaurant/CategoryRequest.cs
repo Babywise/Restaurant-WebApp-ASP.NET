@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Meal_Ordering_Class_Library.RequestEntitiesRestaurant
 {
-    public class ProductRequest
+    public class CategoryRequest
     {
-        public Product? Product { get; set; }
-        public int? ProductIdToDeleted { get; set; }
+        public Category? Category { get; set; }
     }
 }

@@ -29,16 +29,28 @@ namespace Meal_Ordering_Restaurant.Services
             return await _httpClient.GetFromJsonAsync<GetOrdersRequest>("api/v1/management/orders");
         }
 
-        public async Task<HttpResponseMessage> AddCategoryAsync(AddCategoryRequest addCategoryRequest, string accessToken)
+        public async Task<HttpResponseMessage> AddCategoryAsync(CategoryRequest categoryRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", addCategoryRequest);
+            return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", categoryRequest);
         }
 
         public async Task<HttpResponseMessage> AddProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.PostAsJsonAsync("api/v1/management/add-product", productRequest);
+        }
+
+        public async Task<HttpResponseMessage> EditProductAsync(ProductRequest productRequest, string accessToken)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.PutAsJsonAsync("api/v1/management/edit-product", productRequest);
+        }
+
+        public async Task<HttpResponseMessage> DeleteProductAsync(ProductRequest productRequest, string accessToken)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.PostAsJsonAsync($"api/v1/management/delete-product/", productRequest);
         }
 
         private void SetAccessToken(HttpClient httpClient, string accessToken)

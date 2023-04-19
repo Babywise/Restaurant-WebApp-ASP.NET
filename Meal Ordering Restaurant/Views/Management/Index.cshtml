@@ -3,29 +3,11 @@
     ViewData["Title"] = "Management";
 }
 
-@foreach (var category in Model.Categories)
-{
-    <span>---</span>
-    <div>
-        <label>@category.Name</label>
+<div class="justify-content-center row">
+    <div class="col-6">
+        <partial name="_CategoryListPartial" model="@Model" />
     </div>
-    @foreach (var product in category.Products)
-    {
-        <div>
-            <label>@product.Name</label>
-        </div>
-        
-    }
-    <span>---</span><br />
-}
-
-<form method="post">
-    <div>
-        <span asp-validation-for="AddCategoryRequest.Name" class="text-danger"></span>
-        <label asp-for="AddCategoryRequest.Name">New Category Name:</label>
-        <input asp-for="AddCategoryRequest.Name" type="text" />
+    <div class="col-6">
+        <partial name="_ProductListPartial" model="@Model" />
     </div>
-    <button type="submit">Add Category</button>
-</form>
-
-<a asp-controller="Management" asp-action="AddProduct" class="btn btn-primary">Add Product</a>
+</div>

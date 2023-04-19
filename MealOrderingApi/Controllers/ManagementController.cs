@@ -42,7 +42,7 @@ namespace MealOrderingApi.Controllers
         }
 
         [HttpGet("orders")]
-        [Authorize(Roles = "Customer")]
+        [Authorize]
         public async Task<IActionResult> Orders()
         {
             var orders = await _mealOrderingService.GetOrdersAsync();
@@ -63,14 +63,14 @@ namespace MealOrderingApi.Controllers
 
         [HttpPost("add-category")]
         [Authorize]
-        public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest addCategoryRequest)
+        public async Task<IActionResult> AddCategory([FromBody] CategoryRequest categoryRequest)
         {
-            if (!await _mealOrderingService.AddCategoryAsync(addCategoryRequest.Name))
+            if (!await _mealOrderingService.AddCategoryAsync(categoryRequest.Category.Name))
             {
-                return BadRequest(new { Message = $"Category '{addCategoryRequest.Name}' not found" });
+                return BadRequest(new { Message = $"Category '{categoryRequest.Category.Name}' could not be added" });
             }
 
-            return Ok(new { Message = $"Category '{addCategoryRequest.Name}' was successfully added" });
+            return Ok(new { Message = $"Category '{categoryRequest.Category.Name}' was successfully added" });
 
         }
 
@@ -84,6 +84,32 @@ namespace MealOrderingApi.Controllers
             }
 
             return Ok(new { Message = $"Product '{productRequest.Product.Name}' was successfully added" });
+
+        }
+
+        [HttpPut("edit-product")]
+        [Authorize]
+        public async Task<IActionResult> EditProduct([FromBody] ProductRequest productRequest)
+        {
+            if (!await _mealOrderingService.EditProductAsync(productRequest.Product))
+            {
+                return BadRequest(new { Message = $"Product '{productRequest.Product.Name}' could not be edited" });
+            }
+
+            return Ok(new { Message = $"Product '{productRequest.Product.Name}' was successfully edited" });
+
+        }
+
+        [HttpPost("delete-product")]
+        [Authorize]
+        public async Task<IActionResult> DeleteProduct([FromBody] ProductRequest productRequest)
+        {
+            if (!await _mealOrderingService.DeleteProductAsync((int)productRequest.ProductIdToDeleted))
+            {
+                return BadRequest(new { Message = $"Product 'id = {productRequest.ProductIdToDeleted}' could not be deleted" });
+            }
+            var products = await _mealOrderingService.GetProductsAsync();
+            return Ok(new { Message = $"Product '{products.Where(p => p.ProductId == productRequest.ProductIdToDeleted).First().Name}' was successfully deleted" });
 
         }
 

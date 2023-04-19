@@ -1,0 +1,62 @@
+﻿@model ManagementViewModel
+
+<h2 class="text-center">Products</h2>
+<form method="post">
+    <div class="input-group mb-3">
+        <span asp-validation-for="SelectedProductName" class="text-danger"></span>
+    </div>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" asp-for="SelectedProductName"
+               placeholder="Add a Product" aria-label="Add a Product" aria-describedby="add-product-button">
+        <div class="input-group-append">
+            <button type="submit" class="input-group-text btn btn-primary" id="add-product-button">Add</button>
+        </div>
+    </div>
+</form>
+@if (Model.SelectedCategoryId != null)
+{
+    <table class="table">
+        <tbody>
+            @{
+                var products = Model.Categories.Where(c => c.CategoryId == Model.SelectedCategoryId).First().Products;
+            }
+            @if (!products.Where(p => p.IsDeleted == false).Any())
+            {
+                <tr>
+                    <td>No Products Found</td>
+                </tr>
+            }
+            @for (int i = 0; i < products.Count(); i++)
+            {
+                var product = products.ElementAt(i);
+                if (!(bool)product.IsDeleted)
+                {
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-6 text-nowrap">
+                                    <label asp-for="@product.Name">@product.Name</label>
+                                </div>
+                                <div class="col-auto d-flex d-inline ms-auto">
+                                    <div class="p-1">
+                                        <a asp-action="EditProduct" asp-route-id="@product.ProductId" class="btn btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <div class="p-1">
+                                        <form id="productDeleteRequest-@i" method="post" asp-action="DeleteProduct" asp-route-id="@product.ProductId">
+                                            <input asp-for="ProductRequest.ProductIdToDeleted" value="@product.ProductId" hidden />
+                                            <button type="submit" class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('productDeleteRequest-@i').submit();">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}

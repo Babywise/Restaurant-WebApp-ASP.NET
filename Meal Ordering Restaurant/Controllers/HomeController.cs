@@ -25,7 +25,7 @@ namespace Meal_Ordering_Restaurant.Controllers
 
         public IActionResult AccessDenied(int statusCode)
         {
-            return View("AccessDenied");
+            return View("AccessDenied", statusCode);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

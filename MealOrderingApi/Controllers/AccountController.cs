@@ -150,7 +150,6 @@ namespace MealOrderingApi.Controllers
             return Ok(new { Message = "User details updated successfully" });
         }
 
-        //[Authorize]
         [HttpGet("edit")]
         [Authorize]
         public async Task<IActionResult> Edit(string Username)
