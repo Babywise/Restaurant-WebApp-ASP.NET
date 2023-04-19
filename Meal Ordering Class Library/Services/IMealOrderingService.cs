@@ -10,6 +10,8 @@ namespace Meal_Ordering_Class_Library.Services
         public Task<ICollection<Product>> GetProductsAsync();
         public Task<ICollection<Order>> GetOrdersAsync();
         public Task<bool> AddCategoryAsync(string categoryName);
+        public Task<bool> EditCategoryAsync(Category category);
+        public Task<bool> DeleteCategoryAsync(int id);
         public Task<bool> AddProductAsync(Product product);
         public Task<bool> EditProductAsync(Product product);
         public Task<bool> DeleteProductAsync(int id);

@@ -74,6 +74,32 @@ namespace MealOrderingApi.Controllers
 
         }
 
+        [HttpPut("edit-category")]
+        [Authorize]
+        public async Task<IActionResult> EditCategory([FromBody] CategoryRequest categoryRequest)
+        {
+            if (!await _mealOrderingService.EditCategoryAsync(categoryRequest.Category))
+            {
+                return BadRequest(new { Message = $"Category '{categoryRequest.Category.Name}' could not be edited" });
+            }
+
+            return Ok(new { Message = $"Category '{categoryRequest.Category.Name}' was successfully edited" });
+
+        }
+
+        [HttpPost("delete-category")]
+        [Authorize]
+        public async Task<IActionResult> DeleteCategory([FromBody] CategoryRequest categoryRequest)
+        {
+            if (!await _mealOrderingService.DeleteCategoryAsync((int)categoryRequest.CategoryIdToDeleted))
+            {
+                return BadRequest(new { Message = $"Category 'id = {categoryRequest.CategoryIdToDeleted}' could not be deleted" });
+            }
+            var categories = await _mealOrderingService.GetMenuAsync();
+            return Ok(new { Message = $"Category '{categories.Where(c => c.CategoryId == categoryRequest.CategoryIdToDeleted).First().Name}' was successfully deleted" });
+
+        }
+
         [HttpPost("add-product")]
         [Authorize]
         public async Task<IActionResult> AddProduct([FromBody] ProductRequest productRequest)

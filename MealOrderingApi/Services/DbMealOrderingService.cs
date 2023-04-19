@@ -51,6 +51,36 @@ namespace MealOrderingApi.Services
             return false;
         }
 
+        public async Task<bool> EditCategoryAsync(Category category)
+        {
+            Category categoryFromDb = _mealOrderingContext.Categories.Where(c => c.CategoryId == category.CategoryId).FirstOrDefault();
+
+            if (categoryFromDb != null)
+            {
+                categoryFromDb.Name = category.Name;
+
+                _mealOrderingContext.Categories.Update(categoryFromDb);
+                if (await _mealOrderingContext.SaveChangesAsync() != 0)
+                    return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            Category categoryFromDb = _mealOrderingContext.Categories.Where(c => c.CategoryId == id).FirstOrDefault();
+
+            if (categoryFromDb != null)
+            {
+                categoryFromDb.IsDeleted = true;
+
+                _mealOrderingContext.Categories.Update(categoryFromDb);
+                if (await _mealOrderingContext.SaveChangesAsync() != 0)
+                    return true;
+            }
+            return false;
+        }
+
         public async Task<bool> AddProductAsync(Product product)
         {
             if(!_mealOrderingContext.Products.Where(c => (c.Name == product.Name) && c.IsDeleted == false).Any())

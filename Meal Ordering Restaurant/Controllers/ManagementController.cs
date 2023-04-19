@@ -88,7 +88,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                    HttpContext.Session.Remove("SelectedCategoryName"); // CLEAR SESSION ON SUCCESS
+                    HttpContext.Session.Remove("SelectedCategoryName"); // CLEAR SESSION ATTRIBUTE ON SUCCESS
                     return RedirectToAction("Index", "Management");
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
@@ -106,7 +106,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                        HttpContext.Session.Remove("SelectedProductName"); // CLEAR SESSION ON SUCCESS
+                        HttpContext.Session.Remove("SelectedProductName"); // CLEAR SESSION ATTRIBUTE ON SUCCESS
                         return RedirectToAction("Index", "Management");
                     }
                     TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
@@ -157,21 +157,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                     Categories = getMenuRequest.Categories,
                 };
                 return RedirectToAction("AddProduct", model.SelectedProductName);
-                //return View("AddProduct", productViewModel);
             }
-
-            /* else if (model.ProductRequest.Product.Name != null)
-            {
-                ProductViewModel productViewModel = new ProductViewModel()
-                {
-                    ProductRequest = model.ProductRequest,
-                    Categories = getMenuRequest.Categories,
-                };
-
-                return View("AddProduct", productViewModel);
-            }*/
-
-
 
             // ----START OF SESSION MGMT
 
@@ -352,8 +338,58 @@ namespace Meal_Ordering_Restaurant.Controllers
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
 
-            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
-            model.Categories = getMenuRequest.Categories;
+            return RedirectToAction("Index", "Management");
+        }
+
+
+        [HttpPost("Management/Category/Edit/{id}")]
+        public async Task<IActionResult> EditCategoryAsync(CategoryViewModel model)
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            if (ModelState.IsValid)
+            {
+                var response = await _managementService.EditCategoryAsync(model.CategoryRequest, HttpContext.Session.GetString("Authorization"));
+                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                    return RedirectToAction("Index", "Management");
+                }
+                TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+            }
+
+            return View(model);
+        }
+
+        [HttpPost("Management/Category/Delete/{id}")]
+        public async Task<IActionResult> DeleteCategoryAsync(CategoryViewModel model)
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            if (model.CategoryRequest.CategoryIdToDeleted != null)
+            {
+                var response = await _managementService.DeleteCategoryAsync(model.CategoryRequest, HttpContext.Session.GetString("Authorization"));
+                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                    return RedirectToAction("Index", "Management");
+                }
+                TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+            }
 
             return RedirectToAction("Index", "Management");
         }

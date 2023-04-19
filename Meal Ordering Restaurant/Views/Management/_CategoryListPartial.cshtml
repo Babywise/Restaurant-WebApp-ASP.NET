@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="p-1">
                                         <form id="categoryDeleteRequest-@i" method="post" asp-action="DeleteCategory" asp-route-id="@category.CategoryId">
-                                            <input asp-for="CategoryRequest.Category.CategoryId" value="@category.CategoryId" hidden />
+                                            <input asp-for="CategoryRequest.CategoryIdToDeleted" value="@category.CategoryId" hidden />
                                             <button type="submit" class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('categoryDeleteRequest-@i').submit();">
                                                 Delete
                                             </button>

@@ -35,6 +35,18 @@ namespace Meal_Ordering_Restaurant.Services
             return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", categoryRequest);
         }
 
+        public async Task<HttpResponseMessage> EditCategoryAsync(CategoryRequest categoryRequest, string accessToken)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.PutAsJsonAsync("api/v1/management/edit-category", categoryRequest);
+        }
+
+        public async Task<HttpResponseMessage> DeleteCategoryAsync(CategoryRequest categoryRequest, string accessToken)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.PostAsJsonAsync($"api/v1/management/delete-category/", categoryRequest);
+        }
+
         public async Task<HttpResponseMessage> AddProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
