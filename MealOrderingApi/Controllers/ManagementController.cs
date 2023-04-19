@@ -72,46 +72,6 @@ namespace MealOrderingApi.Controllers
 
         }
 
-        /*[HttpGet("orders")]
-        [Authorize]
-        public async Task<IActionResult> Orders()
-        {
-            var orders = await _mealOrderingService.GetOrdersAsync();
-
-            if (orders == null)
-            {
-                return NotFound(new { Message = "Orders not found" });
-            }
-
-            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
-            {
-                Orders = orders
-            };
-
-            return Ok(getOrdersRequest);
-
-        }
-
-        [HttpGet("orders")]
-        [Authorize]
-        public async Task<IActionResult> Orders(int OrderId)
-        {
-            var orders = await _mealOrderingService.GetOrderByIdAsync(OrderId);
-
-            if (orders == null)
-            {
-                return NotFound(new { Message = "Orders not found" });
-            }
-
-            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
-            {
-                Orders = orders
-            };
-
-            return Ok(getOrdersRequest);
-
-        }*/
-
         [HttpGet("orders")]
         [Authorize]
         public async Task<IActionResult> OrdersByCustomerId(string Username)
@@ -132,7 +92,6 @@ namespace MealOrderingApi.Controllers
 
         }
 
-
         [HttpPost("add-category")]
         [Authorize]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest addCategoryRequest)
@@ -143,6 +102,33 @@ namespace MealOrderingApi.Controllers
             }
 
             return Ok(new { Message = $"Category '{addCategoryRequest.Name}' was successfully added" });
+
+        }
+
+        [HttpPost("update-order")]
+        [Authorize]
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest updateOrderRequest)
+        {
+
+            // Always update order status
+            if (!await _mealOrderingService.UpdateOrderStatusAsync(updateOrderRequest))
+            {
+                return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status failed to update" });
+            }
+
+            // If the order products are not null (we are likely adding a product from cart), update order products
+            if (updateOrderRequest.Order.OrderProducts != null)
+            {
+                if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                {
+                    return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                }
+            } else
+            {
+                return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status was successfully updated" });
+            }
+
+            return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' was successfully updated" });
 
         }
 

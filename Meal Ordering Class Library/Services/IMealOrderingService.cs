@@ -13,5 +13,7 @@ namespace Meal_Ordering_Class_Library.Services
         public Task<ICollection<Order>> GetOrdersByUsernameAsync(string Username);
         public Task<Order> GetOrderByIdAsync(int OrderId);
         public Task<bool> AddCategoryAsync(string categoryName);
+        public Task<bool> UpdateOrderStatusAsync(UpdateOrderRequest updateOrderRequest);
+        public Task<bool> UpdateOrderProductsAsync(UpdateOrderRequest updateOrderRequest);
     }
 }

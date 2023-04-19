@@ -91,5 +91,45 @@ namespace MealOrderingApi.Services
             }
             return false;
         }
+
+        // For status updates (checkout cart on customer side and switch status on restaurant side)
+        public async Task<bool> UpdateOrderStatusAsync(UpdateOrderRequest updateOrderRequest)
+        {
+            Order orderFromDb = _mealOrderingContext.Orders.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).FirstOrDefault();
+
+            if (orderFromDb != null)
+            {
+                orderFromDb.Status = updateOrderRequest.Order.Status;
+                _mealOrderingContext.Orders.Update(orderFromDb);
+                if (await _mealOrderingContext.SaveChangesAsync() != 0) 
+                { 
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // For updating the order products for the cart order
+        public async Task<bool> UpdateOrderProductsAsync(UpdateOrderRequest updateOrderRequest)
+        {
+            ICollection<OrderProduct> orderProducts = _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ToList();
+
+            if (orderProducts.Any())
+            {
+                
+                _mealOrderingContext.OrderProducts.Where(o => o.OrderId == updateOrderRequest.Order.OrderId).ExecuteDelete();
+
+                foreach (var o in updateOrderRequest.Order.OrderProducts) {
+                    o.OrderProductId = 0;
+                }
+
+                _mealOrderingContext.OrderProducts.AddRange(updateOrderRequest.Order.OrderProducts);
+                if (await _mealOrderingContext.SaveChangesAsync() != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

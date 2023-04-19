@@ -4,6 +4,7 @@ using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Customer.Models;
 using Meal_Ordering_Customer.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Meal_Ordering_Customer.Controllers
 {
@@ -19,8 +20,70 @@ namespace Meal_Ordering_Customer.Controllers
         public async Task<IActionResult> AddToCart(int CategoryId, int ProductId, int QuantityToAdd)
         {
 
-            // Update the cart
-            // ...
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                string Username = HttpContext.Session.GetString("Username");
+
+                // Create an order product
+                OrderProduct orderProduct = new OrderProduct
+                {
+                    ProductId = ProductId,
+                    Quantity = QuantityToAdd
+                };
+
+                // Get the list of orders
+                GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
+
+                // Find the order that has the cart status
+                Order cart = orders.Orders.Where(o => o.Status == "Cart").FirstOrDefault();
+
+               
+                // If the cart is not null, use it. If it is null, create a new order.
+                if (cart != null)
+                {
+                    orderProduct.OrderId = cart.OrderId;
+                    cart.OrderProducts.Add(orderProduct);
+                }
+                else {
+                    cart = new Order
+                    {
+                        OrderProducts = new List<OrderProduct>(),
+                        Status = "Cart",
+                        Username = Username,
+                    };
+                    cart.OrderProducts.Add(orderProduct);
+                }
+
+                // Use the update order request to send in the "New Order"
+                UpdateOrderRequest uor = new UpdateOrderRequest()
+                {
+                    Order = cart
+                };
+
+                var response = await _customerService.UpdateOrderAsync(HttpContext.Session.GetString("Authorization"), uor);
+                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["LastActionMessage"] = $"{responseContent["message"]}";
+                }
+                else { 
+                    TempData["ErrorMessage"] = $"{responseContent["message"]}";
+                }
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
 
             // Redirect back to the Menu Display page
             return RedirectToAction("Display", "Menu", new { CategoryId = CategoryId });
@@ -30,7 +93,40 @@ namespace Meal_Ordering_Customer.Controllers
         [HttpGet("/Order/Cart")]
         public async Task<IActionResult> Cart()
         {
-            throw new NotImplementedException();
+
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                string Username = HttpContext.Session.GetString("Username");
+
+                // Get the list of orders
+                GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
+
+                // Find the order that has the cart status
+                Order cart = orders.Orders.Where(o => o.Status == "Cart").FirstOrDefault();
+                // Get the menu
+                GetMenuRequest gmr = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+                // set the view model
+                OrderViewModel ovm = new OrderViewModel
+                {
+                    Order = cart,
+                    Menu = gmr.Categories
+                };
+
+                return View("View", ovm);
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
         }
 
         // This is the order history page
@@ -89,13 +185,59 @@ namespace Meal_Ordering_Customer.Controllers
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             }
 
-
         }
 
         [HttpPost("/Order/Create")]
         public async Task<IActionResult> Create()
         {
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                string Username = HttpContext.Session.GetString("Username");
+
+                // Get the list of orders
+                GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
+
+                // Find the order that has the cart status
+                Order cart = orders.Orders.Where(o => o.Status == "Cart").FirstOrDefault();
+
+                if (cart != null)
+                {
+                    cart.Status = "Pending";
+                }
+
+                // Use the update order request to send in the "New Order"
+                UpdateOrderRequest uor = new UpdateOrderRequest()
+                {
+                    Order = cart
+                };
+
+                var response = await _customerService.UpdateOrderAsync(HttpContext.Session.GetString("Authorization"), uor);
+                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["LastActionMessage"] = $"{responseContent["message"]}";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"{responseContent["message"]}";
+                }
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            return RedirectToAction("Categories", "Menu");
+
         }
 
     } 

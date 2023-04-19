@@ -47,6 +47,12 @@ namespace Meal_Ordering_Customer.Services
             return await _httpClient.GetFromJsonAsync<GetOrdersRequest>($"api/v1/management/orders?Username={Username}");
         }
 
+        public async Task<HttpResponseMessage> UpdateOrderAsync(string accessToken, UpdateOrderRequest uor)
+        {
+            SetAccessToken(_httpClient, accessToken);
+            return await _httpClient.PostAsJsonAsync("api/v1/management/update-order", uor);
+        }
+
         private void SetAccessToken(HttpClient httpClient, string accessToken)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
