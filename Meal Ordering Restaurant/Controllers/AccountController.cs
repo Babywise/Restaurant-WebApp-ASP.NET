@@ -24,7 +24,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(AccountLoginViewModel model)
+        public async Task<IActionResult> Login(AccountViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(AccountRegistrationViewModel model)
+        public async Task<IActionResult> Register(AccountViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -79,16 +79,16 @@ namespace Meal_Ordering_Restaurant.Controllers
         {
             var response = await _accountService.GetAccountDetailsAsync(HttpContext.Session.GetString("Username"), HttpContext.Session.GetString("Authorization"));
 
-            AccountEditViewModel accountEditViewModel = new AccountEditViewModel()
+            AccountViewModel accountViewModel = new AccountViewModel()
             {
                 AccountEditRequest = response
             };
 
-            return View(accountEditViewModel);
+            return View(accountViewModel);
         }
 
         [HttpPost("Account/Edit/")]
-        public async Task<IActionResult> Edit(AccountEditViewModel model)
+        public async Task<IActionResult> Edit(AccountViewModel model)
         {
             if (ModelState.IsValid)
             {
