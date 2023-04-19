@@ -82,7 +82,8 @@ namespace Meal_Ordering_Customer.Controllers
             }
             else
             {
-                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                TempData["ErrorMessage"] = "Invalid Quantity";
+                return RedirectToAction("DisplayItem", "Menu", new { CategoryId = CategoryId, ProductId = ProductId });
             }
 
 
