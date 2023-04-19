@@ -8,7 +8,7 @@ namespace Meal_Ordering_Class_Library.Entities
         //PK
         public int OrderId { get; set; }
         //FK
-        public int StoreId { get; set; }
+        public int StoreId { get; set; } = 1;
         //FK
         public string? Username{ get; set; }
         public string? Status {  get; set; }
