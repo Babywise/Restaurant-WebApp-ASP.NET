@@ -74,32 +74,38 @@
                 </tbody>
             </table>
             <div class="row mt-4">
-                <div class="col-7">
+                <div class="col-7 align-self-center">
                 </div>
-                <div class="col-2">
+                <div class="col-2 align-self-center">
                     <h6>Final SubTotal:</h6>
                 </div>
-                <div class="col-3">
+                <div class="col-3 align-self-center">
                     <h6>$@SubTotal</h6>
                 </div>
             </div>
             <div class="row">
-                <div class="col-7">
+                <div class="col-7 align-self-center">
+                    @if (Model.Order.Status == "Cart")
+                    {
+                        <form method="post">
+                            <button class="btn btn-primary col-4" type="submit" asp-action="Create">Checkout</button>
+                        </form>
+                    }
                 </div>
-                <div class="col-2">
+                <div class="col-2 align-self-center">
                     <h6>Order Total:</h6>
                 </div>
-                <div class="col-3">
+                <div class="col-3 align-self-center">
                     <h6>@(TaxValue)%</h6>
                 </div>
             </div>
             <div class="row">
-                <div class="col-7">
+                <div class="col-7 align-self-center">
                 </div>
-                <div class="col-2">
+                <div class="col-2 align-self-center">
                     <h6>Order Total:</h6>
                 </div>
-                <div class="col-3">
+                <div class="col-3 align-self-center">
                     <h6>$@((SubTotal * TaxValue).ToString("0.00"))</h6>
                 </div>
             </div>
