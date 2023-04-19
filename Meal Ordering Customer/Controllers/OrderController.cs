@@ -20,6 +20,11 @@ namespace Meal_Ordering_Customer.Controllers
         public async Task<IActionResult> AddToCart(int CategoryId, int ProductId, int QuantityToAdd)
         {
 
+            if (QuantityToAdd <= 0) {
+                TempData["ErrorMessage"] = "Invalid Quantity";
+                return RedirectToAction("DisplayItem", "Menu", new { CategoryId = CategoryId, ProductId = ProductId });
+            }
+
             if (ModelState.IsValid)
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
@@ -82,8 +87,7 @@ namespace Meal_Ordering_Customer.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Invalid Quantity";
-                return RedirectToAction("DisplayItem", "Menu", new { CategoryId = CategoryId, ProductId = ProductId });
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated  
             }
 
 
