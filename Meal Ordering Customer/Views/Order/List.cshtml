@@ -1,8 +1,10 @@
 ﻿@model GetOrdersRequest
 @{
     ViewData["Title"] = "Order List";
+    bool cartExists = false;
 }
 
+<h1>View Cart:</h1>
 
 <!-- Show the cart as the top order -->
 @foreach (var order in Model.Orders)
@@ -12,6 +14,10 @@
         <div class="row">
             <a class="btn btn-primary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.Status</a>
         </div>
+    }
+    else if (order == Model.Orders.Last() && cartExists == false)
+    {
+        <h4>@order.Username does not currently have a cart.</h4>    
     }
 }
 
@@ -23,7 +29,14 @@
     if (order.Status != "Cart")
     {
         <div class="row">
-            <a class="btn btn-secondary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.OrderId</a>
+            <div class="card mb-4">
+                <a class="text-decoration-none" asp-action="View" asp-route-OrderId=@order.OrderId>
+                    <div class="card-body">
+                        <h5 class="card-title">Order ID: @order.OrderId</h5>
+                        <p class="card-text">Order Status: @order.Status<p>
+                    </div>
+                </a>
+            </div>
         </div>
     }
 }
