@@ -9,19 +9,31 @@
     <link rel="stylesheet" href="~/Meal_Ordering_Restaurant.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("Authorization"));
+        var username = Context.Session.GetString("Username");
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Meal_Ordering_Restaurant</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                @if (isSignedIn)
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Management" asp-action="Index">Meal Ordering | Restaurant</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Account" asp-action="Login">Meal Ordering | Restaurant</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                }
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @{
-                        var isSignedIn = !string.IsNullOrEmpty(Context.Session.GetString("Authorization"));
-                        var username = Context.Session.GetString("Username");
-                    }
+                    
                     <ul class="navbar-nav flex-grow-1">
                         @if (isSignedIn)
                         {
@@ -30,6 +42,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Management" asp-action="Index">Management</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Orders</a>
                             </li>
                         }
                         else
@@ -48,7 +63,7 @@
                         @if (isSignedIn)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">Edit</a>
+                                <a class="nav-link text-dark btn btn-link" asp-controller="Account" asp-action="Edit">Account</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline" asp-controller="Account" asp-action="LogOut" method="post">
