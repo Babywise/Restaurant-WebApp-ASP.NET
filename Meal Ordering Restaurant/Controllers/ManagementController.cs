@@ -23,21 +23,22 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+
+            //Need Menu -> make api request
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
             if (getMenuRequest == null)
             {
-                ModelState.AddModelError(string.Empty, $"Failed to get Menu from API.");
-
+                TempData["ErrorMessage"] = $"Failed to get Menu from API.";
                 return View();
             }
-
             ManagementViewModel managementViewModel = new ManagementViewModel()
             {
                 Categories = getMenuRequest.Categories
             };
-
-            // ----LOAD FROM SESSION
+            // ----LOAD FROM SESSION IF EXISTS
             var categoryIdFromSession = HttpContext.Session.GetInt32("SelectedCategoryId");
             if (categoryIdFromSession != null)
             {
@@ -53,26 +54,40 @@ namespace Meal_Ordering_Restaurant.Controllers
             {
                 managementViewModel.SelectedProductName = productNameFromSession;
             }
-
             // ----END OF SESSION MGMT
-
             return View(managementViewModel);
         }
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {
-
-            //GetOrdersRequest getOrdersRequest = await _managementService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
-            {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
             model.Categories = getMenuRequest.Categories;
 
+            //'Add a Product' Field was filled in  -> make api request
+            if (model.SelectedProductName != null)
+            {
+                if (model.ProductRequest == null)
+                {
+                    model.ProductRequest = new ProductRequest()
+                    {
+                        Product = new Product
+                        {
+                            Name = model.SelectedProductName
+                        }
+                    };
+                }
+                ProductViewModel productViewModel = new ProductViewModel()
+                {
+                    ProductRequest = model.ProductRequest,
+                    Categories = getMenuRequest.Categories,
+                };
+                return View("AddProduct", productViewModel);
+            }
+
+            //'Add a Category' Field was filled in  -> make api request
             if (model.SelectedCategoryName != null)
             {
                 model.CategoryRequest = new CategoryRequest()
@@ -94,6 +109,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
 
+            //'ProductRequest' (Add Product) is valid -> make api request
             if (model.ProductRequest != null)
             {
                 if (!string.IsNullOrEmpty(model.ProductRequest.Product.Name) && !string.IsNullOrEmpty(model.ProductRequest.Product.Description) &&
@@ -110,7 +126,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                         return RedirectToAction("Index", "Management");
                     }
                     TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                    //ModelState.AddModelError(string.Empty, $"Add Category \"{model.CategoryRequest.Category.Name}\" failed");
                 }
                 ProductViewModel productViewModel = new ProductViewModel
                 {
@@ -120,47 +135,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                 return View("AddProduct", productViewModel);
             }
 
-            if (model.SelectedProductName != null)
-            {
-                if (model.ProductRequest == null)
-                {
-                    model.ProductRequest = new ProductRequest()
-                    {
-                        Product = new Product
-                        {
-                            Name = model.SelectedProductName
-                        }
-                    };
-                }
-
-                ProductViewModel productViewModel = new ProductViewModel()
-                {
-                    ProductRequest = model.ProductRequest,
-                    Categories = getMenuRequest.Categories,
-                };
-
-                return View("AddProduct", productViewModel);
-                
-            }
-
-            if (model.SelectedProductName != null)
-            {
-                ProductViewModel productViewModel = new ProductViewModel()
-                {
-                    ProductRequest = new ProductRequest()
-                    {
-                        Product = new Product()
-                        {
-                            Name = model.SelectedProductName,
-                        }
-                    },
-                    Categories = getMenuRequest.Categories,
-                };
-                return RedirectToAction("AddProduct", model.SelectedProductName);
-            }
-
-            // ----START OF SESSION MGMT
-
+            // ----START OF SESSION MGMT (Turn into a service to avoid repitition!)
             if (model.SelectedCategoryId != null)
             {
                 HttpContext.Session.SetInt32("SelectedCategoryId", (int)model.SelectedCategoryId);
@@ -173,7 +148,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                     model.SelectedCategoryId = categoryIdFromSession;
                 }
             }
-
             if (model.SelectedCategoryName != null)
             {
                 HttpContext.Session.SetString("SelectedCategoryName", model.SelectedCategoryName);
@@ -186,7 +160,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                     model.SelectedCategoryName = categoryNameFromSession;
                 }
             }
-
             if (model.SelectedProductName != null)
             {
                 HttpContext.Session.SetString("SelectedProductName", model.SelectedProductName);
@@ -199,28 +172,24 @@ namespace Meal_Ordering_Restaurant.Controllers
                     model.SelectedProductName = productNameFromSession;
                 }
             }
-
             // ----END OF SESSION MGMT
-
             return View(model);
         }
 
-        [HttpGet("Management/Product/Add/")]
+        //Needs Rework
+
+/*      [HttpGet("Management/Product/Add/")]
         public async Task<IActionResult> AddProductAsync(string productName)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
-            {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
+            //Need Menu -> make api request
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
             ProductViewModel productViewModel = new ProductViewModel()
             {
                 ProductRequest = new ProductRequest(),
-                //AddProductRequest = new AddProductRequest(),
                 Categories = getMenuRequest.Categories
             };
 
@@ -228,19 +197,14 @@ namespace Meal_Ordering_Restaurant.Controllers
             {
                 productViewModel.ProductRequest.Product.Name = productName;
             }
-
             return View("AddProduct", productViewModel);
         }
 
         [HttpPost("Management/Product/Add/")]
         public async Task<IActionResult> AddProductAsync(ProductViewModel model)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
-            {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             if (ModelState.IsValid)
             {
@@ -255,12 +219,12 @@ namespace Meal_Ordering_Restaurant.Controllers
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
 
+            //Need Menu -> make api request
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
             model.Categories = getMenuRequest.Categories;
 
             return View(model);
-        }
-
+        }*/
 
         [HttpGet("Management/Product/Edit/{id}")]
         public async Task<IActionResult> EditProductAsync(int id)
@@ -268,9 +232,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             string accessToken = HttpContext.Session.GetString("Authorization");
 
             if (string.IsNullOrEmpty(accessToken))
-            {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
@@ -282,7 +244,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                 },
                 Categories = getMenuRequest.Categories
             };
-
             return View("EditProduct", productViewModel);
         }
 
@@ -292,9 +253,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             string accessToken = HttpContext.Session.GetString("Authorization");
 
             if (string.IsNullOrEmpty(accessToken))
-            {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             if (ModelState.IsValid)
             {
@@ -308,7 +267,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
-
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
             model.Categories = getMenuRequest.Categories;
 
@@ -321,9 +279,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             string accessToken = HttpContext.Session.GetString("Authorization");
 
             if (string.IsNullOrEmpty(accessToken))
-            {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             if (model.ProductRequest.ProductIdToDeleted != null)
             {
@@ -337,7 +293,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
-
             return RedirectToAction("Index", "Management");
         }
 
@@ -348,9 +303,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             string accessToken = HttpContext.Session.GetString("Authorization");
 
             if (string.IsNullOrEmpty(accessToken))
-            {
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             if (ModelState.IsValid)
             {
@@ -364,7 +317,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
-
             return View(model);
         }
 
@@ -390,7 +342,6 @@ namespace Meal_Ordering_Restaurant.Controllers
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
             }
-
             return RedirectToAction("Index", "Management");
         }
 

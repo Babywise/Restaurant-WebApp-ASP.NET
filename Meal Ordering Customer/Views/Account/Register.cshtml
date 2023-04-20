@@ -4,48 +4,10 @@
 }
 
 <form method="post">
+    <partial name="_AccountFormFieldsPartial" model="@Model" />
+    <partial name="_AccountPasswordPartial" model="@Model" />
     <div>
-        <span asp-validation-for="AccountRegisterRequest.Username" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.Username">Username:</label>
-        <input asp-for="AccountRegisterRequest.Username" type="text" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.Password" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.Password">Password:</label>
-        <input asp-for="AccountRegisterRequest.Password" type="password" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.ConfirmPassword" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.ConfirmPassword">Confirm Password:</label>
-        <input asp-for="AccountRegisterRequest.ConfirmPassword" type="password" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.FirstName" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.FirstName">First Name:</label>
-        <input asp-for="AccountRegisterRequest.FirstName" type="text" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.LastName" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.LastName">Last Name:</label>
-        <input asp-for="AccountRegisterRequest.LastName" type="text" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.Email" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.Email">Email:</label>
-        <input asp-for="AccountRegisterRequest.Email" type="email" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.PhoneNumber" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.PhoneNumber">Phone Number:</label>
-        <input asp-for="AccountRegisterRequest.PhoneNumber" type="text" />
-    </div>
-    <div>
-        <span asp-validation-for="AccountRegisterRequest.Address" class="text-danger"></span>
-        <label asp-for="AccountRegisterRequest.Address">Address:</label>
-        <input asp-for="AccountRegisterRequest.Address" type="" />
-    </div>
-    <div>
-        <input asp-for="AccountRegisterRequest.AccountType" value="Customer" hidden/>
+        <input asp-for="AccountRequest.Account.AccountType" value="Restaurant" hidden />
     </div>
     <button type="submit">Register</button>
 </form>

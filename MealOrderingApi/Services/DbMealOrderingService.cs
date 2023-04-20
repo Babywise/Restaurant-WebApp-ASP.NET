@@ -38,7 +38,7 @@ namespace MealOrderingApi.Services
 
         public async Task<bool> AddCategoryAsync(string categoryName)
         {
-            if(!_mealOrderingContext.Categories.Where(c => c.Name == categoryName).Any())
+            if(!_mealOrderingContext.Categories.Where(c => c.Name == categoryName && c.IsDeleted == false).Any())
             {
                 _mealOrderingContext.Categories.Add(new Category()
                 {
@@ -83,7 +83,7 @@ namespace MealOrderingApi.Services
 
         public async Task<bool> AddProductAsync(Product product)
         {
-            if(!_mealOrderingContext.Products.Where(c => (c.Name == product.Name) && c.IsDeleted == false).Any())
+            if(!_mealOrderingContext.Products.Where(c => c.Name == product.Name && c.IsDeleted == false).Any())
             {
                 _mealOrderingContext.Products.Add(product);
 

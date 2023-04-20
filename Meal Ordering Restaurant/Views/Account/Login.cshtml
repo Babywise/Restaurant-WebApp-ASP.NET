@@ -5,14 +5,14 @@
 
 <form method="post">
     <div>
-        <span asp-validation-for="AccountLoginRequest.Username" class="text-danger"></span>
-        <label asp-for="AccountLoginRequest.Username">Username:</label>
-        <input asp-for="AccountLoginRequest.Username" type="text" />
+        <span asp-validation-for="AccountRequest.Account.UserName" class="text-danger"></span>
+        <label asp-for="AccountRequest.Account.UserName">Username:</label>
+        <input asp-for="AccountRequest.Account.UserName" type="text" />
     </div>
     <div>
-        <span asp-validation-for="AccountLoginRequest.Password" class="text-danger"></span>
-        <label asp-for="AccountLoginRequest.Password">Password:</label>
-        <input asp-for="AccountLoginRequest.Password" type="password" />
+        <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+        <label asp-for="AccountRequest.Account.CurrentPassword">Password:</label>
+        <input asp-for="AccountRequest.Account.CurrentPassword" type="password" />
     </div>
     <button type="submit">Login</button>
 </form>
