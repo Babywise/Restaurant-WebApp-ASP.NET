@@ -1,0 +1,114 @@
+﻿@model OrderViewModel
+@{
+    ViewData["Title"] = "Order Details";
+    // Define the list of product attributes to display in the table
+    var attributesToDisplay = new List<string> { "Name", "Description", "Cost", "Quantity", "CurrentSubTotal" };
+    var TaxValue = 1.13;
+    var SubTotal = 0.00;
+    var CurrentSubTotal = 0.00;
+    var CurrentCost = 0.00;
+    var CurrentQuantity = 0;
+}
+
+<div class="container">
+    <div class="card mb-4">
+        <a class="text-decoration-none">
+            <div class="card-body text-center">
+                <h3 class="card-title">@Model.Order.Status</h3>
+            </div>
+        </a>
+    </div>
+    <h2 class="mb-2">Order Number: @Model.Order.OrderId</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        @foreach (var attr in attributesToDisplay)
+                        {
+                            <th>@attr</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var orderProduct in Model.Order.OrderProducts)
+                    {
+                        @foreach (var category in Model.Menu)
+                        {
+                            var product = category.Products.FirstOrDefault(p => p.ProductId == orderProduct.ProductId);
+                            if (product != null)
+                            {
+                                <tr>
+                                    @foreach (var attribute in attributesToDisplay)
+                                    {
+                                        if (attribute.Equals("Quantity"))
+                                        {
+                                            CurrentQuantity = (int)orderProduct.GetType().GetProperty(attribute)?.GetValue(orderProduct);
+                                            <td>@CurrentQuantity</td>
+                                        }
+                                        else if (attribute.Equals("Cost"))
+                                        {
+                                            CurrentCost = (float)product.GetType().GetProperty(attribute)?.GetValue(product);
+                                            <td>@CurrentCost</td>
+                                        }
+                                        else if (attribute.Equals("CurrentSubTotal"))
+                                        {
+                                            CurrentSubTotal = CurrentCost * CurrentQuantity;
+                                            <td>$@CurrentSubTotal</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@product.GetType().GetProperty(attribute)?.GetValue(product)</td>
+                                        }
+                                    }
+
+                                </tr>
+
+                                SubTotal += CurrentSubTotal;
+
+                                break;
+                            }
+                        }  
+                    }
+
+                </tbody>
+            </table>
+            <div class="row mt-4">
+                <div class="col-7 align-self-center">
+                </div>
+                <div class="col-2 align-self-center">
+                    <h6>Final SubTotal:</h6>
+                </div>
+                <div class="col-3 align-self-center">
+                    <h6>$@SubTotal</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7 align-self-center">
+                    @if (Model.Order.Status == "Cart")
+                    {
+                        <form method="post">
+                            <button class="btn btn-primary col-4" type="submit" asp-action="Create">Checkout</button>
+                        </form>
+                    }
+                </div>
+                <div class="col-2 align-self-center">
+                    <h6>Order Total:</h6>
+                </div>
+                <div class="col-3 align-self-center">
+                    <h6>@(TaxValue)%</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7 align-self-center">
+                </div>
+                <div class="col-2 align-self-center">
+                    <h6>Order Total:</h6>
+                </div>
+                <div class="col-3 align-self-center">
+                    <h6>$@((SubTotal * TaxValue).ToString("0.00"))</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,34 +31,24 @@ namespace MealOrderingApi.Controllers
             {
                 return NotFound(new { Message = "Menu not found" });
             }
-
             GetMenuRequest getAllCategoriesRequest = new GetMenuRequest()
             {
                 Categories = categories
             };
-
             return Ok(getAllCategoriesRequest);
-
         }
 
-        [HttpGet("orders")]
+        [HttpGet("category")]
         [Authorize]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Category([FromQuery] int CategoryId, [FromQuery] bool IncludeProduct)
         {
-            var orders = await _mealOrderingService.GetOrdersAsync();
+            var category = await _mealOrderingService.GetCategoryAsync(CategoryId, IncludeProduct);
 
-            if (orders == null)
+            if (category == null)
             {
-                return NotFound(new { Message = "Orders not found" });
+                return NotFound(new { Message = "Category not found" });
             }
-
-            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
-            {
-                Orders = orders
-            };
-
-            return Ok(getOrdersRequest);
-
+            return Ok(category);
         }
 
         [HttpPost("add-category")]
@@ -69,9 +59,7 @@ namespace MealOrderingApi.Controllers
             {
                 return BadRequest(new { Message = $"Category '{categoryRequest.Category.Name}' could not be added" });
             }
-
             return Ok(new { Message = $"Category '{categoryRequest.Category.Name}' was successfully added" });
-
         }
 
         [HttpPut("edit-category")]
@@ -82,9 +70,7 @@ namespace MealOrderingApi.Controllers
             {
                 return BadRequest(new { Message = $"Category '{categoryRequest.Category.Name}' could not be edited" });
             }
-
             return Ok(new { Message = $"Category '{categoryRequest.Category.Name}' was successfully edited" });
-
         }
 
         [HttpPost("delete-category")]
@@ -96,8 +82,21 @@ namespace MealOrderingApi.Controllers
                 return BadRequest(new { Message = $"Category 'id = {categoryRequest.CategoryIdToDeleted}' could not be deleted" });
             }
             var categories = await _mealOrderingService.GetMenuAsync();
-            return Ok(new { Message = $"Category '{categories.Where(c => c.CategoryId == categoryRequest.CategoryIdToDeleted).First().Name}' was successfully deleted" });
+            var categoryName = categories.Where(c => c.CategoryId == categoryRequest.CategoryIdToDeleted).FirstOrDefault().Name;
+            return Ok(new { Message = $"Category '{categoryName}' was successfully deleted" });
+        }
 
+        [HttpGet("product")]
+        [Authorize]
+        public async Task<IActionResult> Product([FromQuery] int ProductId)
+        {
+            var product = await _mealOrderingService.GetProductByIdAsync(ProductId);
+
+            if (product == null)
+            {
+                return NotFound(new { Message = "Category not found" });
+            }
+            return Ok(product);
         }
 
         [HttpPost("add-product")]
@@ -108,9 +107,7 @@ namespace MealOrderingApi.Controllers
             {
                 return BadRequest(new { Message = $"Product '{productRequest.Product.Name}' could not be added" });
             }
-
             return Ok(new { Message = $"Product '{productRequest.Product.Name}' was successfully added" });
-
         }
 
         [HttpPut("edit-product")]
@@ -121,9 +118,7 @@ namespace MealOrderingApi.Controllers
             {
                 return BadRequest(new { Message = $"Product '{productRequest.Product.Name}' could not be edited" });
             }
-
             return Ok(new { Message = $"Product '{productRequest.Product.Name}' was successfully edited" });
-
         }
 
         [HttpPost("delete-product")]
@@ -136,6 +131,62 @@ namespace MealOrderingApi.Controllers
             }
             var products = await _mealOrderingService.GetProductsAsync();
             return Ok(new { Message = $"Product '{products.Where(p => p.ProductId == productRequest.ProductIdToDeleted).First().Name}' was successfully deleted" });
+        }
+
+        [HttpGet("orders")]
+        [Authorize]
+        public async Task<IActionResult> OrdersByCustomerId(string Username)
+        {
+            var orders = await _mealOrderingService.GetOrdersByUsernameAsync(Username);
+
+            if (orders == null)
+            {
+                return NotFound(new { Message = "Orders not found" });
+            }
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
+            {
+                Orders = orders
+            };
+            return Ok(getOrdersRequest);
+        }
+
+        [HttpPost("update-order")]
+        [Authorize]
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest updateOrderRequest)
+        {
+            if (updateOrderRequest.Order.OrderId == 0 && updateOrderRequest.Order.Status == "Cart")
+            {
+                if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                {
+                    return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                }
+                else
+                {
+                    return Ok(new { Message = "Cart Order was successfully updated" });
+                }
+            }
+            else
+            {
+                // Always update order status
+                if (!await _mealOrderingService.UpdateOrderStatusAsync(updateOrderRequest))
+                {
+                    return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status failed to update" });
+                }
+
+                // If the order products are not null (we are likely adding a product from cart), update order products
+                if (updateOrderRequest.Order.OrderProducts != null)
+                {
+                    if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                    {
+                        return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                    }
+                }
+                else
+                {
+                    return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status was successfully updated" });
+                }
+                return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' was successfully updated" });
+            }
 
         }
 

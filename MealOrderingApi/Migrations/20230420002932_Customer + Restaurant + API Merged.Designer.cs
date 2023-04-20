@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MealOrderingApi.Migrations
 {
     [DbContext(typeof(MealOrderingAPIContext))]
-    [Migration("20230419012421_smallupdate")]
-    partial class smallupdate
+    [Migration("20230420002932_Customer + Restaurant + API Merged")]
+    partial class CustomerRestaurantAPIMerged
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,7 @@ namespace MealOrderingApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryId");
@@ -66,14 +67,14 @@ namespace MealOrderingApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
 
@@ -83,23 +84,23 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             OrderId = 1,
-                            CustomerId = 1,
                             Status = "In the Oven",
-                            StoreId = 1
+                            StoreId = 1,
+                            Username = "nick"
                         },
                         new
                         {
                             OrderId = 2,
-                            CustomerId = 1,
                             Status = "Confirmed",
-                            StoreId = 1
+                            StoreId = 1,
+                            Username = "nick"
                         },
                         new
                         {
                             OrderId = 3,
-                            CustomerId = 1,
-                            Status = "Canceled",
-                            StoreId = 1
+                            Status = "Cart",
+                            StoreId = 1,
+                            Username = "nick"
                         });
                 });
 
@@ -130,28 +131,28 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             OrderProductId = 1,
-                            OrderId = 1,
+                            OrderId = 3,
                             ProductId = 1,
                             Quantity = 10
                         },
                         new
                         {
                             OrderProductId = 2,
-                            OrderId = 1,
+                            OrderId = 3,
                             ProductId = 2,
                             Quantity = 20
                         },
                         new
                         {
                             OrderProductId = 3,
-                            OrderId = 2,
+                            OrderId = 3,
                             ProductId = 3,
                             Quantity = 14
                         },
                         new
                         {
                             OrderProductId = 4,
-                            OrderId = 2,
+                            OrderId = 3,
                             ProductId = 4,
                             Quantity = 50
                         },
@@ -172,22 +173,27 @@ namespace MealOrderingApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<float?>("Cost")
+                        .IsRequired()
                         .HasColumnType("real");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Quantity")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("StoreId")
@@ -227,7 +233,7 @@ namespace MealOrderingApi.Migrations
                             ProductId = 3,
                             CategoryId = 1,
                             Cost = 10f,
-                            Description = "SoOoOoo many mushrooms!",
+                            Description = "SoOoOoo Many mushrooms!",
                             IsDeleted = false,
                             Name = "Canadian Pizza",
                             Quantity = 50,
@@ -236,17 +242,94 @@ namespace MealOrderingApi.Migrations
                         new
                         {
                             ProductId = 4,
-                            CategoryId = 2,
+                            CategoryId = 1,
                             Cost = 5f,
-                            Description = "Spicy & Delicious!",
+                            Description = "Not for Vegans!",
                             IsDeleted = false,
-                            Name = "Buffalo Wings",
-                            Quantity = 1000,
+                            Name = "MeatLovers Pizza",
+                            Quantity = 100,
                             StoreId = 1
                         },
                         new
                         {
                             ProductId = 5,
+                            CategoryId = 1,
+                            Cost = 5f,
+                            Description = "For Vegans!",
+                            IsDeleted = false,
+                            Name = "Veggie Pizza",
+                            Quantity = 50,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 6,
+                            CategoryId = 1,
+                            Cost = 10f,
+                            Description = "Not Quite Like the Drink!",
+                            IsDeleted = false,
+                            Name = "Margherita Pizza",
+                            Quantity = 50,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            CategoryId = 1,
+                            Cost = 5f,
+                            Description = "Chicken Slathered on toppa da pie! Sweet and Tangy Sauce!",
+                            IsDeleted = false,
+                            Name = "BBQ Chicken Pizza",
+                            Quantity = 100,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            CategoryId = 1,
+                            Cost = 5f,
+                            Description = "For a spicy kick!",
+                            IsDeleted = false,
+                            Name = "Buffalo Pizza",
+                            Quantity = 50,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 9,
+                            CategoryId = 1,
+                            Cost = 10f,
+                            Description = "This thing has it all!",
+                            IsDeleted = false,
+                            Name = "The Works Pizza",
+                            Quantity = 50,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 10,
+                            CategoryId = 1,
+                            Cost = 5f,
+                            Description = "For our hot pocket lovers!",
+                            IsDeleted = false,
+                            Name = "Pepperoni Panzarotti",
+                            Quantity = 100,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 11,
+                            CategoryId = 1,
+                            Cost = 5f,
+                            Description = "Imagine a square focaccia pizza!",
+                            IsDeleted = false,
+                            Name = "Roman-style Pizza",
+                            Quantity = 50,
+                            StoreId = 1
+                        },
+                        new
+                        {
+                            ProductId = 12,
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "Sweet & Delicious!",
@@ -257,7 +340,7 @@ namespace MealOrderingApi.Migrations
                         },
                         new
                         {
-                            ProductId = 6,
+                            ProductId = 13,
                             CategoryId = 2,
                             Cost = 5f,
                             Description = "What a combination!",

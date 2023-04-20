@@ -49,7 +49,7 @@ namespace Meal_Ordering_Customer.Controllers
                     }
                     // ----END OF SESSION MGMT
                     TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                    return RedirectToAction("Index", "Management");
+                    return RedirectToAction("Categories", "Menu");
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
                 return View(model);

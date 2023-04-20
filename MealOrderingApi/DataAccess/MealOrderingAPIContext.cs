@@ -21,12 +21,12 @@ namespace MealOrderingApi.DataAccess
             string password = "Sesame123#";
             string roleName = "Admin";
 
-            string username2 = "restaurant";
-            string password2 = "Sesame123#";
+            string username2 = "issi";
+            string password2 = "Issi123$";
             string roleName2 = "Restaurant";
 
-            string username3 = "customer";
-            string password3 = "Sesame123#";
+            string username3 = "nick";
+            string password3 = "Nick123$";
             string roleName3 = "Customer";
 
             // Seed custom roles
@@ -42,7 +42,7 @@ namespace MealOrderingApi.DataAccess
             // if username doesn't exist, create it and add it to role
             if (await userManager.FindByNameAsync(username) == null)
             {
-                User user = new User { UserName = username };
+                User user = new User { UserName = username, FirstName = username, AccountType = roleName};
                 var result = await userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
@@ -52,7 +52,7 @@ namespace MealOrderingApi.DataAccess
             // if username doesn't exist, create it and add it to role
             if (await userManager.FindByNameAsync(username2) == null)
             {
-                User user = new User { UserName = username2 };
+                User user = new User { UserName = username2, FirstName = username2, AccountType = roleName2 };
                 var result = await userManager.CreateAsync(user, password2);
                 if (result.Succeeded)
                 {
@@ -62,7 +62,7 @@ namespace MealOrderingApi.DataAccess
             // if username doesn't exist, create it and add it to role
             if (await userManager.FindByNameAsync(username3) == null)
             {
-                User user = new User { UserName = username3 };
+                User user = new User { UserName = username3, FirstName = username3, AccountType = roleName3 };
                 var result = await userManager.CreateAsync(user, password3);
                 if (result.Succeeded)
                 {
@@ -139,7 +139,7 @@ namespace MealOrderingApi.DataAccess
                 {
                     ProductId = 3,
                     Name = "Canadian Pizza",
-                    Description = "SoOoOoo many mushrooms!",
+                    Description = "SoOoOoo Many mushrooms!",
                     Quantity = 50,
                     Cost = 10,
                     StoreId = 1,
@@ -148,16 +148,85 @@ namespace MealOrderingApi.DataAccess
                 new Product()
                 {
                     ProductId = 4,
-                    Name = "Buffalo Wings",
-                    Description = "Spicy & Delicious!",
-                    Quantity = 1000,
+                    Name = "MeatLovers Pizza",
+                    Description = "Not for Vegans!",
+                    Quantity = 100,
                     Cost = 5,
                     StoreId = 1,
-                    CategoryId = 2,
+                    CategoryId = 1,
                 },
                 new Product()
                 {
                     ProductId = 5,
+                    Name = "Veggie Pizza",
+                    Description = "For Vegans!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 6,
+                    Name = "Margherita Pizza",
+                    Description = "Not Quite Like the Drink!",
+                    Quantity = 50,
+                    Cost = 10,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 7,
+                    Name = "BBQ Chicken Pizza",
+                    Description = "Chicken Slathered on toppa da pie! Sweet and Tangy Sauce!",
+                    Quantity = 100,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 8,
+                    Name = "Buffalo Pizza",
+                    Description = "For a spicy kick!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 9,
+                    Name = "The Works Pizza",
+                    Description = "This thing has it all!",
+                    Quantity = 50,
+                    Cost = 10,
+                    StoreId = 1,
+                    CategoryId = 1,
+                }, new Product()
+                {
+                    ProductId = 10,
+                    Name = "Pepperoni Panzarotti",
+                    Description = "For our hot pocket lovers!",
+                    Quantity = 100,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 11,
+                    Name = "Roman-style Pizza",
+                    Description = "Imagine a square focaccia pizza!",
+                    Quantity = 50,
+                    Cost = 5,
+                    StoreId = 1,
+                    CategoryId = 1,
+                },
+                new Product()
+                {
+                    ProductId = 12,
                     Name = "Honey Garlic Wings",
                     Description = "Sweet & Delicious!",
                     Quantity = 500,
@@ -167,7 +236,7 @@ namespace MealOrderingApi.DataAccess
                 },
                 new Product()
                 {
-                    ProductId = 6,
+                    ProductId = 13,
                     Name = "Sweet & Spicy Wings",
                     Description = "What a combination!",
                     Quantity = 500,
@@ -181,23 +250,23 @@ namespace MealOrderingApi.DataAccess
                 new Order()
                 {
                     OrderId = 1,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
                     Status = "In the Oven",
                 },
                 new Order()
                 {
                     OrderId = 2,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
                     Status = "Confirmed",
                 },
                 new Order()
                 {
                     OrderId = 3,
-                    CustomerId = 1,
+                    Username = "nick",
                     StoreId = 1,
-                    Status = "Canceled",
+                    Status = "Cart",
                 }
             );
 
@@ -205,28 +274,28 @@ namespace MealOrderingApi.DataAccess
                 new OrderProduct()
                 {
                     OrderProductId = 1,
-                    OrderId = 1,
+                    OrderId = 3,
                     ProductId = 1,
                     Quantity = 10,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 2,
-                    OrderId = 1,
+                    OrderId = 3,
                     ProductId = 2,
                     Quantity = 20,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 3,
-                    OrderId = 2,
+                    OrderId = 3,
                     ProductId = 3,
                     Quantity = 14,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 4,
-                    OrderId = 2,
+                    OrderId = 3,
                     ProductId = 4,
                     Quantity = 50,
                 },
