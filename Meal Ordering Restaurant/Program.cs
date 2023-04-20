@@ -24,6 +24,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ManagementService>();
+builder.Services.AddScoped<OrderService>();
 
 // Configure authentication middleware
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

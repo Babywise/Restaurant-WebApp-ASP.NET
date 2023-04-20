@@ -69,7 +69,7 @@ namespace Meal_Ordering_Customer.Controllers
                 }
 
                 bool IncludeProduct = true;
-                Category category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+                Category category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
 
                 return View(category);
             }
@@ -92,9 +92,9 @@ namespace Meal_Ordering_Customer.Controllers
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
                 }
 
-                Product product = await _customerService.GetProductAsync(HttpContext.Session.GetString("Authorization"), ProductId);
+                Product product = await _customerService.GetProductByIdAsync(HttpContext.Session.GetString("Authorization"), ProductId);
                 bool IncludeProduct = false;
-                product.Category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+                product.Category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
 
                 AddProductToCartViewModel vm = new AddProductToCartViewModel()
                 {

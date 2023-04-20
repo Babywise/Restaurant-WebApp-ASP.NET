@@ -1,0 +1,22 @@
+﻿@model OrderViewModel
+
+<div class="card text-center">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "pending" ? " active" : "")" asp-action="Index" asp-route-tabId="pending">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "active" ? " active" : "")" asp-action="Index" asp-route-tabId="active">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "history" ? " active" : "")" asp-action="Index" asp-route-tabId="history">History</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-pane">
+            <partial name="_OrderCardPartial" model="@Model" />
+        </div>
+    </div>
+</div>

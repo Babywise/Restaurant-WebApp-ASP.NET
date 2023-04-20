@@ -133,9 +133,26 @@ namespace MealOrderingApi.Controllers
             return Ok(new { Message = $"Product '{products.Where(p => p.ProductId == productRequest.ProductIdToDeleted).First().Name}' was successfully deleted" });
         }
 
+        [HttpGet("all-orders")]
+        [Authorize]
+        public async Task<IActionResult> Orders()
+        {
+            var orders = await _mealOrderingService.GetOrdersAsync();
+
+            if (orders == null)
+            {
+                return NotFound(new { Message = "Orders not found" });
+            }
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest()
+            {
+                Orders = orders
+            };
+            return Ok(getOrdersRequest);
+        }
+
         [HttpGet("orders")]
         [Authorize]
-        public async Task<IActionResult> OrdersByCustomerId(string Username)
+        public async Task<IActionResult> OrdersByCustomerUsername(string Username)
         {
             var orders = await _mealOrderingService.GetOrdersByUsernameAsync(Username);
 

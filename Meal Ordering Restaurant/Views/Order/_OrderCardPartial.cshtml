@@ -1,0 +1,72 @@
+﻿@model OrderViewModel
+
+@foreach (var order in Model.Orders)
+{
+    <div class="card-body row reverse">
+        <div class="col-7">
+            <h5 class="card-title">Order: @order.OrderId - @order.Username</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var orderProduct in order.OrderProducts)
+                {
+                    <li class="list-group-item">
+                        @{
+                            Product matchingProduct = null;
+                            @foreach (var category in Model.Categories)
+                            {
+                                matchingProduct = category.Products.Where(p => p.ProductId == orderProduct.ProductId).FirstOrDefault();
+                                break;
+                            }
+                        }
+                        @if (matchingProduct != null)
+                        {
+                            <div class="row">
+                                <div class="col-2">
+                                    @(orderProduct.Quantity) x 
+                                </div>
+                                <div class="col-8">
+                                    @(matchingProduct.Name)
+                                </div>
+                                <div class="col-2">
+                                    $@(matchingProduct.Cost)
+                                </div>
+                            </div>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <div class="card-header">
+                    Status
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <form method="post">
+                            <input asp-for="@order.Status" value="Confirmed" hidden />
+                            <button class="btn btn-link" type="submit">Confirm</button>
+                        </form>
+                    </li>
+                    <li class="list-group-item">
+                        <form method="post">
+                            <input asp-for="@order.Status" value="Order is being prepared" hidden />
+                            <button class="btn btn-link" type="submit">Prepare</button>
+                        </form>
+                    </li>
+                    <li class="list-group-item">
+                        <form method="post">
+                            <input asp-for="@order.Status" value="Order is in the oven" hidden />
+                            <button class="btn btn-link" type="submit">Cook</button>
+                        </form>
+                    </li>
+                    <li class="list-group-item">
+                        <form method="post">
+                            <input asp-for="@order.Status" value="Out for delivery" hidden />
+                            <button class="btn btn-link" type="submit">Deliver</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
