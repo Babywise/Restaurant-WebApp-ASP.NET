@@ -296,6 +296,25 @@ namespace Meal_Ordering_Restaurant.Controllers
             return RedirectToAction("Index", "Management");
         }
 
+        [HttpGet("Management/Category/Edit/{id}")]
+        public async Task<IActionResult> EditCategoryAsync(int id)
+        {
+            string accessToken = HttpContext.Session.GetString("Authorization");
+
+            if (string.IsNullOrEmpty(accessToken))
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+
+            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+
+            CategoryViewModel categoryViewModel = new CategoryViewModel()
+            {
+                CategoryRequest = new CategoryRequest()
+                {
+                    Category = getMenuRequest.Categories.Where(c => c.CategoryId == id).First(),
+                },
+            };
+            return View("EditCategory", categoryViewModel);
+        }
 
         [HttpPost("Management/Category/Edit/{id}")]
         public async Task<IActionResult> EditCategoryAsync(CategoryViewModel model)

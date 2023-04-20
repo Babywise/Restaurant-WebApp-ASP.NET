@@ -77,12 +77,12 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteCategory([FromBody] CategoryRequest categoryRequest)
         {
+            var categories = await _mealOrderingService.GetMenuAsync();
+            var categoryName = categories.Where(c => c.CategoryId == categoryRequest.CategoryIdToDeleted).First().Name;
             if (!await _mealOrderingService.DeleteCategoryAsync((int)categoryRequest.CategoryIdToDeleted))
             {
                 return BadRequest(new { Message = $"Category 'id = {categoryRequest.CategoryIdToDeleted}' could not be deleted" });
             }
-            var categories = await _mealOrderingService.GetMenuAsync();
-            var categoryName = categories.Where(c => c.CategoryId == categoryRequest.CategoryIdToDeleted).FirstOrDefault().Name;
             return Ok(new { Message = $"Category '{categoryName}' was successfully deleted" });
         }
 
@@ -187,7 +187,6 @@ namespace MealOrderingApi.Controllers
                 }
                 return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' was successfully updated" });
             }
-
         }
 
     }
