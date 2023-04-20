@@ -71,6 +71,9 @@ namespace Meal_Ordering_Customer.Controllers
                 bool IncludeProduct = true;
                 Category category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
 
+                category.Products = category.Products.Where(p => p.IsDeleted != true).ToList();
+
+
                 return View(category);
             }
             else

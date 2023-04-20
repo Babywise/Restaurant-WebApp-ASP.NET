@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MealOrderingApi.Migrations
 {
     /// <inheritdoc />
-    public partial class CustomerRestaurantAPIMerged : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
