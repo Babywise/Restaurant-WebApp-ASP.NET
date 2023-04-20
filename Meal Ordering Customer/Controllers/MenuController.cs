@@ -57,33 +57,6 @@ namespace Meal_Ordering_Customer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Display(int CategoryId)
-        {
-            if (ModelState.IsValid)
-            {
-                string accessToken = HttpContext.Session.GetString("Authorization");
-
-                if (string.IsNullOrEmpty(accessToken))
-                {
-                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
-
-                bool IncludeProduct = true;
-                Category category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
-
-                category.Products = category.Products.Where(p => p.IsDeleted != true).ToList();
-
-
-                return View(category);
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
-
-        }
-
-        [HttpGet]
         public async Task<IActionResult> DisplayItem(int ProductId, int CategoryId)
         {
             if (ModelState.IsValid)

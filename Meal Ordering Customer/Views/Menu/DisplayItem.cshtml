@@ -34,7 +34,7 @@
                 <span class="text-danger" asp-validation-for=@Model.QuantityToAdd></span>
             </div>
             <div class="col-1">
-                <button type="submit" class="btn btn-secondary"
+                <button type="submit" class="btn btn-primary"
                 asp-controller="Order" asp-action="AddToCart"
                 asp-route-CategoryId=@Model.Product.CategoryId asp-route-ProductId=@Model.Product.ProductId>
                 Add

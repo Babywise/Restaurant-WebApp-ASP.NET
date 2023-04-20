@@ -3,13 +3,13 @@
     ViewData["Title"] = "Menu Categories";
 }
 
-<h1 class="align-content-center">Menu Categories</h1>
+<h1 class="text-center pb-1">Menu Categories</h1>
 
 
 @foreach (var category in Model)
 {
     <div class="row">
-        <h1>@category.Name</h1>
+        <h2 class="pb-2">@category.Name</h2>
         <partial name="_CategoriesPartial" model="@category" />
     </div>
 }
