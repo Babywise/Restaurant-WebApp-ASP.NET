@@ -49,10 +49,11 @@ namespace Meal_Ordering_Customer.Controllers
                         HttpContext.Session.SetString("Username", loginResponse.Account.UserName);
                         var handler = new JwtSecurityTokenHandler();
                         var decodedToken = handler.ReadJwtToken(HttpContext.Session.GetString("Authorization"));
-                        var accountType = decodedToken.Payload["AccountType"];
+                        var accountType = decodedToken.Payload["AccountType"].ToString();
                         if (accountType != "Customer")
                         {
                             TempData["ErrorMessage"] = $"(Error) : This account is of type '{accountType}'. Please create a 'Customer' account, Thank you.";
+                            HttpContext.Session.Clear();
                             return RedirectToAction("Register", "Account");
                         }
                     }

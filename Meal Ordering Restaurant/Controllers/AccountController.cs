@@ -50,10 +50,11 @@ namespace Meal_Ordering_Restaurant.Controllers
                         HttpContext.Session.SetString("Username", loginResponse.Account.UserName);
                         var handler = new JwtSecurityTokenHandler();
                         var decodedToken = handler.ReadJwtToken(HttpContext.Session.GetString("Authorization"));
-                        var accountType = decodedToken.Payload["AccountType"];
+                        var accountType = decodedToken.Payload["AccountType"].ToString();
                         if (accountType != "Restaurant")
                         {
                             TempData["ErrorMessage"] = $"(Error) : This account is of type '{accountType}'. Please create a 'Restaurant' account, Thank you.";
+                            HttpContext.Session.Clear();
                             return RedirectToAction("Register", "Account");
                         }
                     }
