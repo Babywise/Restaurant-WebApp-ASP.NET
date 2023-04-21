@@ -51,7 +51,7 @@ namespace MealOrderingApi.Services
         public async Task<string>? GetClaimValueFromToken(string token, string claimType)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+            var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
 
             if (jwtToken == null)
             {
@@ -59,8 +59,7 @@ namespace MealOrderingApi.Services
             }
 
             var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == claimType);
-            return await claim?.Value;
-            throw new NotImplementedException();
+            return claim?.Value;
         }
     }
 }

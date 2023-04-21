@@ -12,7 +12,7 @@ namespace Meal_Ordering_Restaurant.Services
         public async Task<GetOrdersRequest> GetOrdersAsync(string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>("api/v1/management/all-orders");
+            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>("api/v2/management/all-orders");
         }
     }
 }

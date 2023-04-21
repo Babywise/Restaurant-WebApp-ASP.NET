@@ -15,7 +15,7 @@ using Azure.Core;
 
 namespace MealOrderingApi.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController()]
     public class AccountController : ControllerBase
     {

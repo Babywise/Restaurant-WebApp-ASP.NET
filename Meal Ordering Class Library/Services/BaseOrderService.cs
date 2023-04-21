@@ -13,7 +13,7 @@ namespace Meal_Ordering_Class_Library.Services
         public async Task<HttpResponseMessage> UpdateOrderAsync(string accessToken, UpdateOrderRequest updateOrderRequest)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PutAsJsonAsync("api/v1/management/update-order", updateOrderRequest);
+            return await _httpClient.PutAsJsonAsync("api/v2/management/update-order", updateOrderRequest);
         }
     }
 }
