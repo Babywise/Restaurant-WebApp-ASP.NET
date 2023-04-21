@@ -3,12 +3,27 @@
     ViewData["Title"] = "Menu Categories";
 }
 
-<h1 class="align-content-center">Menu Categories</h1>
+<h1 class="text-center pb-1">Menu Categories</h1>
 
+<!-- First check if there is a category called "Specials", if there is, add it as the first category to the menu. -->
+@foreach (var category in Model)
+{
+    if (category.Name.Equals("Specials"))
+    {
+        <div class="row">
+            <h2 class="pb-2">@category.Name</h2>
+            <partial name="_CategoriesPartial" model="@category" />
+        </div>
+    }
+}
 
 @foreach (var category in Model)
 {
-    <div class="row">
-        <a class="btn btn-secondary mb-4" asp-action="Display" asp-route-CategoryId=@category.CategoryId>@category.Name</a>
-    </div>
+    if (!category.Name.Equals("Specials"))
+    {
+        <div class="row">
+            <h2 class="pb-2">@category.Name</h2>
+            <partial name="_CategoriesPartial" model="@category" />
+        </div>     
+    }
 }

@@ -1,7 +1,6 @@
 ﻿@model AddProductToCartViewModel
 @{
     ViewData["Title"] = Model.Product.Name + "Details";
-    
 }
 
 <div class="container">
@@ -28,20 +27,19 @@
         </div>
     </div>
     <form method="post">
-        <div class="row align-items-center">
+        <div class="row align-items-center input-group">
             <div class="col-2">
-                <input asp-for=@Model.QuantityToAdd type="text" />
-                <span class="text-danger" asp-validation-for=@Model.QuantityToAdd></span>
+                <input type="text" class="form-control" asp-for="@Model.QuantityToAdd"
+                placeholder="Type a Quantity" aria-label="Type a Quantity" aria-describedby="add-category-button">
             </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-secondary"
-                asp-controller="Order" asp-action="AddToCart"
-                asp-route-CategoryId=@Model.Product.CategoryId asp-route-ProductId=@Model.Product.ProductId>
-                Add
+            <div class="col-1 input-group-append">
+                <button type="submit" class="input-group-text btn btn-primary" id="add-item-button"
+                    asp-controller="Order" asp-action="AddToCart"
+                    asp-route-CategoryId=@Model.Product.CategoryId asp-route-ProductId=@Model.Product.ProductId>
+                    Add
                 </button>
             </div>
             <div class="col-9">
-                
             </div>
         </div>
     </form>
