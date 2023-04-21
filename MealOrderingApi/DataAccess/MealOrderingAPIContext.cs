@@ -536,64 +536,387 @@ namespace MealOrderingApi.DataAccess
             );
 
             modelBuilder.Entity<Order>().HasData(
-                new Order()
-                {
-                    OrderId = 1,
-                    Username = "nick",
-                    StoreId = 1,
-                    Status = "In the Oven",
-                },
+                 new Order()
+                 {
+                     OrderId = 1,
+                     Username = "issi",
+                     StoreId = 1,
+                     Status = "Cooking",
+                 },
                 new Order()
                 {
                     OrderId = 2,
                     Username = "nick",
                     StoreId = 1,
-                    Status = "Confirmed",
+                    Status = "Pending",
                 },
                 new Order()
                 {
                     OrderId = 3,
-                    Username = "nick",
+                    Username = "issi",
                     StoreId = 1,
                     Status = "Cart",
+                },
+                new Order()
+                {
+                    OrderId = 4,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "Delivered",
+                },
+                new Order()
+                {
+                    OrderId = 5,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "ODelivery",
+                },
+                new Order()
+                {
+                    OrderId = 6,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "Preparation",
+                },
+                new Order()
+                {
+                    OrderId = 7,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Confirmed",
+                },
+                new Order()
+                {
+                    OrderId = 8,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "QC",
+                },
+                new Order()
+                {
+                    OrderId = 9,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "Cooking",
+                },
+                new Order()
+                {
+                    OrderId = 10,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Delivered",
+                },
+                new Order()
+                {
+                    OrderId = 11,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Preparation",
+                },
+                new Order()
+                {
+                    OrderId = 12,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Preparation",
+                },
+                new Order()
+                {
+                    OrderId = 13,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "Cooking",
+                },
+                new Order()
+                {
+                    OrderId = 14,
+                    Username = "nick",
+                    StoreId = 1,
+                    Status = "ODelivery",
                 }
+
             );
 
             modelBuilder.Entity<OrderProduct>().HasData(
+                // Order 1
                 new OrderProduct()
                 {
                     OrderProductId = 1,
-                    OrderId = 3,
+                    OrderId = 1,
                     ProductId = 1,
-                    Quantity = 10,
+                    Quantity = 1,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 2,
-                    OrderId = 3,
-                    ProductId = 2,
-                    Quantity = 20,
+                    OrderId = 1,
+                    ProductId = 5,
+                    Quantity = 3,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 3,
-                    OrderId = 3,
-                    ProductId = 3,
-                    Quantity = 14,
+                    OrderId = 1,
+                    ProductId = 9,
+                    Quantity = 1,
                 },
+                // Order 2
                 new OrderProduct()
                 {
                     OrderProductId = 4,
-                    OrderId = 3,
-                    ProductId = 4,
-                    Quantity = 50,
+                    OrderId = 2,
+                    ProductId = 13,
+                    Quantity = 1,
                 },
                 new OrderProduct()
                 {
                     OrderProductId = 5,
+                    OrderId = 2,
+                    ProductId = 18,
+                    Quantity = 2,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 6,
+                    OrderId = 2,
+                    ProductId = 22,
+                    Quantity = 1,
+                },
+                // Order 3
+                new OrderProduct()
+                {
+                    OrderProductId = 7,
                     OrderId = 3,
-                    ProductId = 1,
+                    ProductId = 27,
+                    Quantity = 4,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 8,
+                    OrderId = 3,
+                    ProductId = 31,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 9,
+                    OrderId = 3,
+                    ProductId = 35,
+                    Quantity = 1,
+                },
+                // Order 4
+                new OrderProduct()
+                {
+                    OrderProductId = 10,
+                    OrderId = 4,
+                    ProductId = 2,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 11,
+                    OrderId = 4,
+                    ProductId = 7,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 12,
+                    OrderId = 4,
+                    ProductId = 11,
+                    Quantity = 1,
+                },
+                // Order 5
+                new OrderProduct()
+                {
+                    OrderProductId = 13,
+                    OrderId = 5,
+                    ProductId = 15,
+                    Quantity = 2,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 14,
+                    OrderId = 5,
+                    ProductId = 20,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 15,
+                    OrderId = 5,
+                    ProductId = 24,
+                    Quantity = 2,
+                },
+                // Order 6
+                new OrderProduct()
+                {
+                    OrderProductId = 16,
+                    OrderId = 6,
+                    ProductId = 29,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 17,
+                    OrderId = 6,
+                    ProductId = 33,
+                    Quantity = 1,
+                },
+                // Order 7
+                new OrderProduct()
+                {
+                    OrderProductId = 18,
+                    OrderId = 7,
+                    ProductId = 37,
                     Quantity = 10,
+                },
+                // Order 8
+                new OrderProduct()
+                {
+                    OrderProductId = 19,
+                    OrderId = 8,
+                    ProductId = 3,
+                    Quantity = 3,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 20,
+                    OrderId = 8,
+                    ProductId = 6,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 21,
+                    OrderId = 8,
+                    ProductId = 10,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 22,
+                    OrderId = 8,
+                    ProductId = 14,
+                    Quantity = 2,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 23,
+                    OrderId = 8,
+                    ProductId = 19,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 24,
+                    OrderId = 8,
+                    ProductId = 23,
+                    Quantity = 1,
+                },
+                // Order 9
+                new OrderProduct()
+                {
+                    OrderProductId = 25,
+                    OrderId = 9,
+                    ProductId = 28,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 26,
+                    OrderId = 9,
+                    ProductId = 32,
+                    Quantity = 2,
+                },
+                // Order 10
+                new OrderProduct()
+                {
+                    OrderProductId = 27,
+                    OrderId = 10,
+                    ProductId = 36,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 28,
+                    OrderId = 10,
+                    ProductId = 4,
+                    Quantity = 2,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 29,
+                    OrderId = 10,
+                    ProductId = 8,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 30,
+                    OrderId = 10,
+                    ProductId = 12,
+                    Quantity = 3,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 31,
+                    OrderId = 10,
+                    ProductId = 17,
+                    Quantity = 1,
+                },
+                // Order 11
+                new OrderProduct()
+                {
+                    OrderProductId = 32,
+                    OrderId = 11,
+                    ProductId = 21,
+                    Quantity = 1,
+                },
+                // Order 12
+                new OrderProduct()
+                {
+                    OrderProductId = 33,
+                    OrderId = 12,
+                    ProductId = 16,
+                    Quantity = 3,
+                },
+                // Order 13
+                new OrderProduct()
+                {
+                    OrderProductId = 34,
+                    OrderId = 13,
+                    ProductId = 30,
+                    Quantity = 3,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 35,
+                    OrderId = 13,
+                    ProductId = 34,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 36,
+                    OrderId = 13,
+                    ProductId = 38,
+                    Quantity = 1,
+                },
+                // Order 14
+                new OrderProduct()
+                {
+                    OrderProductId = 37,
+                    OrderId = 14,
+                    ProductId = 16,
+                    Quantity = 1,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 38,
+                    OrderId = 14,
+                    ProductId = 39,
+                    Quantity = 1,
                 }
             );
 
