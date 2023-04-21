@@ -6,6 +6,8 @@ using System.Data;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
@@ -46,7 +48,16 @@ namespace Meal_Ordering_Restaurant.Controllers
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
                         HttpContext.Session.SetString("Username", loginResponse.Account.UserName);
+                        var handler = new JwtSecurityTokenHandler();
+                        var decodedToken = handler.ReadJwtToken(HttpContext.Session.GetString("Authorization"));
+                        var accountType = decodedToken.Payload["AccountType"];
+                        if (accountType != "Restaurant")
+                        {
+                            TempData["ErrorMessage"] = $"(Error) : This account is of type '{accountType}'. Please create a 'Restaurant' account, Thank you.";
+                            return RedirectToAction("Register", "Account");
+                        }
                     }
+                    
                     // ----END OF SESSION MGMT
                     TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
                     return RedirectToAction("Index", "Management");

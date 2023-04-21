@@ -24,7 +24,7 @@ namespace MealOrderingApi.Services
         {
             var claims = new List<Claim>
             {
-                new Claim("Id", user.Id),
+                new Claim("AccountType", user.AccountType),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, user.Id)
             };
