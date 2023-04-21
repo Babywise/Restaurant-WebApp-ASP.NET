@@ -60,7 +60,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                 HttpContext.Session.SetString("SelectedTabId", tabId);
             }
 
-            switch (tabId)
+            switch (HttpContext.Session.GetString("SelectedTabId"))
             {
                 case "pending":
                     orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "Pending").ToList();
