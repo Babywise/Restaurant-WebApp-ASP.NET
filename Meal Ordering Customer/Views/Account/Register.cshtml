@@ -3,11 +3,29 @@
     ViewData["Title"] = "Register";
 }
 
-<form method="post">
-    <partial name="_AccountFormFieldsPartial" model="@Model" />
-    <partial name="_AccountPasswordPartial" model="@Model" />
-    <div>
-        <input asp-for="AccountRequest.Account.AccountType" value="Customer" hidden />
+<div class="container">
+    <div class="">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Register</h2>
+                        <div class="d-flex justify-content-center mb-4">
+                            <img src="images/MealOrderingLogo.jpg" alt="LOGO" class="rounded-circle" width="100">
+                        </div>
+                        <form method="post">
+                            <partial name="_AccountFormFieldsPartial" model="@Model" />
+                            <partial name="_AccountPasswordPartial" model="@Model" />
+                            <div>
+                                <input asp-for="AccountRequest.Account.AccountType" value="Customer" hidden />
+                            </div>
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary w-100">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <button type="submit">Register</button>
-</form>
+</div>
