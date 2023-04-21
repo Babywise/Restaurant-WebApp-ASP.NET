@@ -1,7 +1,38 @@
+using Meal_Ordering_Restaurant.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add session services and configure options
+builder.Services.AddHttpClient();
+//builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".MealOrderingApp.Restaurant.Session";
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ManagementService>();
+
+// Configure authentication middleware
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.Authority = builder.Configuration["ApiSettings:ApiBaseUrl"];
+    options.Audience = builder.Configuration["ApiSettings:ApiBaseUrl"];
+    
+});
 
 var app = builder.Build();
 
@@ -18,6 +49,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
+app.UseAuthentication();
+app.UseStatusCodePagesWithReExecute("/Home/AccessDenied/{0}");
 app.UseAuthorization();
 
 app.MapControllerRoute(

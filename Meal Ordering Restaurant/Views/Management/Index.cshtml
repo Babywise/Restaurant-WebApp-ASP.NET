@@ -1,0 +1,13 @@
+﻿@model ManagementViewModel
+@{
+    ViewData["Title"] = "Management";
+}
+
+<div class="justify-content-center row">
+    <div class="col-6">
+        <partial name="_CategoryListPartial" model="@Model" />
+    </div>
+    <div class="col-6">
+        <partial name="_ProductListPartial" model="@Model" />
+    </div>
+</div>

@@ -1,0 +1,42 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = $"Edit - {Model.ProductRequest.Product.Name}";
+}
+
+<form method="post" asp-action="EditProduct" asp-route-id="@Model.ProductRequest.Product.ProductId">
+    <div>
+        <span asp-validation-for="ProductRequest.Product.Name" class="text-danger"></span>
+        <label asp-for="ProductRequest.Product.Name">Product Name:</label>
+        <input asp-for="ProductRequest.Product.Name" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="ProductRequest.Product.Description" class="text-danger"></span>
+        <label asp-for="ProductRequest.Product.Description">Product Description:</label>
+        <input asp-for="ProductRequest.Product.Description" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="ProductRequest.Product.Cost" class="text-danger"></span>
+        <label asp-for="ProductRequest.Product.Cost">Cost (per unit):</label>
+        <input asp-for="ProductRequest.Product.Cost" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="ProductRequest.Product.Quantity" class="text-danger"></span>
+        <label asp-for="ProductRequest.Product.Quantity">Quantity:</label>
+        <input asp-for="ProductRequest.Product.Quantity" type="text" />
+    </div>
+    <div>
+        <span asp-validation-for="ProductRequest.Product.CategoryId" class="text-danger"></span>
+        <label asp-for="ProductRequest.Product.CategoryId">Category:</label>
+        <select asp-for="ProductRequest.Product.CategoryId">
+            <option value="">Please select a category</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.CategoryId">@c.Name</option>
+            }
+        </select>
+    </div>
+
+    <input asp-for="ProductRequest.Product.ProductId" value="@Model.ProductRequest.Product.ProductId" hidden />
+
+    <button type="submit">Edit Product</button>
+</form>

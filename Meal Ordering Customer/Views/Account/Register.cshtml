@@ -1,0 +1,13 @@
+﻿@model AccountViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<form method="post">
+    <partial name="_AccountFormFieldsPartial" model="@Model" />
+    <partial name="_AccountPasswordPartial" model="@Model" />
+    <div>
+        <input asp-for="AccountRequest.Account.AccountType" value="Customer" hidden />
+    </div>
+    <button type="submit">Register</button>
+</form>

@@ -1,0 +1,15 @@
+﻿@model AccountViewModel
+@{
+    ViewData["Title"] = $"Edit {Model.AccountRequest.Account.UserName}";
+}
+
+<form method="post">
+    <partial name="_AccountFormFieldsPartial" model="@Model" />
+    <div>
+        <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+        <label asp-for="AccountRequest.Account.CurrentPassword">Current Password:</label>
+        <input asp-for="AccountRequest.Account.CurrentPassword" type="password" />
+    </div>
+    <partial name="_AccountPasswordPartial" model="@Model" />
+    <button type="submit">Edit</button>
+</form>

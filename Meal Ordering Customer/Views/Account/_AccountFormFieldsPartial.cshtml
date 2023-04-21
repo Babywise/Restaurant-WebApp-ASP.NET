@@ -1,0 +1,33 @@
+﻿@model AccountViewModel
+<!--Partial start-->
+<div>
+    <span asp-validation-for="AccountRequest.Account.UserName" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.UserName">Username:</label>
+    <input asp-for="AccountRequest.Account.UserName" type="text" />
+</div>
+<div>
+    <span asp-validation-for="AccountRequest.Account.FirstName" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.FirstName">First Name:</label>
+    <input asp-for="AccountRequest.Account.FirstName" type="text" />
+</div>
+<div>
+    <span asp-validation-for="AccountRequest.Account.LastName" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.LastName">Last Name:</label>
+    <input asp-for="AccountRequest.Account.LastName" type="text" />
+</div>
+<div>
+    <span asp-validation-for="AccountRequest.Account.Email" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.Email">Email:</label>
+    <input asp-for="AccountRequest.Account.Email" type="email" />
+</div>
+<div>
+    <span asp-validation-for="AccountRequest.Account.PhoneNumber" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.PhoneNumber">Phone Number:</label>
+    <input asp-for="AccountRequest.Account.PhoneNumber" type="text" />
+</div>
+<div>
+    <span asp-validation-for="AccountRequest.Account.Address" class="text-danger"></span>
+    <label asp-for="AccountRequest.Account.Address">Address:</label>
+    <input asp-for="AccountRequest.Account.Address" type="text" />
+</div>
+<!--Partial end-->

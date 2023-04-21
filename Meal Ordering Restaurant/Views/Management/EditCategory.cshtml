@@ -1,0 +1,16 @@
+﻿@model CategoryViewModel
+@{
+    ViewData["Title"] = $"Edit - {Model.CategoryRequest.Category.Name}";
+}
+
+<form method="post" asp-action="EditCategory" asp-route-id="@Model.CategoryRequest.Category.CategoryId">
+    <div>
+        <span asp-validation-for="CategoryRequest.Category.Name" class="text-danger"></span>
+        <label asp-for="CategoryRequest.Category.Name">Product Name:</label>
+        <input asp-for="CategoryRequest.Category.Name" type="text" />
+    </div>
+
+    <input asp-for="CategoryRequest.Category.CategoryId" value="@Model.CategoryRequest.Category.CategoryId" hidden />
+
+    <button type="submit">Edit Category</button>
+</form>
