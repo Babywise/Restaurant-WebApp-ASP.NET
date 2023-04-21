@@ -26,14 +26,14 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ManagementService>();
 builder.Services.AddScoped<OrderService>();
 
-// Configure authentication middleware
+/*// Configure authentication middleware
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.Authority = builder.Configuration["ApiSettings:ApiBaseUrl"];
     options.Audience = builder.Configuration["ApiSettings:ApiBaseUrl"];
     
-});
+});*/
 
 var app = builder.Build();
 
@@ -52,7 +52,7 @@ app.UseRouting();
 
 app.UseSession();
 
-app.UseAuthentication();
+/*app.UseAuthentication();*/
 app.UseStatusCodePagesWithReExecute("/Home/AccessDenied/{0}");
 app.UseAuthorization();
 

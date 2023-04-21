@@ -2,17 +2,45 @@
 @{
     ViewData["Title"] = "Login";
 }
-
-<form method="post">
-    <div>
-        <span asp-validation-for="AccountRequest.Account.UserName" class="text-danger"></span>
-        <label asp-for="AccountRequest.Account.UserName">Username:</label>
-        <input asp-for="AccountRequest.Account.UserName" type="text" />
+<div class="container">
+    <div class="">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Welcome</h2>
+                        <div class="d-flex justify-content-center mb-4">
+                            <img src="images/MealOrderingLogo.png" alt="LOGO" class="rounded-circle" width="100">
+                        </div>
+                        <form method="post">
+                            <div class="form-group mb-1">
+                                <span asp-validation-for="AccountRequest.Account.UserName" class="text-danger"></span>
+                                @*<label asp-for="AccountRequest.Account.UserName">Username:</label>*@
+                                <div class="input-group">
+                                    <input type="text" asp-for="AccountRequest.Account.UserName" class="form-control" id="username" placeholder="Username" required />
+                                </div>
+                            </div>
+                            <div class="form-group mb-1">
+                                <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+                                @*<label asp-for="AccountRequest.Account.CurrentPassword">Password:</label>*@
+                                <div class="input-group">
+                                    <input type="password" asp-for="AccountRequest.Account.CurrentPassword" class="form-control" id="password" placeholder="Password" required />
+                                </div>
+                            </div>
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </div>
+                            <div class="text-center mt-4">
+                                <a href="#" class="text-muted">Forgot Username / Password?</a>
+                            </div>
+                            <div class="text-center mt-4">
+                                <span class="text-muted">Don't have an account?</span>
+                                <a asp-action="Register" class="ml-2">Register</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
-        <label asp-for="AccountRequest.Account.CurrentPassword">Password:</label>
-        <input asp-for="AccountRequest.Account.CurrentPassword" type="password" />
-    </div>
-    <button type="submit">Login</button>
-</form>
+</div>
