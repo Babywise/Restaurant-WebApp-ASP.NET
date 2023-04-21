@@ -94,14 +94,21 @@ namespace Meal_Ordering_Restaurant.Controllers
                 }
                 //create custom tag helper in the future to fix formating
                 JArray errorsArray = (JArray)responseContent["errors"];
-                string errorsAsString = "";
-                foreach (JObject errorObject in errorsArray)
+                if (errorsArray != null)
                 {
-                    //string errorCode = errorObject["code"].ToString();
-                    //string errorDescription = errorObject["description"].ToString();
-                    errorsAsString += $"{errorObject["description"]}";
+                    string errorsAsString = "";
+                    foreach (JObject errorObject in errorsArray)
+                    {
+                        //string errorCode = errorObject["code"].ToString();
+                        //string errorDescription = errorObject["description"].ToString();
+                        errorsAsString += $"{errorObject["description"]}";
+                    }
+                    TempData["ErrorMessage"] = $"({response.StatusCode}) : {errorsAsString}";
                 }
-                TempData["ErrorMessage"] = $"({response.StatusCode}) : {errorsAsString}";
+                else
+                {
+                    TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                }
                 return View(model);
             }
             ModelState.AddModelError(string.Empty, "Please fill out all fields in the form.");
