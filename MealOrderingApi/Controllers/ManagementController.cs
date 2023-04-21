@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrderingApi.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController()]
     public class ManagementController : ControllerBase
     {
@@ -167,7 +167,7 @@ namespace MealOrderingApi.Controllers
             return Ok(getOrdersRequest);
         }
 
-        [HttpPost("update-order")]
+        [HttpPut("update-order")]
         [Authorize]
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest updateOrderRequest)
         {

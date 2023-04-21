@@ -47,5 +47,20 @@ namespace MealOrderingApi.Services
             return await Task.FromResult(tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)));
 
         }
+
+        public async Task<string>? GetClaimValueFromToken(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            if (jwtToken == null)
+            {
+                return null;
+            }
+
+            var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == claimType);
+            return await claim?.Value;
+            throw new NotImplementedException();
+        }
     }
 }
