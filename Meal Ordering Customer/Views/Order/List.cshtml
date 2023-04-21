@@ -3,115 +3,155 @@
     ViewData["Title"] = "Order List";
     bool cartExists = false;
     bool oDeliveryExists = false;
+    bool deliveredExists = false;
+    bool inProgress = false;
 }
 
-<h1>View Cart:</h1>
-
-@foreach (var order in Model.Orders)
+@if (Model.Orders.Any(o => o.Username != null))
 {
-    if (order.Status == "Cart")
-    {
+    <h1>View Cart:</h1>
 
-        <div class="row">
-            <div class="card mb-4">
-                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
-                    <div class="card-body">
-                        <h5 class="card-title">Order ID: @order.OrderId</h5>
-                        <p class="card-text">Order Status: @order.Status<p>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-    }
-    else if (order == Model.Orders.Last() && cartExists == false)
+    @foreach (var order in Model.Orders)
     {
-         <div class="row">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">@order.Username does not currently have a cart</h5>
-                    <p class="card-text">To create a cart, add an item on the menu page.<p>
+        if (order.Status == "Cart")
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                        <div class="card-body">
+                            <h5 class="card-title">Order ID: @order.OrderId</h5>
+                            <p class="card-text">Order Status: @order.Status<p>
+                        </div>
+                    </a>
                 </div>
             </div>
-        </div>
-    }
-}
-
-<h1>Incomplete Orders:</h1>
-<p>Please mark as delivered once you have recieved your order!</p>
-
-@foreach (var order in Model.Orders)
-{
-    if (order.Status == "ODelivery")
-    {
-        <div class="row">
-            <div class="card mb-4">
-                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+        }
+        else if (order == Model.Orders.Last() && cartExists == false)
+        {
+            <div class="row">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Order ID: @order.OrderId</h5>
-                        <p class="card-text">Order Status: @order.Status<p>
-                            <div>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-outline-success" 
-                                    asp-controller="Order" asp-action="Delivered" asp-route-OrderId=@order.OrderId>
-                                        Mark as Delivered
-                                    </button>
-                                </form>
-                            </div>
+                        <h5 class="card-title">@order.Username does not currently have a cart</h5>
+                        <p class="card-text">To create a cart, add an item on the menu page.<p>
                     </div>
-                </a>
-            </div>
-        </div>
-        oDeliveryExists = true;
-    }
-    else if (order == Model.Orders.Last() && oDeliveryExists == false)
-    {
-        <div class="row">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">@order.Username does not currently have any orders waiting for completion</h5>
-                    <p class="card-text">To create a cart, add an item on the menu page.<p>
                 </div>
             </div>
-        </div>
+        }
     }
-}
 
-<h1 class="pb-2">Orders in Progress:</h1>
+    <h1>Incomplete Orders:</h1>
+    <p>Please mark as delivered once you have recieved your order!</p>
 
-@foreach (var order in Model.Orders)
-{
-    if (order.Status != "Cart" && order.Status != "Delivered" && order.Status != "ODelivery")
+    @foreach (var order in Model.Orders)
     {
-        <div class="row">
-            <div class="card mb-4">
-                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+        if (order.Status == "ODelivery")
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                        <div class="card-body">
+                            <h5 class="card-title">Order ID: @order.OrderId</h5>
+                            <p class="card-text">Order Status: @order.Status<p>
+                                <div>
+                                    <form method="post">
+                                        <button type="submit" class="btn btn-outline-success"
+                                        asp-controller="Order" asp-action="Delivered" asp-route-OrderId=@order.OrderId>
+                                            Mark as Delivered
+                                        </button>
+                                    </form>
+                                </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            oDeliveryExists = true;
+        }
+        else if (order == Model.Orders.Last() && oDeliveryExists == false)
+        {
+            <div class="row">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Order ID: @order.OrderId</h5>
-                        <p class="card-text">Order Status: @order.Status<p> 
+                        <h5 class="card-title">@order.Username does not currently have any orders waiting for completion</h5>
+                        <p class="card-text">To create a cart, add an item on the menu page.<p>
                     </div>
-                </a>
+                </div>
+            </div>
+        }
+    }
+
+    <h1 class="pb-2">Orders in Progress:</h1>
+
+    @foreach (var order in Model.Orders)
+    {
+        if (order.Status != "Cart" && order.Status != "Delivered" && order.Status != "ODelivery")
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                        <div class="card-body">
+                            <h5 class="card-title">Order ID: @order.OrderId</h5>
+                            <p class="card-text">Order Status: @order.Status<p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            inProgress = true;
+            oDeliveryExists = true;
+        }
+        else if (order == Model.Orders.Last() && inProgress == false)
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@order.Username does not currently have any orders in progress.</h5>
+                        <p class="card-text">To start an order, add an item to your cart.<p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <h1 class="pb-2">Completed Orders:</h1>
+
+    @foreach (var order in Model.Orders.Reverse())
+    {
+        if (order.Status == "Delivered")
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                        <div class="card-body">
+                            <h5 class="card-title">Order ID: @order.OrderId</h5>
+                            <p class="card-text">Order Status: @order.Status<p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            deliveredExists = true;
+        }
+        else if (order == Model.Orders.First() && deliveredExists == false)
+        {
+            <div class="row">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@order.Username does not currently have any completed orders</h5>
+                        <p class="card-text">Completed orders appear once you have marked them as delivered.<p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+}
+else
+{
+    <div class="row">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">@Context.Session.GetString("Username") does not currently have any orders.</h5>
+                <p class="card-text">To start an order, add an item to your cart.<p>
             </div>
         </div>
-        oDeliveryExists = true;
-    }
+    </div>
 }
 
-<h1 class="pb-2">Completed Orders:</h1>
-
-@foreach (var order in Model.Orders.Reverse())
-{
-    if (order.Status == "Delivered")
-    {
-        <div class="row">
-            <div class="card mb-4">
-                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
-                    <div class="card-body">
-                        <h5 class="card-title">Order ID: @order.OrderId</h5>
-                        <p class="card-text">Order Status: @order.Status<p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    }
-}
