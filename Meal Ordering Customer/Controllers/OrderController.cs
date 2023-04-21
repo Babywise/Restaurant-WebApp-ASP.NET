@@ -252,5 +252,58 @@ namespace Meal_Ordering_Customer.Controllers
 
         }
 
+        [HttpPost("/Order/Delivered/{OrderId}")]
+        public async Task<IActionResult> Delivered(int OrderId)
+        {
+            if (ModelState.IsValid)
+            {
+                string accessToken = HttpContext.Session.GetString("Authorization");
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+                }
+
+                string Username = HttpContext.Session.GetString("Username");
+
+                // Get the list of orders
+                GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
+
+                // Find the order that has the cart status
+                Order order = orders.Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+
+                if (order != null)
+                {
+                    order.Status = "Delivered";
+                }
+
+                // Use the update order request to send in the "New Order"
+                UpdateOrderRequest uor = new UpdateOrderRequest()
+                {
+                    Order = order
+                };
+
+                var response = await _customerService.UpdateOrderAsync(HttpContext.Session.GetString("Authorization"), uor);
+                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["LastActionMessage"] = $"{responseContent["message"]}";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"{responseContent["message"]}";
+                }
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            }
+
+            return RedirectToAction("List", "Order");
+
+        }
+
     } 
 }
