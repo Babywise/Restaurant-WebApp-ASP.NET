@@ -3,13 +3,33 @@
     ViewData["Title"] = $"Edit {Model.AccountRequest.Account.UserName}";
 }
 
-<form method="post">
-    <partial name="_AccountFormFieldsPartial" model="@Model" />
-    <div>
-        <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
-        <label asp-for="AccountRequest.Account.CurrentPassword">Current Password:</label>
-        <input asp-for="AccountRequest.Account.CurrentPassword" type="password" />
+<div class="container">
+    <div class="">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Edit - @Model.AccountRequest.Account.UserName</h2>
+                        <div class="d-flex justify-content-center mb-4">
+                            <img src="images/MealOrderingLogo.png" alt="LOGO" class="rounded-circle" width="100">
+                        </div>
+                        <form method="post">
+                            <partial name="_AccountFormFieldsPartial" model="@Model" />
+                            <div class="form-group mb-1">
+                                <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+                                @*<label asp-for="AccountRequest.Account.CurrentPassword">Current Password:</label>*@
+                                <div class="input-group">
+                                    <input type="password" asp-for="AccountRequest.Account.CurrentPassword" class="form-control" id="currentpassword" placeholder="Current Password" />
+                                </div>
+                            </div>
+                            <partial name="_AccountPasswordPartial" model="@Model" />
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary w-100">Edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <partial name="_AccountPasswordPartial" model="@Model" />
-    <button type="submit">Edit</button>
-</form>
+</div>
