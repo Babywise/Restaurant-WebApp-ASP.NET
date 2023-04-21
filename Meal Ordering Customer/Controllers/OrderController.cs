@@ -91,8 +91,8 @@ namespace Meal_Ordering_Customer.Controllers
             }
 
 
-            // Redirect back to the Menu page
-            return RedirectToAction("Categories", "Menu", new { CategoryId = CategoryId });
+            // Redirect back to the Menu Display page
+            return RedirectToAction("Display", "Menu", new { CategoryId = CategoryId });
         }
 
         // This is the view cart page
