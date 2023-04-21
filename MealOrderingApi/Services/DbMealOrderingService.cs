@@ -96,12 +96,6 @@ namespace MealOrderingApi.Services
                .Include(p => p.Category)
                .FirstOrDefaultAsync(p => p.ProductId == ProductId);
 
-            // For security reasons. We do not want people to get the product info for "soft-deleted" items.
-            // So make the product null except for the description, which tells us that it has been deleted.
-            if (product.IsDeleted == true) {
-                product = null;
-                product.Description = "Deleted Item, Cannot Fetch";
-            }
             return product;
         }
 

@@ -1,0 +1,72 @@
+﻿@model OrderViewModel
+
+<div class="card text-center">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "pending" ? " active" : "")" asp-action="Index" asp-route-tabId="pending">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "active" ? " active" : "")" asp-action="Index" asp-route-tabId="active">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "history" ? " active" : "")" asp-action="Index" asp-route-tabId="history">History</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-pane">
+            <partial name="_OrderCardPartial" model="@Model" />
+        </div>
+    </div>
+</div>
+
+@*@model OrderViewModel
+
+<div class="card text-center">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "pending" ? " active" : "")" data-tab="pending-tab" asp-action="Index">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "active" ? " active" : "")" data-tab="active-tab" asp-action="Index">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link@(Model.SelectedTab == "history" ? " active" : "")" data-tab="history-tab" asp-action="Index">History</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div id="pending-tab" class="tab-pane@(Model.SelectedTab == "pending" ? " active" : "")">
+            <!-- Pending tab content here -->
+        </div>
+        <div id="active-tab" class="tab-pane@(Model.SelectedTab == "active" ? " active" : "")">
+            <!-- Active tab content here -->
+        </div>
+        <div id="history-tab" class="tab-pane@(Model.SelectedTab == "history" ? " active" : "")">
+            <!-- History tab content here -->
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Bind click event to tab links
+            $('.nav-link').click(function (e) {
+                e.preventDefault();
+                var tabId = $(this).data('tab');
+                loadTabContent(tabId);
+            });
+
+            // Load the initial tab content
+            loadTabContent('active');
+        });
+
+        function loadTabContent(tabId) {
+            var url = '@Url.Action("OrderTabContent", "Order")' + '?tabId=' + tabId;
+            window.location.href = url;
+        }
+    </script>
+}*@

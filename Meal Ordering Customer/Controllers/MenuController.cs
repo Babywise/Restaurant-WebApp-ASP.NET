@@ -57,30 +57,6 @@ namespace Meal_Ordering_Customer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Display(int CategoryId)
-        {
-            if (ModelState.IsValid)
-            {
-                string accessToken = HttpContext.Session.GetString("Authorization");
-
-                if (string.IsNullOrEmpty(accessToken))
-                {
-                    return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
-
-                bool IncludeProduct = true;
-                Category category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
-
-                return View(category);
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
-
-        }
-
-        [HttpGet]
         public async Task<IActionResult> DisplayItem(int ProductId, int CategoryId)
         {
             if (ModelState.IsValid)
@@ -92,9 +68,9 @@ namespace Meal_Ordering_Customer.Controllers
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
                 }
 
-                Product product = await _customerService.GetProductAsync(HttpContext.Session.GetString("Authorization"), ProductId);
+                Product product = await _customerService.GetProductByIdAsync(HttpContext.Session.GetString("Authorization"), ProductId);
                 bool IncludeProduct = false;
-                product.Category = await _customerService.GetCategoryAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+                product.Category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
 
                 AddProductToCartViewModel vm = new AddProductToCartViewModel()
                 {

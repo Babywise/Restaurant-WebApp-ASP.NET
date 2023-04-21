@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MealOrderingApi.Migrations
 {
     /// <inheritdoc />
-    public partial class CustomerRestaurantAPIMerged : Migration
+    public partial class merged : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -242,8 +242,14 @@ namespace MealOrderingApi.Migrations
                 columns: new[] { "CategoryId", "IsDeleted", "Name" },
                 values: new object[,]
                 {
-                    { 1, false, "Pizza" },
-                    { 2, false, "Wings" }
+                    { 1, false, "Burgers" },
+                    { 2, false, "Sandwiches" },
+                    { 3, false, "Salads" },
+                    { 4, false, "Sides" },
+                    { 5, false, "Drinks" },
+                    { 6, false, "Alcoholic Beverages" },
+                    { 7, false, "Desserts" },
+                    { 8, false, "Specials" }
                 });
 
             migrationBuilder.InsertData(
@@ -251,9 +257,20 @@ namespace MealOrderingApi.Migrations
                 columns: new[] { "OrderId", "Status", "StoreId", "Username" },
                 values: new object[,]
                 {
-                    { 1, "In the Oven", 1, "nick" },
-                    { 2, "Confirmed", 1, "nick" },
-                    { 3, "Cart", 1, "nick" }
+                    { 1, "Cooking", 1, "issi" },
+                    { 2, "Pending", 1, "nick" },
+                    { 3, "Cart", 1, "issi" },
+                    { 4, "Delivered", 1, "nick" },
+                    { 5, "ODelivery", 1, "issi" },
+                    { 6, "Preparation", 1, "nick" },
+                    { 7, "Confirmed", 1, "issi" },
+                    { 8, "QC", 1, "nick" },
+                    { 9, "Cooking", 1, "nick" },
+                    { 10, "Delivered", 1, "issi" },
+                    { 11, "Preparation", 1, "issi" },
+                    { 12, "Preparation", 1, "issi" },
+                    { 13, "Cooking", 1, "nick" },
+                    { 14, "ODelivery", 1, "nick" }
                 });
 
             migrationBuilder.InsertData(
@@ -261,11 +278,44 @@ namespace MealOrderingApi.Migrations
                 columns: new[] { "OrderProductId", "OrderId", "ProductId", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 3, 1, 10 },
-                    { 2, 3, 2, 20 },
-                    { 3, 3, 3, 14 },
-                    { 4, 3, 4, 50 },
-                    { 5, 3, 1, 10 }
+                    { 1, 1, 1, 1 },
+                    { 2, 1, 5, 3 },
+                    { 3, 1, 9, 1 },
+                    { 4, 2, 13, 1 },
+                    { 5, 2, 18, 2 },
+                    { 6, 2, 22, 1 },
+                    { 7, 3, 27, 4 },
+                    { 8, 3, 31, 1 },
+                    { 9, 3, 35, 1 },
+                    { 10, 4, 2, 1 },
+                    { 11, 4, 7, 1 },
+                    { 12, 4, 11, 1 },
+                    { 13, 5, 15, 2 },
+                    { 14, 5, 20, 1 },
+                    { 15, 5, 24, 2 },
+                    { 16, 6, 29, 1 },
+                    { 17, 6, 33, 1 },
+                    { 18, 7, 37, 10 },
+                    { 19, 8, 3, 3 },
+                    { 20, 8, 6, 1 },
+                    { 21, 8, 10, 1 },
+                    { 22, 8, 14, 2 },
+                    { 23, 8, 19, 1 },
+                    { 24, 8, 23, 1 },
+                    { 25, 9, 28, 1 },
+                    { 26, 9, 32, 2 },
+                    { 27, 10, 36, 1 },
+                    { 28, 10, 4, 2 },
+                    { 29, 10, 8, 1 },
+                    { 30, 10, 12, 3 },
+                    { 31, 10, 17, 1 },
+                    { 32, 11, 21, 1 },
+                    { 33, 12, 16, 3 },
+                    { 34, 13, 30, 3 },
+                    { 35, 13, 34, 1 },
+                    { 36, 13, 38, 1 },
+                    { 37, 14, 16, 1 },
+                    { 38, 14, 39, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -273,19 +323,44 @@ namespace MealOrderingApi.Migrations
                 columns: new[] { "ProductId", "CategoryId", "Cost", "Description", "IsDeleted", "Name", "Quantity", "StoreId" },
                 values: new object[,]
                 {
-                    { 1, 1, 5f, "Delicious & Cheesy!", false, "Cheese Pizza", 100, 1 },
-                    { 2, 1, 5f, "Delicious & Cheesy!", false, "Pepperoni Pizza", 50, 1 },
-                    { 3, 1, 10f, "SoOoOoo Many mushrooms!", false, "Canadian Pizza", 50, 1 },
-                    { 4, 1, 5f, "Not for Vegans!", false, "MeatLovers Pizza", 100, 1 },
-                    { 5, 1, 5f, "For Vegans!", false, "Veggie Pizza", 50, 1 },
-                    { 6, 1, 10f, "Not Quite Like the Drink!", false, "Margherita Pizza", 50, 1 },
-                    { 7, 1, 5f, "Chicken Slathered on toppa da pie! Sweet and Tangy Sauce!", false, "BBQ Chicken Pizza", 100, 1 },
-                    { 8, 1, 5f, "For a spicy kick!", false, "Buffalo Pizza", 50, 1 },
-                    { 9, 1, 10f, "This thing has it all!", false, "The Works Pizza", 50, 1 },
-                    { 10, 1, 5f, "For our hot pocket lovers!", false, "Pepperoni Panzarotti", 100, 1 },
-                    { 11, 1, 5f, "Imagine a square focaccia pizza!", false, "Roman-style Pizza", 50, 1 },
-                    { 12, 2, 5f, "Sweet & Delicious!", false, "Honey Garlic Wings", 500, 1 },
-                    { 13, 2, 5f, "What a combination!", false, "Sweet & Spicy Wings", 500, 1 }
+                    { 1, 1, 8.99f, "A juicy beef patty served on a freshly baked bun with lettuce, tomato, onion, and pickles.", false, "Classic Burger", 15, 1 },
+                    { 2, 1, 11.99f, "Our classic burger with crispy bacon and melted American cheese on top.", false, "Bacon Cheeseburger", 8, 1 },
+                    { 3, 1, 11.99f, "Our classic burger topped with sautéed mushrooms and melted Swiss cheese.", false, "Mushroom Swiss Burger", 6, 1 },
+                    { 4, 1, 8.99f, "A vegetarian patty made with fresh vegetables and spices, topped with lettuce, tomato, onion, and pickles.", false, "Veggie Burger", 6, 1 },
+                    { 5, 1, 12.49f, " classic burger topped with BBQ sauce, crispy onion rings, and cheddar cheese.", false, "BBQ Burger", 8, 1 },
+                    { 6, 1, 13.99f, "Two juicy beef patties with melted American cheese, lettuce, tomato, onion, and pickles.", false, "Double Cheeseburger", 10, 1 },
+                    { 7, 2, 13.99f, "Grilled chicken breast served on a freshly baked bun with lettuce, tomato, and mayo.", false, "Grilled Chicken Sandwich", 15, 1 },
+                    { 8, 2, 7.99f, "Crispy bacon, lettuce, tomato, and mayo served on toasted bread.", false, "BLT", 12, 1 },
+                    { 9, 2, 9.99f, "Sliced turkey breast and melted Swiss cheese on toasted bread with lettuce, tomato, and mayo. ", false, "Turkey and Swiss", 10, 1 },
+                    { 10, 2, 12.99f, " Sliced steak with sautéed onions and melted provolone cheese on a hoagie roll.", false, "Philly Cheesesteak", 8, 1 },
+                    { 11, 2, 11.49f, "Sliced turkey, ham, bacon, lettuce, tomato, and mayo on toasted bread.", false, "Club Sandwich", 6, 1 },
+                    { 12, 2, 7.99f, "Melted muenster, mozzarella, and parmesan cheese on toasted bread. Served with tomato soup.", false, "Triple Grilled Cheese With Tomato Soup", 6, 1 },
+                    { 13, 2, 18.49f, "Chicken breast or breaded tender veal topped with tomato sauce and mozzarella cheese on a tasted ciabatta bun.", false, "Veal or Chicken Parm Sandwich", 8, 1 },
+                    { 14, 3, 7.99f, "Crisp romaine lettuce, croutons, bacon, and shaved parmesan cheese with Caesar dressing.", false, "Caesar Salad", 20, 1 },
+                    { 15, 3, 6.49f, "Mixed greens, cherry tomatoes, cucumbers, red onion, and carrots with your choice of dressing.", false, "Garden Salad", 15, 1 },
+                    { 16, 3, 12.99f, "Mixed greens, grilled chicken, crispy bacon, avocado, cherry tomatoes, hard-boiled egg, and shredded cheese, topped with chipotle aioli.", false, "Cobb Salad", 8, 1 },
+                    { 17, 3, 9.99f, "Mixed greens, feta cheese, Kalamata olives, cherry tomatoes, cucumber, and red onion with Greek dressing.", false, "Greek Salad", 12, 1 },
+                    { 18, 3, 18.49f, "Fresh greens topped with battered chicken tenders, hearts of palm, artichokes, bacon, and croutons with honey mustard.", false, "Chicken Tender Salad", 15, 1 },
+                    { 19, 4, 3.99f, "Crispy golden fries", false, "French Fries", 50, 1 },
+                    { 20, 4, 4.99f, "Crispy breaded onion rings.", false, "Onion Rings", 40, 1 },
+                    { 21, 4, 4.99f, "Crispy sweet potato fries.", false, "Sweet Potato Fries", 30, 1 },
+                    { 22, 5, 3.49f, "Unlimited refills and choices of: Coke, Diet Coke, Sprite, Orange Fanta, Lemonade, or Iced Tea.", false, "Fountain Drink", 40, 1 },
+                    { 23, 5, 3.49f, "Unlimited refills", false, "Coffee or Tea", 40, 1 },
+                    { 24, 5, 2.49f, "Nestle", false, "Water Bottle", 20, 1 },
+                    { 25, 6, 8.99f, "Tequila, triple sec, and lime juice served over ice with a salted rim.", false, "Margarita", 15, 1 },
+                    { 26, 6, 10.99f, "Vodka, rum, gin, tequila, triple sec, and lemon juice with a splash of cola served over ice.", false, "Long Island Iced Tea", 12, 1 },
+                    { 27, 6, 9.99f, "Rum, lime juice, simple syrup, and fresh mint served over ice.", false, "Mojito", 10, 1 },
+                    { 28, 6, 11.99f, "Vodka, triple sec, lime juice, and cranberry juice served up with a twist of orange.", false, "Cosmopolitan", 8, 1 },
+                    { 29, 6, 9.99f, "Red or white wine, brandy, fruit juice, and sliced fruit served over ice.", false, "Sangria", 8, 1 },
+                    { 30, 6, 6.99f, "Steam Whistle Pilsner, Muskoka Brewery Mad Tom IPA, Beau's Lug Tread Lagered Ale, Amsterdam Brewery Boneshaker IPA, Wellington Brewery SPA (Special Pale Ale)", false, "Domestic Beer", 30, 1 },
+                    { 31, 6, 7.99f, "Corona Extra (Mexico), Modelo Especial (Mexico), Heineken (Netherlands), Guinness (Ireland), Sapporo (Japan), Stella Artois (Belgium)", false, "Imported Beer", 30, 1 },
+                    { 32, 7, 8.99f, "Warm chocolate cake with a molten chocolate center, served with a scoop of vanilla ice cream", false, "Chocolate Lava Cake", 10, 1 },
+                    { 33, 7, 7.99f, "Creamy vanilla cheesecake on a graham cracker crust, topped with a fresh berry compote.", false, "New York Cheesecake", 8, 1 },
+                    { 34, 7, 6.99f, "Classic apple pie with a flaky crust, served warm with a scoop of vanilla ice cream.", false, "Apple Pie", 10, 1 },
+                    { 35, 7, 9.99f, "Layers of ladyfingers soaked in coffee and rum, with a creamy mascarpone filling and dusted with cocoa powder.", false, "Tiramisu", 7, 1 },
+                    { 36, 7, 7.99f, "Warm chocolate brownie topped with a scoop of vanilla ice cream, whipped cream, and chocolate sauce.", false, "Chocolate Brownie Sundae", 13, 1 },
+                    { 37, 8, 0f, "Ask your server for details such as a description, price, and availability.", false, "Soup of the Day", 0, 1 },
+                    { 38, 8, 0f, "Ask your server for details such as a description, price, and availability.", false, "Burger of the Day", 0, 1 }
                 });
 
             migrationBuilder.CreateIndex(

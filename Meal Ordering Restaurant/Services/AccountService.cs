@@ -1,20 +1,16 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
+using Meal_Ordering_Class_Library.Services;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Meal_Ordering_Restaurant.Services
 {
-    public class AccountService
+    public class AccountService : BaseService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _config;
-        public AccountService(IConfiguration config, HttpClient httpClient)
+        public AccountService(IConfiguration config, HttpClient httpClient) : base(config, httpClient)
         {
-            _config = config;
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri(_config["ApiSettings:ApiBaseUrl"]);
         }
 
         public async Task<HttpResponseMessage> LoginAsync(AccountRequest accountRequest)
@@ -38,10 +34,5 @@ namespace Meal_Ordering_Restaurant.Services
             SetAccessToken(_httpClient, accessToken);
             return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v1/account/edit?Username={username}");
         }
-        private void SetAccessToken(HttpClient httpClient, string accessToken)
-        {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        }
-
     }
 }

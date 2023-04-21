@@ -36,38 +36,38 @@
                     selected = true;
                 }
                 <tr class="@((selected ? "table-primary" : ""))">
-                        <td>
-                            <div class="container">
-                                <a class="text-decoration-none" asp-action="">
+                    <td>
+                        <div class="container">
+                            <a class="text-decoration-none" asp-action="">
 
-                                </a>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-nowrap">
+                                <form method="post" asp-route-id="@Model.SelectedCategoryId">
+                                    <div>
+                                        <input asp-for="@Model.SelectedCategoryId" value="@category.CategoryId" hidden />
+                                        <button class="btn btn-link" type="submit">@category.Name</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="row">
-                                <div class="col-6 text-nowrap">
-                                    <form method="post" asp-route-id="@Model.SelectedCategoryId">
-                                        <div>
-                                            <input asp-for="@Model.SelectedCategoryId" value="@category.CategoryId" hidden />
-                                            <button class="btn btn-link" type="submit">@category.Name</button>
-                                        </div>
+                            <div class="col-auto d-flex d-inline ms-auto">
+                                <div class="p-1">
+                                    <a asp-action="EditCategory" asp-route-id="@category.CategoryId" class="btn btn-outline-primary">
+                                        Edit
+                                    </a>
+                                </div>
+                                <div class="p-1">
+                                    <form id="categoryDeleteRequest-@i" method="post" asp-action="DeleteCategory" asp-route-id="@category.CategoryId">
+                                        <input asp-for="CategoryRequest.CategoryIdToDeleted" value="@category.CategoryId" hidden />
+                                        <button type="submit" class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('categoryDeleteRequest-@i').submit();">
+                                            Delete
+                                        </button>
                                     </form>
                                 </div>
-                                <div class="col-auto d-flex d-inline ms-auto">
-                                    <div class="p-1">
-                                        <a asp-action="EditCategory" asp-route-id="@category.CategoryId" class="btn btn-outline-primary">
-                                            Edit
-                                        </a>
-                                    </div>
-                                    <div class="p-1">
-                                        <form id="categoryDeleteRequest-@i" method="post" asp-action="DeleteCategory" asp-route-id="@category.CategoryId">
-                                            <input asp-for="CategoryRequest.CategoryIdToDeleted" value="@category.CategoryId" hidden />
-                                            <button type="submit" class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('categoryDeleteRequest-@i').submit();">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
-                        </td>
+                        </div>
+                    </td>
                 </tr>
             }
         }

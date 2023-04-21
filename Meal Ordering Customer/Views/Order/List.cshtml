@@ -1,21 +1,43 @@
 ﻿@model GetOrdersRequest
 @{
     ViewData["Title"] = "Order List";
+    bool cartExists = false;
 }
 
+<h1>View Cart:</h1>
 
 <!-- Show the cart as the top order -->
 @foreach (var order in Model.Orders)
 {
     if (order.Status == "Cart")
     {
+
         <div class="row">
-            <a class="btn btn-primary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.Status</a>
+            <div class="card mb-4">
+                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                    <div class="card-body">
+                        <h5 class="card-title">Order ID: @order.OrderId</h5>
+                        <p class="card-text">Order Status: @order.Status<p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    }
+    else if (order == Model.Orders.Last() && cartExists == false)
+    {
+         <div class="row">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@order.Username does not currently have a cart</h5>
+                    <p class="card-text">To create a cart, add an item on the menu page.<p>
+                </div>
+            </div>
         </div>
     }
 }
 
-<h1>Order History:</h1>
+<h1 class="pb-2">Order History:</h1>
 
 <!-- Show the rest of the orders -->
 @foreach (var order in Model.Orders.Reverse())
@@ -23,7 +45,14 @@
     if (order.Status != "Cart")
     {
         <div class="row">
-            <a class="btn btn-secondary mb-4" asp-action="View" asp-route-OrderId=@order.OrderId>@order.OrderId</a>
+            <div class="card mb-4">
+                <a class="text-decoration-none" style="color: inherit;" asp-action="View" asp-route-OrderId=@order.OrderId>
+                    <div class="card-body">
+                        <h5 class="card-title">Order ID: @order.OrderId</h5>
+                        <p class="card-text">Order Status: @order.Status<p>
+                    </div>
+                </a>
+            </div>
         </div>
     }
 }
