@@ -14,7 +14,7 @@
     <div class="card mb-4">
         <a class="text-decoration-none">
             <div class="card-body text-center">
-                <h3 class="card-title">@Model.Order.Status</h3>
+                <h3 class="card-title">@(Model.Order.Status == "ODelivery" ? "Out for delivery" : Model.Order.Status)</h3>
             </div>
         </a>
     </div>
