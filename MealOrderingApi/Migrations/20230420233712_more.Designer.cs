@@ -4,6 +4,7 @@ using MealOrderingApi.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MealOrderingApi.Migrations
 {
     [DbContext(typeof(MealOrderingAPIContext))]
-    partial class MealOrderingAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20230420233712_more")]
+    partial class more
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,20 +122,6 @@ namespace MealOrderingApi.Migrations
                             Status = "Preparation",
                             StoreId = 1,
                             Username = "issi"
-                        },
-                        new
-                        {
-                            OrderId = 7,
-                            Status = "Confirmed",
-                            StoreId = 1,
-                            Username = "issi"
-                        },
-                        new
-                        {
-                            OrderId = 8,
-                            Status = "QC",
-                            StoreId = 1,
-                            Username = "issi"
                         });
                 });
 
@@ -227,27 +216,6 @@ namespace MealOrderingApi.Migrations
                         {
                             OrderProductId = 10,
                             OrderId = 6,
-                            ProductId = 1,
-                            Quantity = 10
-                        },
-                        new
-                        {
-                            OrderProductId = 11,
-                            OrderId = 7,
-                            ProductId = 4,
-                            Quantity = 50
-                        },
-                        new
-                        {
-                            OrderProductId = 12,
-                            OrderId = 7,
-                            ProductId = 1,
-                            Quantity = 10
-                        },
-                        new
-                        {
-                            OrderProductId = 13,
-                            OrderId = 8,
                             ProductId = 1,
                             Quantity = 10
                         });

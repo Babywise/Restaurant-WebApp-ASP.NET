@@ -171,39 +171,46 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest updateOrderRequest)
         {
-            if (updateOrderRequest.Order.OrderId == 0 && updateOrderRequest.Order.Status == "Cart")
+            if (updateOrderRequest != null)
             {
-                if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                if (updateOrderRequest.Order != null)
                 {
-                    return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
-                }
-                else
-                {
-                    return Ok(new { Message = "Cart Order was successfully updated" });
-                }
-            }
-            else
-            {
-                // Always update order status
-                if (!await _mealOrderingService.UpdateOrderStatusAsync(updateOrderRequest))
-                {
-                    return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status failed to update" });
-                }
-
-                // If the order products are not null (we are likely adding a product from cart), update order products
-                if (updateOrderRequest.Order.OrderProducts != null)
-                {
-                    if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                    if (updateOrderRequest.Order.OrderId == 0 && updateOrderRequest.Order.Status == "Cart")
                     {
-                        return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                        if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                        {
+                            return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                        }
+                        else
+                        {
+                            return Ok(new { Message = "Cart Order was successfully updated" });
+                        }
+                    }
+                    else
+                    {
+                        // Always update order status
+                        if (!await _mealOrderingService.UpdateOrderStatusAsync(updateOrderRequest))
+                        {
+                            return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status failed to update" });
+                        }
+
+                        // If the order products are not null (we are likely adding a product from cart), update order products
+                        if (updateOrderRequest.Order.OrderProducts != null)
+                        {
+                            if (!await _mealOrderingService.UpdateOrderProductsAsync(updateOrderRequest))
+                            {
+                                return BadRequest(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' failed to update" });
+                            }
+                        }
+                        else
+                        {
+                            return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status was successfully updated" });
+                        }
+                        return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' was successfully updated" });
                     }
                 }
-                else
-                {
-                    return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' status was successfully updated" });
-                }
-                return Ok(new { Message = $"Order '{updateOrderRequest.Order.OrderId}' was successfully updated" });
             }
+            return NotFound(new { Message = "Order not found" });
         }
 
     }

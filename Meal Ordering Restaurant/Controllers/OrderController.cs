@@ -3,6 +3,7 @@ using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
@@ -31,6 +32,10 @@ namespace Meal_Ordering_Restaurant.Controllers
                 TempData["ErrorMessage"] = $"Failed to get Orders from API.";
                 return View();
             }
+            else
+            {
+                getOrdersRequest.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Cart").ToList();
+            }
 
             if (getMenuRequest == null)
             {
@@ -42,58 +47,66 @@ namespace Meal_Ordering_Restaurant.Controllers
             {
                 Categories = getMenuRequest.Categories
             };
+
+            var tabIdFromSession = HttpContext.Session.GetString("SelectedTabId");
+            if (tabIdFromSession != null)
+            {
+                orderViewModel.SelectedTab = tabIdFromSession;
+            }
+
+            if (tabId != null)
+            {
+                orderViewModel.SelectedTab = tabId;
+                HttpContext.Session.SetString("SelectedTabId", tabId);
+            }
+
             switch (tabId)
             {
                 case "pending":
                     orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "Pending").ToList();
                     break;
                 case "active":
-                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "Out for delivery" && o.Status != "Delivered").ToList();
+                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "ODelivery" && o.Status != "Delivered").ToList();
                     break;
                 case "history":
-                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "Out for delivery" || o.Status != "Delivered").ToList();
+                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "ODelivery" || o.Status == "Delivered").Reverse().ToList();
                     break;
                 default:
-                    orderViewModel.Orders = getOrdersRequest.Orders;
+                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "ODelivery" && o.Status != "Delivered").ToList();
                     break;
             }
             return View(orderViewModel);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> OrderTabContent(string tabId)
+        [HttpPost]
+        public async Task<IActionResult> IndexAsync(OrderViewModel orderViewModel)
         {
-            //Need Menu -> make api request
-            GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
-            //Need Orders -> make api request
-            GetOrdersRequest getOrdersRequest = await _orderService.GetOrdersAsync(HttpContext.Session.GetString("Authorization"));
-
-            switch (tabId)
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+                return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
+            
+            if (ModelState.IsValid)
             {
-                case "pending":
-                    OrderViewModel pendingOrderViewModel = new OrderViewModel()
+                if (orderViewModel.UpdateOrderRequest != null)
+                {
+                    var response = await _orderService.UpdateOrderAsync(HttpContext.Session.GetString("Authorization"), orderViewModel.UpdateOrderRequest);
+                    var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        Orders = getOrdersRequest.Orders.Where(o => o.Status == "Pending").ToList(),
-                        Categories = getMenuRequest.Categories
-                    };
-                    return PartialView("_PendingTabPartial", pendingOrderViewModel);
-                case "active":
-                    OrderViewModel activeOrderViewModel = new OrderViewModel()
-                    {
-                        Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "Out for delivery" && o.Status != "Delivered").ToList(),
-                        Categories = getMenuRequest.Categories
-                    };
-                    return PartialView("_OrderCardPartial", activeOrderViewModel);
-                case "history":
-                    OrderViewModel historyOrderViewModel = new OrderViewModel()
-                    {
-                        Orders = getOrdersRequest.Orders.Where(o => o.Status == "Out for delivery" || o.Status != "Delivered").ToList(),
-                        Categories = getMenuRequest.Categories
-                    };
-                    return PartialView("_HistoryTabPartial", historyOrderViewModel);
-                default:
-                    return NotFound();
+                        TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                        return RedirectToAction("Index", "Order");
+                    }
+                    TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                }
+                TempData["ErrorMessage"] = $"Invalid Request";
             }
+            var tabIdFromSession = HttpContext.Session.GetString("SelectedTabId");
+            if (tabIdFromSession != null)
+            {
+                orderViewModel.SelectedTab = tabIdFromSession;
+            }
+            return View(orderViewModel);
         }
+
     }
 }

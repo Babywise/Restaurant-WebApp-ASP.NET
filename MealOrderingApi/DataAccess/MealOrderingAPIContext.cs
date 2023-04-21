@@ -252,14 +252,14 @@ namespace MealOrderingApi.DataAccess
                     OrderId = 1,
                     Username = "nick",
                     StoreId = 1,
-                    Status = "In the Oven",
+                    Status = "Cooking",
                 },
                 new Order()
                 {
                     OrderId = 2,
                     Username = "nick",
                     StoreId = 1,
-                    Status = "Confirmed",
+                    Status = "Pending",
                 },
                 new Order()
                 {
@@ -267,6 +267,41 @@ namespace MealOrderingApi.DataAccess
                     Username = "nick",
                     StoreId = 1,
                     Status = "Cart",
+                },
+                new Order()
+                {
+                    OrderId = 4,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Delivered",
+                },
+                new Order()
+                {
+                    OrderId = 5,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "ODelivery",
+                },
+                new Order()
+                {
+                    OrderId = 6,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Preparation",
+                },
+                new Order()
+                {
+                    OrderId = 7,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "Confirmed",
+                },
+                new Order()
+                {
+                    OrderId = 8,
+                    Username = "issi",
+                    StoreId = 1,
+                    Status = "QC",
                 }
             );
 
@@ -303,6 +338,62 @@ namespace MealOrderingApi.DataAccess
                 {
                     OrderProductId = 5,
                     OrderId = 3,
+                    ProductId = 1,
+                    Quantity = 10,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 6,
+                    OrderId = 1,
+                    ProductId = 1,
+                    Quantity = 10,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 7,
+                    OrderId = 2,
+                    ProductId = 2,
+                    Quantity = 20,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 8,
+                    OrderId = 4,
+                    ProductId = 3,
+                    Quantity = 14,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 9,
+                    OrderId = 5,
+                    ProductId = 4,
+                    Quantity = 50,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 10,
+                    OrderId = 6,
+                    ProductId = 1,
+                    Quantity = 10,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 11,
+                    OrderId = 7,
+                    ProductId = 4,
+                    Quantity = 50,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 12,
+                    OrderId = 7,
+                    ProductId = 1,
+                    Quantity = 10,
+                },
+                new OrderProduct()
+                {
+                    OrderProductId = 13,
+                    OrderId = 8,
                     ProductId = 1,
                     Quantity = 10,
                 }
