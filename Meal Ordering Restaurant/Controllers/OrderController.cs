@@ -60,19 +60,23 @@ namespace Meal_Ordering_Restaurant.Controllers
                 HttpContext.Session.SetString("SelectedTabId", tabId);
             }
 
+            List<Order> orderList = new List<Order>();
             switch (HttpContext.Session.GetString("SelectedTabId"))
             {
                 case "pending":
                     orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "Pending").ToList();
                     break;
-                case "active":
-                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "ODelivery" && o.Status != "Delivered").ToList();
-                    break;
                 case "history":
-                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status == "ODelivery" || o.Status == "Delivered").Reverse().ToList();
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "ODelivery"));
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "Delivered"));
+                    orderViewModel.Orders = orderList;
                     break;
                 default:
-                    orderViewModel.Orders = getOrdersRequest.Orders.Where(o => o.Status != "Pending" && o.Status != "ODelivery" && o.Status != "Delivered").ToList();
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "Confirmed"));
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "Preparation"));
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "Cooking"));
+                    orderList.AddRange(getOrdersRequest.Orders.Where(o => o.Status == "QC"));
+                    orderViewModel.Orders = orderList;
                     break;
             }
             return View(orderViewModel);
