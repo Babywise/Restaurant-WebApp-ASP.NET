@@ -2,16 +2,9 @@
 using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
-using Meal_Ordering_Class_Library.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Azure.Core;
 
 namespace MealOrderingApi.Controllers
 {
