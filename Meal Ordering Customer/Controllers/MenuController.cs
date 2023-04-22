@@ -1,13 +1,9 @@
 ﻿using Meal_Ordering_Customer.Models;
 using Meal_Ordering_Customer.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Data;
-using Meal_Ordering_Class_Library.ResponseEntities;
-using Meal_Ordering_Class_Library.Models;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.Entities;
-using System.ComponentModel;
 
 namespace Meal_Ordering_Customer.Controllers
 {

@@ -1,14 +1,10 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
-using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {

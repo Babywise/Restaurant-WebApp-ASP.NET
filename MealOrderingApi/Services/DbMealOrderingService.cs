@@ -1,5 +1,4 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.Services;
 using MealOrderingApi.DataAccess;
@@ -23,7 +22,7 @@ namespace MealOrderingApi.Services
                 .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryAsync([FromQuery] int CategoryId, bool IncludeProduct)
+        public async Task<Category> GetCategoryAsync(int CategoryId, bool IncludeProduct)
         {
             if (IncludeProduct)
             {

@@ -1,11 +1,7 @@
-﻿using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
+﻿using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
-using Meal_Ordering_Class_Library.ResponseEntities;
 using Meal_Ordering_Class_Library.Services;
-using MealOrderingApi.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrderingApi.Controllers

@@ -1,11 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Meal_Ordering_Class_Library.Services
 {

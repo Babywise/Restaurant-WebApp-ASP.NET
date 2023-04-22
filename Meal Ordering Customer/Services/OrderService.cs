@@ -1,10 +1,5 @@
-﻿using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
-using Meal_Ordering_Class_Library.RequestEntitiesShared;
-using Meal_Ordering_Class_Library.ResponseEntities;
+﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.Services;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 
 namespace Meal_Ordering_Customer.Services
 {
