@@ -11,9 +11,11 @@ namespace Meal_Ordering_Customer.Controllers
     public class OrderController : Controller
     {
         private readonly OrderService _customerService;
-        public OrderController(OrderService customerService)
+        private readonly MenuService _menuService;
+        public OrderController(OrderService customerService, MenuService menuService)
         {
             _customerService = customerService;
+            _menuService = menuService;
         }
 
         // HTTP GET for the Quick Add, HTTP Post for the form submission of the Menu/DisplayItem Page
@@ -123,7 +125,7 @@ namespace Meal_Ordering_Customer.Controllers
                 }
 
                 // Get the menu
-                GetMenuRequest gmr = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+                GetMenuRequest gmr = await _menuService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
                 // set the view model
                 OrderViewModel ovm = new OrderViewModel
                 {
@@ -183,7 +185,7 @@ namespace Meal_Ordering_Customer.Controllers
 
                 GetOrdersRequest gor = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
                 Order order = gor.Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-                GetMenuRequest gmr = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+                GetMenuRequest gmr = await _menuService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
                 OrderViewModel ovm = new OrderViewModel {
                     Order = order,

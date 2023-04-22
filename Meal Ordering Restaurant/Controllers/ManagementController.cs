@@ -57,6 +57,7 @@ namespace Meal_Ordering_Restaurant.Controllers
             // ----END OF SESSION MGMT
             return View(managementViewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {

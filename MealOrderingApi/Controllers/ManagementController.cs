@@ -38,19 +38,6 @@ namespace MealOrderingApi.Controllers
             return Ok(getAllCategoriesRequest);
         }
 
-        [HttpGet("category")]
-        [Authorize]
-        public async Task<IActionResult> Category([FromQuery] int CategoryId, [FromQuery] bool IncludeProduct)
-        {
-            var category = await _mealOrderingService.GetCategoryAsync(CategoryId, IncludeProduct);
-
-            if (category == null)
-            {
-                return NotFound(new { Message = "Category not found" });
-            }
-            return Ok(category);
-        }
-
         [HttpPost("add-category")]
         [Authorize]
         public async Task<IActionResult> AddCategory([FromBody] CategoryRequest categoryRequest)
@@ -84,19 +71,6 @@ namespace MealOrderingApi.Controllers
                 return BadRequest(new { Message = $"Category 'id = {categoryRequest.CategoryIdToDeleted}' could not be deleted" });
             }
             return Ok(new { Message = $"Category '{categoryName}' was successfully deleted" });
-        }
-
-        [HttpGet("product")]
-        [Authorize]
-        public async Task<IActionResult> Product([FromQuery] int ProductId)
-        {
-            var product = await _mealOrderingService.GetProductByIdAsync(ProductId);
-
-            if (product == null)
-            {
-                return NotFound(new { Message = "Category not found" });
-            }
-            return Ok(product);
         }
 
         [HttpPost("add-product")]

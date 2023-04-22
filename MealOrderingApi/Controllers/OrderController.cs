@@ -16,24 +16,6 @@ namespace MealOrderingApi.Controllers
             _mealOrderingService = mealOrderingService;
         }
 
-        [HttpGet("menu")]
-        [Authorize]
-        public async Task<IActionResult> Menu()
-        {
-            var categories = await _mealOrderingService.GetMenuAsync();
-
-            if (categories == null)
-            {
-                return NotFound(new { Message = "Menu not found" });
-            }
-            GetMenuRequest getAllCategoriesRequest = new GetMenuRequest()
-            {
-                Categories = categories
-            };
-            return Ok(getAllCategoriesRequest);
-        }
-
-
         [HttpGet("all-orders")]
         [Authorize]
         public async Task<IActionResult> Orders()

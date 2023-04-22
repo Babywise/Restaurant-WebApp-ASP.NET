@@ -24,6 +24,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<MenuService>();
 
 // Configure authentication middleware
 /*builder.Services.AddAuthentication(options =>

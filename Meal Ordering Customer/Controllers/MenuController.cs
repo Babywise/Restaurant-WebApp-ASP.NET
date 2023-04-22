@@ -13,12 +13,14 @@ namespace Meal_Ordering_Customer.Controllers
 {
     public class MenuController : Controller
     {
-        private readonly OrderService _customerService;
+        private readonly OrderService _orderService;
+        private readonly MenuService _menuService;
         private readonly IConfiguration _config;
-        public MenuController(IConfiguration config, OrderService customerService)
+        public MenuController(IConfiguration config, OrderService orderService, MenuService menuService)
         {
             _config = config;
-            _customerService = customerService;
+            _orderService = orderService;
+            _menuService = menuService;
         }
 
         [HttpGet]
@@ -39,7 +41,7 @@ namespace Meal_Ordering_Customer.Controllers
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
                 }
 
-                GetMenuRequest getMenuRequest = await _customerService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
+                GetMenuRequest getMenuRequest = await _menuService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
                 if (getMenuRequest == null)
                 {
@@ -68,9 +70,9 @@ namespace Meal_Ordering_Customer.Controllers
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
                 }
 
-                Product product = await _customerService.GetProductByIdAsync(HttpContext.Session.GetString("Authorization"), ProductId);
+                Product product = await _menuService.GetProductByIdAsync(HttpContext.Session.GetString("Authorization"), ProductId);
                 bool IncludeProduct = false;
-                product.Category = await _customerService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
+                product.Category = await _menuService.GetCategoryByIdAsync(HttpContext.Session.GetString("Authorization"), CategoryId, IncludeProduct);
 
                 AddProductToCartViewModel vm = new AddProductToCartViewModel()
                 {
