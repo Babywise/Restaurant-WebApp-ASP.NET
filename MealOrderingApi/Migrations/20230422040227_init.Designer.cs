@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MealOrderingApi.Migrations
 {
     [DbContext(typeof(MealOrderingAPIContext))]
-    [Migration("20230421082513_updatelogin")]
-    partial class updatelogin
+    [Migration("20230422040227_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

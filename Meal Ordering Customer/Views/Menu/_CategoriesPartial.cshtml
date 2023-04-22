@@ -7,32 +7,36 @@
 <div class="row">
     @foreach (var product in Model.Products)
     {
+
         if (productCount % 3 == 0 && productCount != 0)
         {
             @:</div>
             @:<div class="row">
         }
 
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <a class="text-decoration-none" style="color: inherit;" href="@Url.Action("DisplayItem", "Menu", new { ProductId = product.ProductId, CategoryId = product.CategoryId })">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <div class="col-6">
-                            <p class="card-text">$@product.Cost<p>
+        if (product.IsDeleted == false) {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <a class="text-decoration-none" style="color: inherit;" href="@Url.Action("DisplayItem", "Menu", new { ProductId = product.ProductId, CategoryId = product.CategoryId })">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <div class="col-6">
+                                <p class="card-text">$@product.Cost<p>
+                            </div>
+                            <div class="col-6">
+                                <a class="btn btn-outline-primary" asp-controller="Order" asp-action="AddToCart" 
+                                asp-route-CategoryId=@product.CategoryId asp-route-ProductId=@product.ProductId 
+                                asp-route-QuantityToAdd=1>Quick Add</a>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <a class="btn btn-outline-primary" asp-controller="Order" asp-action="AddToCart" 
-                            asp-route-CategoryId=@product.CategoryId asp-route-ProductId=@product.ProductId 
-                            asp-route-QuantityToAdd=1>Quick Add</a>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
+                    </a>
+                </div>
             <br />
-        </div>
+            </div>
 
-        productCount++;
+            productCount++;
+
+        }
+
     }
 </div>
