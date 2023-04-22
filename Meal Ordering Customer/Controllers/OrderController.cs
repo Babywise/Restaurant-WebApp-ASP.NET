@@ -10,8 +10,8 @@ namespace Meal_Ordering_Customer.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly CustomerService _customerService;
-        public OrderController(CustomerService customerService)
+        private readonly OrderService _customerService;
+        public OrderController(OrderService customerService)
         {
             _customerService = customerService;
         }

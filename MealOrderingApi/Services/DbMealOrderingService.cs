@@ -16,10 +16,10 @@ namespace MealOrderingApi.Services
             _mealOrderingContext = mealOrderingContext;
         }
 
-        public async Task<ICollection<Category>> GetMenuAsync()
+        public async Task<ICollection<Category>> GetAllMenuItemsAsync()
         {
             return await _mealOrderingContext.Categories
-                .Include(c => c.Products).Where(p => p.IsDeleted != true)
+                .Include(c => c.Products)
                 .ToListAsync();
         }
 
@@ -145,6 +145,14 @@ namespace MealOrderingApi.Services
             return false;
         }
 
+        public async Task<ICollection<Category>> GetMenuAsync()
+        {
+            return await _mealOrderingContext.Categories
+                .Where(c => c.IsDeleted != true)
+                .Include(c => c.Products.Where(p => p.IsDeleted != true))
+                .ToListAsync();
+        }
+
         public async Task<ICollection<Order>> GetOrdersAsync()
         {
             return await _mealOrderingContext.Orders
@@ -158,14 +166,6 @@ namespace MealOrderingApi.Services
                 .Where(o => o.Username == Username)
                 .Include(o => o.OrderProducts)
                 .ToListAsync();
-        }
-
-        public async Task<Order> GetOrderByIdAsync(int OrderId)
-        {
-            return await _mealOrderingContext.Orders
-                 .Where(o => o.OrderId == OrderId)
-                 .Include(o => o.OrderProducts)
-                 .FirstOrDefaultAsync();
         }
 
         public async Task<bool> UpdateOrderStatusAsync(UpdateOrderRequest updateOrderRequest)

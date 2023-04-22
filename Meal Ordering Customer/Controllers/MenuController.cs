@@ -13,9 +13,9 @@ namespace Meal_Ordering_Customer.Controllers
 {
     public class MenuController : Controller
     {
-        private readonly CustomerService _customerService;
+        private readonly OrderService _customerService;
         private readonly IConfiguration _config;
-        public MenuController(IConfiguration config, CustomerService customerService)
+        public MenuController(IConfiguration config, OrderService customerService)
         {
             _config = config;
             _customerService = customerService;

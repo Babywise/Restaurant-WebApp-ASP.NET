@@ -7,7 +7,7 @@ namespace Meal_Ordering_Class_Library.Services
 {
     public interface IMealOrderingService
     {
-        public Task<ICollection<Category>> GetMenuAsync();
+        public Task<ICollection<Category>> GetAllMenuItemsAsync();
         public Task<Category> GetCategoryAsync(int CategoryId, bool IncludeProduct);
         public Task<bool> AddCategoryAsync(string categoryName);
         public Task<bool> EditCategoryAsync(Category category);
@@ -19,9 +19,9 @@ namespace Meal_Ordering_Class_Library.Services
         public Task<bool> EditProductAsync(Product product);
         public Task<bool> DeleteProductAsync(int id);
         
+        public Task<ICollection<Category>> GetMenuAsync();
         public Task<ICollection<Order>> GetOrdersAsync();
         public Task<ICollection<Order>> GetOrdersByUsernameAsync(string Username);
-        public Task<Order> GetOrderByIdAsync(int OrderId);
         public Task<bool> UpdateOrderStatusAsync(UpdateOrderRequest updateOrderRequest);
         public Task<bool> UpdateOrderProductsAsync(UpdateOrderRequest updateOrderRequest);
     }

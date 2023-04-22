@@ -23,7 +23,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<OrderService>();
 
 // Configure authentication middleware
 /*builder.Services.AddAuthentication(options =>

@@ -8,16 +8,10 @@ using System.Net.Http.Json;
 
 namespace Meal_Ordering_Customer.Services
 {
-    public class CustomerService : BaseOrderService
+    public class OrderService : BaseOrderService
     {
-        public CustomerService(IConfiguration config, HttpClient httpClient) : base(config, httpClient)
+        public OrderService(IConfiguration config, HttpClient httpClient) : base(config, httpClient)
         {
-        }
-
-        public async Task<GetMenuRequest> GetMenuAsync(string accessToken)
-        {
-            SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<GetMenuRequest>("api/v2/management/menu");
         }
 
         public async Task<Category> GetCategoryByIdAsync(string accessToken, int CategoryId, bool IncludeProduct)
@@ -32,16 +26,10 @@ namespace Meal_Ordering_Customer.Services
             return await _httpClient.GetFromJsonAsync<Product>($"api/v2/management/product?ProductId={ProductId}");
         }
 
-        public async Task<Order> GetOrderByIdAsync(string accessToken, int OrderId)
-        {
-            SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<Order>($"api/v2/management/orders?OrderId={OrderId}");
-        }
-
         public async Task<GetOrdersRequest> GetOrdersByUsernameAsync(string accessToken, string Username)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>($"api/v2/management/orders?Username={Username}");
+            return await _httpClient.GetFromJsonAsync<GetOrdersRequest>($"api/v2/order/orders?Username={Username}");
         }
 
     }
