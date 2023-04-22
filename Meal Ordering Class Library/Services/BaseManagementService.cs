@@ -18,7 +18,7 @@ namespace Meal_Ordering_Class_Library.Services
         public async Task<GetMenuRequest> GetMenuAsync(string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<GetMenuRequest>("api/v1/management/menu");
+            return await _httpClient.GetFromJsonAsync<GetMenuRequest>("api/v2/management/menu");
         }
     }
 }

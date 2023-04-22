@@ -15,24 +15,24 @@ namespace Meal_Ordering_Restaurant.Services
 
         public async Task<HttpResponseMessage> LoginAsync(AccountRequest accountRequest)
         {
-            return await _httpClient.PostAsJsonAsync("api/v1/account/login", accountRequest);
+            return await _httpClient.PostAsJsonAsync("api/v2/account/login", accountRequest);
         }
 
         public async Task<HttpResponseMessage> RegisterAsync(AccountRequest accountRequest)
         {
-            return await _httpClient.PostAsJsonAsync("api/v1/account/register", accountRequest);
+            return await _httpClient.PostAsJsonAsync("api/v2/account/register", accountRequest);
         }
 
         public async Task<HttpResponseMessage> UpdateUserDetailsAsync(AccountRequest accountRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PutAsJsonAsync("api/v1/account/edit", accountRequest);
+            return await _httpClient.PutAsJsonAsync("api/v2/account/edit", accountRequest);
         }
 
         public async Task<AccountRequest> GetAccountDetailsAsync(string username, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v1/account/edit?Username={username}");
+            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v2/account/edit?Username={username}");
         }
     }
 }

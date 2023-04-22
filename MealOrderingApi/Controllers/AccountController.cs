@@ -15,7 +15,7 @@ using Azure.Core;
 
 namespace MealOrderingApi.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController()]
     public class AccountController : ControllerBase
     {
@@ -93,21 +93,27 @@ namespace MealOrderingApi.Controllers
                     LastName = accountRequest.Account.LastName,
                     AccountType = accountRequest.Account.AccountType,
                 };
-
-                if (accountRequest.Account.NewPassword == accountRequest.Account.ConfirmNewPassword)
+                if (accountRequest.Account.NewPassword != null && accountRequest.Account.ConfirmNewPassword != null)
                 {
-                    var result = await _userManager.CreateAsync(newUser, accountRequest.Account.NewPassword);
-                    if (result.Succeeded)
+                    if (accountRequest.Account.NewPassword == accountRequest.Account.ConfirmNewPassword)
                     {
-                        // Set user role based on AccountType
-                        string roleName = accountRequest.Account.AccountType == "Customer" ? "Customer" : "Restaurant";
-                        await _userManager.AddToRoleAsync(newUser, roleName);
-                        return Ok(new { Message = $"User registration for '{newUser.UserName}' as '{roleName}' was successful. " +
-                            $"Thank you '{accountRequest.Account.FirstName}' for using our service." });
+                        var result = await _userManager.CreateAsync(newUser, accountRequest.Account.NewPassword);
+                        if (result.Succeeded)
+                        {
+                            // Set user role based on AccountType
+                            string roleName = accountRequest.Account.AccountType == "Customer" ? "Customer" : "Restaurant";
+                            await _userManager.AddToRoleAsync(newUser, roleName);
+                            return Ok(new
+                            {
+                                Message = $"User registration for '{newUser.UserName}' as '{roleName}' was successful. " +
+                                $"Thank you '{accountRequest.Account.FirstName}' for using our service."
+                            });
+                        }
+                        return BadRequest(result);
                     }
-                    return BadRequest(result);
+                    return BadRequest(new { Message = "Passwords do not match." });
                 }
-                return BadRequest(new { Message = "Passwords do not match." });
+                return BadRequest(new { Message = "Please fill out both password fields." });
             }
             return BadRequest(new { Message = "There are errors in the registration form." });
         }

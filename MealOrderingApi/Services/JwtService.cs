@@ -24,7 +24,7 @@ namespace MealOrderingApi.Services
         {
             var claims = new List<Claim>
             {
-                new Claim("Id", user.Id),
+                new Claim("AccountType", user.AccountType),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, user.Id)
             };
@@ -46,6 +46,20 @@ namespace MealOrderingApi.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return await Task.FromResult(tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)));
 
+        }
+
+        public async Task<string>? GetClaimValueFromToken(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
+
+            if (jwtToken == null)
+            {
+                return null;
+            }
+
+            var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == claimType);
+            return claim?.Value;
         }
     }
 }

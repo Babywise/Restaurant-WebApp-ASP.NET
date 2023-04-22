@@ -17,37 +17,37 @@ namespace Meal_Ordering_Restaurant.Services
         public async Task<HttpResponseMessage> AddCategoryAsync(CategoryRequest categoryRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync("api/v1/management/add-category", categoryRequest);
+            return await _httpClient.PostAsJsonAsync("api/v2/management/add-category", categoryRequest);
         }
 
         public async Task<HttpResponseMessage> EditCategoryAsync(CategoryRequest categoryRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PutAsJsonAsync("api/v1/management/edit-category", categoryRequest);
+            return await _httpClient.PutAsJsonAsync("api/v2/management/edit-category", categoryRequest);
         }
 
         public async Task<HttpResponseMessage> DeleteCategoryAsync(CategoryRequest categoryRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync($"api/v1/management/delete-category/", categoryRequest);
+            return await _httpClient.PostAsJsonAsync($"api/v2/management/delete-category/", categoryRequest);
         }
 
         public async Task<HttpResponseMessage> AddProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync("api/v1/management/add-product", productRequest);
+            return await _httpClient.PostAsJsonAsync("api/v2/management/add-product", productRequest);
         }
 
         public async Task<HttpResponseMessage> EditProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PutAsJsonAsync("api/v1/management/edit-product", productRequest);
+            return await _httpClient.PutAsJsonAsync("api/v2/management/edit-product", productRequest);
         }
 
         public async Task<HttpResponseMessage> DeleteProductAsync(ProductRequest productRequest, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.PostAsJsonAsync($"api/v1/management/delete-product/", productRequest);
+            return await _httpClient.PostAsJsonAsync($"api/v2/management/delete-product/", productRequest);
         }
 
     }
