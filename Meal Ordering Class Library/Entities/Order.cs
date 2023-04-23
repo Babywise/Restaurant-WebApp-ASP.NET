@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
-namespace Meal_Ordering_Class_Library.Entities
+﻿namespace Meal_Ordering_Class_Library.Entities
 {
     public class Order
     {

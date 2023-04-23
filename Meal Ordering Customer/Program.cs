@@ -1,10 +1,5 @@
+using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_Customer.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +18,8 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<MenuService>();
 
 // Configure authentication middleware
 /*builder.Services.AddAuthentication(options =>

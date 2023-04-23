@@ -2,16 +2,9 @@
 using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.ResponseEntities;
-using Meal_Ordering_Class_Library.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Azure.Core;
 
 namespace MealOrderingApi.Controllers
 {
@@ -32,6 +25,30 @@ namespace MealOrderingApi.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtService = jwtService;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Index(string Username)
+        {
+            var user = await _userManager.FindByNameAsync(Username);
+
+            if (user == null)
+                return NotFound(new { Message = "User not found" });
+
+            AccountRequest accountRequest = new AccountRequest()
+            {
+                Account = new Account()
+                {
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Address = user.Address
+                }
+            };
+            return Ok(accountRequest);
         }
 
         /// <summary>
@@ -162,28 +179,5 @@ namespace MealOrderingApi.Controllers
             return Ok(new { Message = "User details updated successfully" });
         }
 
-        [HttpGet("edit")]
-        [Authorize]
-        public async Task<IActionResult> Edit(string Username)
-        {
-            var user = await _userManager.FindByNameAsync(Username);
-
-            if (user == null)
-                return NotFound(new { Message = "User not found" });
-
-            AccountRequest accountRequest = new AccountRequest() 
-            {
-                Account = new Account()
-                {
-                    UserName = user.UserName,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Address = user.Address
-                }
-            };
-            return Ok(accountRequest);
-        }
     }
 }

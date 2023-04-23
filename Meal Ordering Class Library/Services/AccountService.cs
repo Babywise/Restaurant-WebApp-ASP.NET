@@ -1,11 +1,8 @@
-﻿using Meal_Ordering_Class_Library.Entities;
-using Meal_Ordering_Class_Library.RequestEntitiesShared;
-using Meal_Ordering_Class_Library.ResponseEntities;
-using Meal_Ordering_Class_Library.Services;
-using System.Net.Http.Headers;
+﻿using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 
-namespace Meal_Ordering_Customer.Services
+namespace Meal_Ordering_Class_Library.Services
 {
     public class AccountService : BaseService
     {
@@ -32,8 +29,7 @@ namespace Meal_Ordering_Customer.Services
         public async Task<AccountRequest> GetAccountDetailsAsync(string username, string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v2/account/edit?Username={username}");
+            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v2/account?Username={username}");
         }
-
     }
 }
