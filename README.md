@@ -1,7 +1,7 @@
 # Restaurant-WebApp-ASP.NET
 # Instructions
 1. Set the API as the startup project & build
-2. update-database
+2. update-database (You may need to remove the migrations folder in the API, then add-migration "NewMigration")
 3. Set the API, Restuarant & Customer as the startup projects
 4. Run
 # API
