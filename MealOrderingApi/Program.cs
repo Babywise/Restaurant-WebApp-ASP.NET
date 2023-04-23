@@ -47,7 +47,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();             
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -70,4 +70,4 @@ using (var scope = scopeFactory.CreateScope())
     await MealOrderingAPIContext.IntitalizeUserIdentities(scope.ServiceProvider);
 }
 
-app.Run();
+app.Run($"https://0.0.0.0:7187");
