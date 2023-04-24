@@ -38,10 +38,6 @@ namespace Meal_Ordering_Restaurant.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(jsonResponse);
-
                     // ----START OF SESSION MGMT
                     if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
                     {

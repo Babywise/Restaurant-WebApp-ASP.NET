@@ -5,6 +5,8 @@ using System.Data;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using Newtonsoft.Json.Linq;
 using Meal_Ordering_Class_Library.Services;
+using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Microsoft.AspNetCore.Http;
 
 namespace Meal_Ordering_Customer.Controllers
 {
@@ -37,14 +39,14 @@ namespace Meal_Ordering_Customer.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(jsonResponse);
+                    var accountResponse = (JObject) responseContent.GetValue("account");
+                    var accountUserName = (string)accountResponse.GetValue("userName");
 
                     // ----START OF SESSION MGMT
                     if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
+                        HttpContext.Session.SetString("Username", accountUserName);
 
                         if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                         {
