@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
 using Meal_Ordering_Class_Library.Entities;
+using Meal_Ordering_Class_Library.Services;
 
 namespace Meal_Ordering_Customer.Controllers
 {
@@ -12,11 +13,13 @@ namespace Meal_Ordering_Customer.Controllers
         private readonly OrderService _orderService;
         private readonly MenuService _menuService;
         private readonly IConfiguration _config;
-        public MenuController(IConfiguration config, OrderService orderService, MenuService menuService)
+        private readonly BaseJwtService _baseJwtService;
+        public MenuController(IConfiguration config, OrderService orderService, MenuService menuService, BaseJwtService baseJwtService)
         {
             _config = config;
             _orderService = orderService;
             _menuService = menuService;
+            _baseJwtService = baseJwtService;
         }
 
         [HttpGet]
@@ -32,10 +35,8 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
                 GetMenuRequest getMenuRequest = await _menuService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
 
@@ -61,10 +62,8 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
                 Product product = await _menuService.GetProductByIdAsync(HttpContext.Session.GetString("Authorization"), ProductId);
                 bool IncludeProduct = false;

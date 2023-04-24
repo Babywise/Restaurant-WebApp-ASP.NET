@@ -10,9 +10,9 @@ namespace Meal_Ordering_Class_Library.Services
         {
         }
 
-        public async Task<HttpResponseMessage> LoginAsync(AccountRequest accountRequest)
+        public async Task<HttpResponseMessage> LoginAsync(AccountLoginRequest accountLoginRequest)
         {
-            return await _httpClient.PostAsJsonAsync("api/v2/account/login", accountRequest);
+            return await _httpClient.PostAsJsonAsync("api/v2/account/login", accountLoginRequest);
         }
 
         public async Task<HttpResponseMessage> RegisterAsync(AccountRequest accountRequest)
@@ -26,10 +26,10 @@ namespace Meal_Ordering_Class_Library.Services
             return await _httpClient.PutAsJsonAsync("api/v2/account/edit", accountRequest);
         }
 
-        public async Task<AccountRequest> GetAccountDetailsAsync(string username, string accessToken)
+        public async Task<AccountRequest> GetAccountDetailsAsync(string accessToken)
         {
             SetAccessToken(_httpClient, accessToken);
-            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v2/account?Username={username}");
+            return await _httpClient.GetFromJsonAsync<AccountRequest>($"api/v2/account");
         }
     }
 }

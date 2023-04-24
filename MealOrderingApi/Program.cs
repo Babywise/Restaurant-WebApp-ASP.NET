@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connStr = builder.Configuration.GetConnectionString("MealOrderingDb");
 builder.Services.AddDbContext<MealOrderingAPIContext>(options => options.UseSqlServer(connStr));
 builder.Services.AddScoped<IMealOrderingService, DbMealOrderingService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequiredLength = 6;
@@ -22,11 +22,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireDigit = true;
 }).AddEntityFrameworkStores<MealOrderingAPIContext>().AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options => {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -36,7 +33,7 @@ builder.Services.AddAuthentication(options => {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = false,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true
     };
 });

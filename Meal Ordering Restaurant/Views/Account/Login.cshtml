@@ -1,4 +1,4 @@
-﻿@model AccountViewModel
+﻿@model AccountLoginViewModel
 @{
     ViewData["Title"] = "Login";
 }
@@ -15,17 +15,17 @@
                         </div>
                         <form method="post">
                             <div class="form-group mb-1">
-                                <span asp-validation-for="AccountRequest.Account.UserName" class="text-danger"></span>
+                                <span asp-validation-for="AccountLoginRequest.UserName" class="text-danger"></span>
                                 @*<label asp-for="AccountRequest.Account.UserName">Username:</label>*@
                                 <div class="input-group">
-                                    <input type="text" asp-for="AccountRequest.Account.UserName" class="form-control" id="username" placeholder="Username" required />
+                                    <input type="text" asp-for="AccountLoginRequest.UserName" class="form-control" id="username" placeholder="Username" />
                                 </div>
                             </div>
                             <div class="form-group mb-1">
-                                <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+                                <span asp-validation-for="AccountLoginRequest.CurrentPassword" class="text-danger"></span>
                                 @*<label asp-for="AccountRequest.Account.CurrentPassword">Password:</label>*@
                                 <div class="input-group">
-                                    <input type="password" asp-for="AccountRequest.Account.CurrentPassword" class="form-control" id="password" placeholder="Password" required />
+                                    <input type="password" asp-for="AccountLoginRequest.CurrentPassword" class="form-control" id="password" placeholder="Password" />
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-center">

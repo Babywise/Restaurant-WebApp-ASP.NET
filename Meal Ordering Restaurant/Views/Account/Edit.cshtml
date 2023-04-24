@@ -1,6 +1,6 @@
 ﻿@model AccountViewModel
 @{
-    ViewData["Title"] = $"Edit {Model.AccountRequest.Account.UserName}";
+    ViewData["Title"] = $"Edit {Model.AccountRequest.UserName}";
 }
 
 <div class="container">
@@ -9,17 +9,17 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Edit - @Model.AccountRequest.Account.UserName</h2>
+                        <h2 class="card-title text-center mb-4">Edit - @Model.AccountRequest.UserName</h2>
                         <div class="d-flex justify-content-center mb-4">
                             <img src="~/images/MealOrderingLogo.png" alt="LOGO" class="rounded-circle" width="100">
                         </div>
                         <form method="post">
                             <partial name="_AccountFormFieldsPartial" model="@Model" />
                             <div class="form-group mb-1">
-                                <span asp-validation-for="AccountRequest.Account.CurrentPassword" class="text-danger"></span>
+                                <span asp-validation-for="AccountRequest.CurrentPassword" class="text-danger"></span>
                                 @*<label asp-for="AccountRequest.Account.CurrentPassword">Current Password:</label>*@
                                 <div class="input-group">
-                                    <input type="password" asp-for="AccountRequest.Account.CurrentPassword" class="form-control" id="currentpassword" placeholder="Current Password" />
+                                    <input type="password" asp-for="AccountRequest.CurrentPassword" class="form-control" id="currentpassword" placeholder="Current Password" />
                                 </div>
                             </div>
                             <partial name="_AccountPasswordPartial" model="@Model" />

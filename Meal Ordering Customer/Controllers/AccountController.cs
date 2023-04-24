@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System.Data;
 using Meal_Ordering_Class_Library.ResponseEntities;
 using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
 using Meal_Ordering_Class_Library.Services;
 
 namespace Meal_Ordering_Customer.Controllers
@@ -13,10 +12,12 @@ namespace Meal_Ordering_Customer.Controllers
     {
         private readonly AccountService _accountService;
         private readonly IConfiguration _config;
-        public AccountController(IConfiguration config, AccountService accountService)
+        private readonly BaseJwtService _baseJwtService;
+        public AccountController(IConfiguration config, AccountService accountService, BaseJwtService baseJwtService)
         {
             _config = config;
             _accountService = accountService;
+            _baseJwtService = baseJwtService;
         }
 
         [HttpGet]
@@ -26,13 +27,12 @@ namespace Meal_Ordering_Customer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(AccountViewModel model)
+        public async Task<IActionResult> Login(AccountLoginViewModel model)
         {
             //'Account' Fields were filled in  -> make api request
-            if (!string.IsNullOrWhiteSpace(model.AccountRequest.Account.UserName) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.CurrentPassword))
+            if (ModelState.IsValid)
             {
-                var response = await _accountService.LoginAsync(model.AccountRequest);
+                var response = await _accountService.LoginAsync(model.AccountLoginRequest);
                 var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                 if (response.IsSuccessStatusCode)
@@ -45,21 +45,18 @@ namespace Meal_Ordering_Customer.Controllers
                     if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
-                        HttpContext.Session.SetString("Username", loginResponse.Account.UserName);
-                        var handler = new JwtSecurityTokenHandler();
-                        var decodedToken = handler.ReadJwtToken(HttpContext.Session.GetString("Authorization"));
-                        var accountType = decodedToken.Payload["AccountType"].ToString();
-                        if (accountType != "Customer")
+
+                        if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                         {
-                            TempData["ErrorMessage"] = $"(Error) : This account is of type '{accountType}'. Please create a 'Customer' account, Thank you.";
+                            TempData["ErrorMessage"] = $"(Error) : This account is NOT of type 'Customer'. Please create a 'Customer' account, Thank you.";
                             HttpContext.Session.Clear();
                             return RedirectToAction("Register", "Account");
                         }
                     }
-
+                    
                     // ----END OF SESSION MGMT
                     TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                    return RedirectToAction("Categories", "Menu");
+                    return RedirectToAction("Index", "Menu");
                 }
                 TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
                 return View(model);
@@ -77,12 +74,71 @@ namespace Meal_Ordering_Customer.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(AccountViewModel model)
         {
-            if (!string.IsNullOrWhiteSpace(model.AccountRequest.Account.UserName) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.FirstName) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.LastName) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.Email) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.PhoneNumber) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.Address) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.AccountType))
+            if (ModelState.IsValid)
             {
-                var response = await _accountService.RegisterAsync(model.AccountRequest);
+                if (!string.IsNullOrWhiteSpace(model.AccountRequest.NewPassword) && !string.IsNullOrWhiteSpace(model.AccountRequest.ConfirmNewPassword))
+                {
+                    var response = await _accountService.RegisterAsync(model.AccountRequest);
+                    var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    //create custom tag helper in the future to fix formating
+                    JArray errorsArray = (JArray)responseContent["errors"];
+                    if (errorsArray != null)
+                    {
+                        string errorsAsString = "";
+                        foreach (JObject errorObject in errorsArray)
+                        {
+                            //string errorCode = errorObject["code"].ToString();
+                            //string errorDescription = errorObject["description"].ToString();
+                            errorsAsString += $"{errorObject["description"]}";
+                        }
+                        TempData["ErrorMessage"] = $"({response.StatusCode}) : {errorsAsString}";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
+                    }
+                }
+                ModelState.AddModelError(string.Empty, "Password fields should be identical in the form.");
+                return View(model);
+            }
+            ModelState.AddModelError(string.Empty, "Please fill out all fields in the form.");
+            return View(model);
+        }
+
+        [HttpGet("Account/Edit/")]
+        public async Task<IActionResult> Edit()
+        {
+            if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
+                return RedirectToAction("Login"); // Redirect to the login page if not authenticated
+
+            var response = await _accountService.GetAccountDetailsAsync(HttpContext.Session.GetString("Authorization"));
+
+            AccountViewModel accountViewModel = new AccountViewModel()
+            {
+                AccountRequest = response
+            };
+            return View(accountViewModel);
+        }
+
+        [HttpPost("Account/Edit/")]
+        public async Task<IActionResult> Edit(AccountViewModel model)
+        {
+            if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
+            {
+                ModelState.AddModelError(string.Empty, "Please login to use this function.");
+                return RedirectToAction("Login"); // Redirect to the login page if not authenticated
+            }
+
+            if (ModelState.IsValid || (!string.IsNullOrWhiteSpace(model.AccountRequest.CurrentPassword) && !string.IsNullOrWhiteSpace(model.AccountRequest.NewPassword) &&
+                !string.IsNullOrWhiteSpace(model.AccountRequest.ConfirmNewPassword)))
+            {
+                var response = await _accountService.UpdateUserDetailsAsync(model.AccountRequest, HttpContext.Session.GetString("Authorization"));
                 var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                 if (response.IsSuccessStatusCode)
@@ -109,65 +165,20 @@ namespace Meal_Ordering_Customer.Controllers
                 }
                 return View(model);
             }
-            ModelState.AddModelError(string.Empty, "Please fill out all fields in the form.");
-            return View(model);
-        }
-
-        [HttpGet("Account/Edit/")]
-        public async Task<IActionResult> Edit()
-        {
-            var response = await _accountService.GetAccountDetailsAsync(HttpContext.Session.GetString("Username"), HttpContext.Session.GetString("Authorization"));
-
-            AccountViewModel accountViewModel = new AccountViewModel()
-            {
-                AccountRequest = response
-            };
-            return View(accountViewModel);
-        }
-
-        [HttpPost("Account/Edit/")]
-        public async Task<IActionResult> Edit(AccountViewModel model)
-        {
-            if ((!string.IsNullOrWhiteSpace(model.AccountRequest.Account.UserName) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.FirstName) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.LastName) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.Email) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.PhoneNumber) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.Address)) ||
-                (!string.IsNullOrWhiteSpace(model.AccountRequest.Account.CurrentPassword) && !string.IsNullOrWhiteSpace(model.AccountRequest.Account.NewPassword) &&
-                !string.IsNullOrWhiteSpace(model.AccountRequest.Account.ConfirmNewPassword)))
-            {
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
-                    return RedirectToAction("Login"); // Redirect to the login page if not authenticated
-
-                if (string.IsNullOrWhiteSpace(model.AccountRequest.Account.UserName))
-                    model.AccountRequest.Account.UserName = HttpContext.Session.GetString("Username");
-
-                var response = await _accountService.UpdateUserDetailsAsync(model.AccountRequest, HttpContext.Session.GetString("Authorization"));
-                var responseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
-
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["LastActionMessage"] = $"({response.StatusCode}) : {responseContent["message"]}";
-                    return RedirectToAction("Index", "Home");
-                }
-                //create custom tag helper in the future to fix formating
-                JArray errorsArray = (JArray)responseContent["errors"];
-                string errorsAsString = "";
-                foreach (JObject errorObject in errorsArray)
-                {
-                    //string errorCode = errorObject["code"].ToString();
-                    //string errorDescription = errorObject["description"].ToString();
-                    errorsAsString += $"{errorObject["description"]}";
-                }
-                TempData["ErrorMessage"] = $"({response.StatusCode}) : {errorsAsString}";
-                return View(model);
-            }
-            ModelState.AddModelError(string.Empty, "Please fill out all fields in the form.");
+            ModelState.AddModelError(string.Empty, "Please fill out all required fields in the form.");
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
+            if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
+            {
+                ModelState.AddModelError(string.Empty, "Please login to use this function.");
+                return RedirectToAction("Login"); // Redirect to the login page if not authenticated
+            }
             HttpContext.Session.Clear();
+            TempData["LastActionMessage"] = $"Thank you for using our service, Have a great day!";
             return RedirectToAction("Index", "Home");
         }
     }

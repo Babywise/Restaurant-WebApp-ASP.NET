@@ -1,5 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_Customer.Models;
 using Meal_Ordering_Customer.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +12,17 @@ namespace Meal_Ordering_Customer.Controllers
     {
         private readonly OrderService _customerService;
         private readonly MenuService _menuService;
-        public OrderController(OrderService customerService, MenuService menuService)
+        private readonly BaseJwtService _baseJwtService;
+        public OrderController(OrderService customerService, MenuService menuService, BaseJwtService baseJwtService)
         {
             _customerService = customerService;
             _menuService = menuService;
+            _baseJwtService = baseJwtService;
         }
 
         // HTTP GET for the Quick Add, HTTP Post for the form submission of the Menu/DisplayItem Page
         public async Task<IActionResult> AddToCart(int CategoryId, int ProductId, int QuantityToAdd)
         {
-
             if (QuantityToAdd <= 0) {
                 TempData["ErrorMessage"] = "Invalid Quantity";
                 return RedirectToAction("DisplayItem", "Menu", new { CategoryId = CategoryId, ProductId = ProductId });
@@ -30,12 +32,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
 
                 // Create an order product
                 OrderProduct orderProduct = new OrderProduct
@@ -105,12 +105,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
 
                 // Get the list of orders
                 GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
@@ -150,12 +148,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
                 GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
 
                 return View(orders);
@@ -175,12 +171,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
 
                 GetOrdersRequest gor = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
                 Order order = gor.Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
@@ -207,12 +201,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
 
                 // Get the list of orders
                 GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
@@ -260,12 +252,10 @@ namespace Meal_Ordering_Customer.Controllers
             {
                 string accessToken = HttpContext.Session.GetString("Authorization");
 
-                if (string.IsNullOrEmpty(accessToken))
-                {
+                if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(accessToken))
                     return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-                }
 
-                string Username = HttpContext.Session.GetString("Username");
+                string Username = await _baseJwtService.GetClaimValueFromToken(accessToken, "sub");
 
                 // Get the list of orders
                 GetOrdersRequest orders = await _customerService.GetOrdersByUsernameAsync(HttpContext.Session.GetString("Authorization"), Username);
