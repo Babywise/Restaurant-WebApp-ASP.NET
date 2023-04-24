@@ -72,21 +72,17 @@ namespace MealOrderingApi.Controllers
 
                     LoginResponse loginResponse = new LoginResponse()
                     {
-                        Account = new Account
-                        {
-                            FirstName = appUser.FirstName,
-                            LastName = appUser.LastName,
-                            AccountType = appUser.AccountType,
-                            Email = appUser.Email,
-                            Address = appUser.Address,
-                            PhoneNumber = appUser.PhoneNumber,
-                            UserName = appUser.UserName
-                        },
+                        UserName = appUser.UserName,
+                        FirstName = appUser.FirstName,
+                        LastName = appUser.LastName,
+                        Email = appUser.Email,
+                        PhoneNumber = appUser.PhoneNumber,
+                        Address = appUser.Address
                     };
                     var response = new
                     {
-                        Account = loginResponse.Account,
-                        Message = $"Login Successful. Thank you '{loginResponse.Account.FirstName}' for using our service."
+                        loginResponse,
+                        Message = $"Login Successful. Thank you '{loginResponse.FirstName}' for using our service."
                     };
                     return Ok(response);
                 }

@@ -16,14 +16,14 @@
                         <form method="post">
                             <div class="form-group mb-1">
                                 <span asp-validation-for="AccountLoginRequest.UserName" class="text-danger"></span>
-                                @*<label asp-for="AccountRequest.Account.UserName">Username:</label>*@
+                                @*<label asp-for="AccountRequest.UserName">Username:</label>*@
                                 <div class="input-group">
                                     <input type="text" asp-for="AccountLoginRequest.UserName" class="form-control" id="username" placeholder="Username" />
                                 </div>
                             </div>
                             <div class="form-group mb-1">
                                 <span asp-validation-for="AccountLoginRequest.CurrentPassword" class="text-danger"></span>
-                                @*<label asp-for="AccountRequest.Account.CurrentPassword">Password:</label>*@
+                                @*<label asp-for="AccountRequest.CurrentPassword">Password:</label>*@
                                 <div class="input-group">
                                     <input type="password" asp-for="AccountLoginRequest.CurrentPassword" class="form-control" id="password" placeholder="Password" />
                                 </div>

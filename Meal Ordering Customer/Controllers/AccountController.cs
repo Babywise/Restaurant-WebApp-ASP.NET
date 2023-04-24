@@ -39,14 +39,13 @@ namespace Meal_Ordering_Customer.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var accountResponse = (JObject) responseContent.GetValue("account");
-                    var accountUserName = (string)accountResponse.GetValue("userName");
+                    LoginResponse loginResponse = responseContent.SelectToken("loginResponse").ToObject<LoginResponse>();
 
                     // ----START OF SESSION MGMT
                     if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
-                        HttpContext.Session.SetString("Username", accountUserName);
+                        HttpContext.Session.SetString("Username", loginResponse.UserName);
 
                         if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                         {
