@@ -12,7 +12,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".MealOrderingApp.Restaurant.Session";
-    options.IdleTimeout = TimeSpan.FromMinutes(5);
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
