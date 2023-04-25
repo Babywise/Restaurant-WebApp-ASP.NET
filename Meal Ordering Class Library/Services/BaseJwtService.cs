@@ -48,53 +48,57 @@ namespace Meal_Ordering_Class_Library.Services
 
         public async Task<bool> CheckCustomerRoleClaimFromToken(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
-
-            if (jwtToken == null)
+            if (token != null)
             {
-                return false;
-            }
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
 
-            var roleClaims = jwtToken.Claims
-                .Where(c => c.Type == "role")
-                .Select(c => c.Value)
-                .ToList();
-
-            foreach (var role in roleClaims)
-            {
-                if (role.CompareTo("Customer") == 0)
+                if (jwtToken == null)
                 {
-                    return true;
+                    return false;
+                }
+
+                var roleClaims = jwtToken.Claims
+                    .Where(c => c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList();
+
+                foreach (var role in roleClaims)
+                {
+                    if (role.CompareTo("Customer") == 0)
+                    {
+                        return true;
+                    }
                 }
             }
-
             return false;
         }
 
         public async Task<bool> CheckRestaurantRoleClaimFromToken(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
-
-            if (jwtToken == null)
+            if (token != null)
             {
-                return false;
-            }
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
 
-            var roleClaims = jwtToken.Claims
+                if (jwtToken == null)
+                {
+                    return false;
+                }
+
+                var roleClaims = jwtToken.Claims
                 .Where(c => c.Type == "role")
                 .Select(c => c.Value)
                 .ToList();
 
-            foreach (var role in roleClaims)
-            {
-                if (role.CompareTo("Restaurant") == 0)
+                foreach (var role in roleClaims)
                 {
-                    return true;
+                    if (role.CompareTo("Restaurant") == 0)
+                    {
+                        return true;
+                    }
                 }
             }
-
             return false;
         }
 
@@ -120,9 +124,8 @@ namespace Meal_Ordering_Class_Library.Services
 
                 return expiryTimeUtc;
             }
-
             return null;
-
         }
+
     }
 }
