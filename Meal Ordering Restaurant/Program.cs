@@ -1,5 +1,7 @@
 using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_Restaurant.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,5 +57,23 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Use(async (context, next) =>
+{
+    var jwtToken = string.Empty;
+    if (context.Session != null && context.Session.TryGetValue("Authorization", out var tokenBytes))
+        jwtToken = Encoding.UTF8.GetString(tokenBytes);
+
+    if (!string.IsNullOrEmpty(jwtToken))
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.ReadJwtToken(jwtToken);
+        if (token.ValidTo < DateTime.UtcNow)
+        {
+            context.Session.Clear();
+        }
+    }
+    await next.Invoke();
+});
 
 app.Run($"https://0.0.0.0:7131");

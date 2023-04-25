@@ -6,6 +6,7 @@ using Meal_Ordering_Class_Library.ResponseEntities;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Meal_Ordering_Class_Library.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Meal_Ordering_Restaurant.Controllers
 {
@@ -42,6 +43,7 @@ namespace Meal_Ordering_Restaurant.Controllers
                     if (response.Headers.TryGetValues("Authorization", out IEnumerable<string> values))
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
+                        HttpContext.Session.SetString("AuthorizationExpiry", (await _baseJwtService.GetExpiryFromToken(HttpContext.Session.GetString("Authorization")))?.ToString("yyyy-MM-dd HH:mm:ss"));
 
                         if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                         {

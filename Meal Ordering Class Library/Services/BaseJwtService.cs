@@ -14,7 +14,7 @@ namespace Meal_Ordering_Class_Library.Services
             _config = config;
         }
 
-        
+
         public async Task<string>? GetClaimValueFromToken(string token, string claimType)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -98,5 +98,31 @@ namespace Meal_Ordering_Class_Library.Services
             return false;
         }
 
+        public async Task<DateTime?> GetExpiryFromToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = await Task.Run(() => tokenHandler.ReadToken(token) as JwtSecurityToken);
+
+            if (jwtToken == null)
+            {
+                return null;
+            }
+
+            var expiryClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp");
+            if (expiryClaim != null && long.TryParse(expiryClaim.Value, out var expiryTimeUnix))
+            {
+                var expiryTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                    .AddSeconds(expiryTimeUnix);
+                //offest for utc + 5 (EST)
+                TimeZoneInfo easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+                expiryTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(expiryTimeUtc, easternTimeZone);
+
+                return expiryTimeUtc;
+            }
+
+            return null;
+
+        }
     }
 }

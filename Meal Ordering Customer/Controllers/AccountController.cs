@@ -46,6 +46,7 @@ namespace Meal_Ordering_Customer.Controllers
                     {
                         HttpContext.Session.SetString("Authorization", values.First());
                         HttpContext.Session.SetString("Username", loginResponse.UserName);
+                        HttpContext.Session.SetString("AuthorizationExpiry", (await _baseJwtService.GetExpiryFromToken(HttpContext.Session.GetString("Authorization")))?.ToString("yyyy-MM-dd HH:mm:ss"));
 
                         if (!await _baseJwtService.CheckCustomerRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                         {

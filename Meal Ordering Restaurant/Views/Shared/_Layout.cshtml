@@ -89,13 +89,13 @@
                 </div>
             </div>
         </nav>
-        @*<div>
-            AccessToken: @Context.Session.GetString("AccessToken")
-            <br />
-            Authorization: @Context.Session.GetString("Authorization")
-            <br />
-            Username: @Context.Session.GetString("Username")
-        </div>*@
+        @*for developement*@
+        @*<ul>
+            @foreach (var key in Context.Session.Keys)
+            {
+                <li>@key: @Context.Session.GetString(key)</li>
+            }
+        </ul>*@
         <partial name="_ValidationBannerPartial" />
     </header>
     <div class="container">
