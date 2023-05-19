@@ -1,5 +1,6 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +12,18 @@ namespace Meal_Ordering_Restaurant.Controllers
     {
         private readonly OrderService _orderService;
         private readonly ManagementService _managementService;
-        public OrderController(OrderService orderService, ManagementService managementService)
+        private readonly BaseJwtService _baseJwtService;
+        public OrderController(OrderService orderService, ManagementService managementService, BaseJwtService baseJwtService)
         {
             _orderService = orderService;
             _managementService = managementService;
+            _baseJwtService = baseJwtService;
         }
 
         [HttpGet]
         public async Task<IActionResult> IndexAsync(string? tabId)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             //Need Menu -> make api request
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
@@ -85,7 +88,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(OrderViewModel orderViewModel)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
             
             if (ModelState.IsValid)

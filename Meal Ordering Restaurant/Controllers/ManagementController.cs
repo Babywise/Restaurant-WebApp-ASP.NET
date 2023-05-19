@@ -1,6 +1,7 @@
 ﻿using Meal_Ordering_Class_Library.Entities;
 using Meal_Ordering_Class_Library.RequestEntitiesRestaurant;
 using Meal_Ordering_Class_Library.RequestEntitiesShared;
+using Meal_Ordering_Class_Library.Services;
 using Meal_Ordering_Restaurant.Models;
 using Meal_Ordering_Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,17 @@ namespace Meal_Ordering_Restaurant.Controllers
     public class ManagementController : Controller
     {
         private readonly ManagementService _managementService;
-        public ManagementController(ManagementService managementService)
+        private readonly BaseJwtService _baseJwtService;
+        public ManagementController(ManagementService managementService, BaseJwtService baseJwtService)
         {
             _managementService = managementService;
+            _baseJwtService = baseJwtService;
         }
 
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             //Need Menu -> make api request
@@ -57,7 +60,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ManagementViewModel model)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
@@ -178,7 +181,7 @@ namespace Meal_Ordering_Restaurant.Controllers
 /*      [HttpGet("Management/Product/Add/")]
         public async Task<IActionResult> AddProductAsync(string productName)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             //Need Menu -> make api request
@@ -200,7 +203,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost("Management/Product/Add/")]
         public async Task<IActionResult> AddProductAsync(ProductViewModel model)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Authorization")))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             if (ModelState.IsValid)
@@ -226,9 +229,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpGet("Management/Product/Edit/{id}")]
         public async Task<IActionResult> EditProductAsync(int id)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
@@ -247,9 +248,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost("Management/Product/Edit/{id}")]
         public async Task<IActionResult> EditProductAsync(ProductViewModel model)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             if (ModelState.IsValid)
@@ -273,9 +272,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost("Management/Product/Delete/{id}")]
         public async Task<IActionResult> DeleteProductAsync(ProductViewModel model)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             if (model.ProductRequest.ProductIdToDeleted != null)
@@ -296,9 +293,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpGet("Management/Category/Edit/{id}")]
         public async Task<IActionResult> EditCategoryAsync(int id)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             GetMenuRequest getMenuRequest = await _managementService.GetMenuAsync(HttpContext.Session.GetString("Authorization"));
@@ -316,9 +311,7 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost("Management/Category/Edit/{id}")]
         public async Task<IActionResult> EditCategoryAsync(CategoryViewModel model)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
 
             if (ModelState.IsValid)
@@ -339,12 +332,8 @@ namespace Meal_Ordering_Restaurant.Controllers
         [HttpPost("Management/Category/Delete/{id}")]
         public async Task<IActionResult> DeleteCategoryAsync(CategoryViewModel model)
         {
-            string accessToken = HttpContext.Session.GetString("Authorization");
-
-            if (string.IsNullOrEmpty(accessToken))
-            {
+            if (!await _baseJwtService.CheckRestaurantRoleClaimFromToken(HttpContext.Session.GetString("Authorization")))
                 return RedirectToAction("Login", "Account"); // Redirect to the login page if not authenticated
-            }
 
             if (model.CategoryRequest.CategoryIdToDeleted != null)
             {

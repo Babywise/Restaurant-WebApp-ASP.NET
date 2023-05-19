@@ -77,6 +77,13 @@
                 </div>
             </div>
         </nav>
+        @*for developement*@
+        @*<ul>
+            @foreach (var key in Context.Session.Keys)
+            {
+                <li>@key: @Context.Session.GetString(key)</li>
+            }
+        </ul>*@
         <partial name="_ValidationBannerPartial" />
     </header>
     <div class="container">

@@ -14,10 +14,17 @@
                             <img src="~/images/MealOrderingLogo.png" alt="LOGO" class="rounded-circle" width="100">
                         </div>
                         <form method="post">
+                            <div class="form-group mb-1">
+                                <span asp-validation-for="AccountRequest.UserName" class="text-danger"></span>
+                                @*<label asp-for="AccountRequest.UserName">Username:</label>*@
+                                <div class="input-group">
+                                    <input type="text" asp-for="AccountRequest.UserName" class="form-control" id="username" placeholder="Username" required/>
+                                </div>
+                            </div>
                             <partial name="_AccountFormFieldsPartial" model="@Model" />
                             <partial name="_AccountPasswordPartial" model="@Model" />
                             <div>
-                                <input asp-for="AccountRequest.Account.AccountType" value="Customer" hidden />
+                                <input asp-for="AccountRequest.AccountType" value="Customer" hidden />
                             </div>
                             <div class="form-group d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary w-100">Register</button>

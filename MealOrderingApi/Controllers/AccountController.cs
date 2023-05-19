@@ -14,11 +14,11 @@ namespace MealOrderingApi.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly IJwtService _jwtService;
+        private readonly JwtService _jwtService;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _config;
 
-        public AccountController(IConfiguration config, ILogger<AccountController> logger, SignInManager<User> signInManager, UserManager<User> userManager, IJwtService jwtService)
+        public AccountController(IConfiguration config, ILogger<AccountController> logger, SignInManager<User> signInManager, UserManager<User> userManager, JwtService jwtService)
         {
             _config = config;
             _logger = logger;
@@ -29,24 +29,22 @@ namespace MealOrderingApi.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string Username)
+        public async Task<IActionResult> Index()
         {
-            var user = await _userManager.FindByNameAsync(Username);
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var user = await _userManager.FindByNameAsync(await _jwtService.GetClaimValueFromToken(token, "sub"));
 
             if (user == null)
                 return NotFound(new { Message = "User not found" });
 
             AccountRequest accountRequest = new AccountRequest()
             {
-                Account = new Account()
-                {
-                    UserName = user.UserName,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Address = user.Address
-                }
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address
             };
             return Ok(accountRequest);
         }
@@ -56,46 +54,48 @@ namespace MealOrderingApi.Controllers
         /// </summary>
         /// <param name="accountLoginRequest"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AccountRequest accountRequest)
+        public async Task<IActionResult> Login([FromBody] AccountLoginRequest accountRequest)
         {
-            var result = await _signInManager.PasswordSignInAsync(accountRequest.Account.UserName, accountRequest.Account.CurrentPassword, false, false);
-
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                var appUser = await _userManager.FindByNameAsync(accountRequest.Account.UserName);
-                var userId = appUser.Id;
-                var jwtToken = await _jwtService.GenerateJwtToken(appUser);
+                var result = await _signInManager.PasswordSignInAsync(accountRequest.UserName, accountRequest.CurrentPassword, false, false);
 
-                Response.Headers.Add("Authorization", jwtToken);
-
-                LoginResponse loginResponse = new LoginResponse()
+                if (result.Succeeded)
                 {
-                    Account = new Account
+                    var appUser = await _userManager.FindByNameAsync(accountRequest.UserName);
+                    var userId = appUser.Id;
+                    var jwtToken = await _jwtService.GenerateJwtToken(appUser);
+
+                    Response.Headers.Add("Authorization", jwtToken);
+
+                    LoginResponse loginResponse = new LoginResponse()
                     {
+                        UserName = appUser.UserName,
                         FirstName = appUser.FirstName,
                         LastName = appUser.LastName,
-                        AccountType = appUser.AccountType,
                         Email = appUser.Email,
-                        Address = appUser.Address,
                         PhoneNumber = appUser.PhoneNumber,
-                        UserName = appUser.UserName
-                    },
-                };
-                var response = new
-                {
-                    Account = loginResponse.Account,
-                    Message = $"Login Successful. Thank you '{loginResponse.Account.FirstName}' for using our service."
-                };
-                return Ok(response);
+                        Address = appUser.Address
+                    };
+                    var response = new
+                    {
+                        loginResponse,
+                        Message = $"Login Successful. Thank you '{loginResponse.FirstName}' for using our service."
+                    };
+                    return Ok(response);
+                }
+                return Unauthorized(new { Message = $"Login failed for user '{accountRequest.UserName}'. Please try again." });
             }
-            return Unauthorized(new { Message = $"Login failed for user '{accountRequest.Account.UserName}'. Please try again."});
+            return BadRequest(new { Message = $"Login failed. Please fill out the username and password and try again." });
         }
         /// <summary>
         /// Registers a new account
         /// </summary>
         /// <param name="accountRegisterRequest"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AccountRequest accountRequest)
         {
@@ -103,27 +103,28 @@ namespace MealOrderingApi.Controllers
             {
                 var newUser = new User
                 {
-                    UserName = accountRequest.Account.UserName,
-                    Email = accountRequest.Account.Email,
-                    PhoneNumber = accountRequest.Account.PhoneNumber,
-                    FirstName = accountRequest.Account.FirstName,
-                    LastName = accountRequest.Account.LastName,
-                    AccountType = accountRequest.Account.AccountType,
+                    UserName = accountRequest.UserName,
+                    Email = accountRequest.Email,
+                    PhoneNumber = accountRequest.PhoneNumber,
+                    FirstName = accountRequest.FirstName,
+                    LastName = accountRequest.LastName,
+                    Address = accountRequest.Address,
+                    AccountType = accountRequest.AccountType,
                 };
-                if (accountRequest.Account.NewPassword != null && accountRequest.Account.ConfirmNewPassword != null)
+                if (accountRequest.NewPassword != null && accountRequest.ConfirmNewPassword != null)
                 {
-                    if (accountRequest.Account.NewPassword == accountRequest.Account.ConfirmNewPassword)
+                    if (accountRequest.NewPassword == accountRequest.ConfirmNewPassword)
                     {
-                        var result = await _userManager.CreateAsync(newUser, accountRequest.Account.NewPassword);
+                        var result = await _userManager.CreateAsync(newUser, accountRequest.NewPassword);
                         if (result.Succeeded)
                         {
                             // Set user role based on AccountType
-                            string roleName = accountRequest.Account.AccountType == "Customer" ? "Customer" : "Restaurant";
+                            string roleName = accountRequest.AccountType == "Customer" ? "Customer" : "Restaurant";
                             await _userManager.AddToRoleAsync(newUser, roleName);
                             return Ok(new
                             {
                                 Message = $"User registration for '{newUser.UserName}' as '{roleName}' was successful. " +
-                                $"Thank you '{accountRequest.Account.FirstName}' for using our service."
+                                $"Thank you '{accountRequest.FirstName}' for using our service."
                             });
                         }
                         return BadRequest(result);
@@ -144,23 +145,27 @@ namespace MealOrderingApi.Controllers
         [Authorize]
         public async Task<IActionResult> Edit([FromBody] AccountRequest accountRequest)
         {
-            var user = await _userManager.FindByNameAsync(accountRequest.Account.UserName);
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var user = await _userManager.FindByNameAsync(await _jwtService.GetClaimValueFromToken(token, "sub"));
+
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });
             }
 
             //further validation needs to be done here
-            if(!string.IsNullOrWhiteSpace(accountRequest.Account.Email))
-                user.Email = accountRequest.Account.Email;
-            if(!string.IsNullOrWhiteSpace(accountRequest.Account.PhoneNumber))
-                user.PhoneNumber = accountRequest.Account.PhoneNumber;
-            if(!string.IsNullOrWhiteSpace(accountRequest.Account.FirstName))
-                user.FirstName = accountRequest.Account.FirstName;
-            if(!string.IsNullOrWhiteSpace(accountRequest.Account.LastName))
-                user.LastName = accountRequest.Account.LastName;
-            if(!string.IsNullOrWhiteSpace(accountRequest.Account.Address))
-                user.Address = accountRequest.Account.Address;
+            if(!string.IsNullOrWhiteSpace(accountRequest.UserName))
+                user.UserName = accountRequest.UserName;
+            if(!string.IsNullOrWhiteSpace(accountRequest.Email))
+                user.Email = accountRequest.Email;
+            if(!string.IsNullOrWhiteSpace(accountRequest.PhoneNumber))
+                user.PhoneNumber = accountRequest.PhoneNumber;
+            if(!string.IsNullOrWhiteSpace(accountRequest.FirstName))
+                user.FirstName = accountRequest.FirstName;
+            if(!string.IsNullOrWhiteSpace(accountRequest.LastName))
+                user.LastName = accountRequest.LastName;
+            if(!string.IsNullOrWhiteSpace(accountRequest.Address))
+                user.Address = accountRequest.Address;
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -169,9 +174,9 @@ namespace MealOrderingApi.Controllers
                 return BadRequest(result);
             }
 
-            if (!string.IsNullOrEmpty(accountRequest.Account.CurrentPassword) && !string.IsNullOrEmpty(accountRequest.Account.NewPassword))
+            if (!string.IsNullOrEmpty(accountRequest.CurrentPassword) && !string.IsNullOrEmpty(accountRequest.NewPassword))
             {
-                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, accountRequest.Account.CurrentPassword, accountRequest.Account.NewPassword);
+                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, accountRequest.CurrentPassword, accountRequest.NewPassword);
 
                 if (!passwordChangeResult.Succeeded)
                     return BadRequest(passwordChangeResult);
